@@ -31,9 +31,11 @@ class Usuario extends Authenticatable
     ];
 
     public function enderecos()
-    {   
-        return $this->hasMany(EnderecoUsuarioFinal::class, 'usuarios_id', 'id_usuarios');
-    }
+{
+    // 'id_usuarios' é a FK na tabela endereco_usuarios que referencia usuarios.id_usuarios
+    return $this->hasMany(EnderecoUsuario::class, 'id_usuarios', 'id_usuarios');
+}
+
 
     // Se o campo da senha no banco for 'senha' (e não 'password'), informe explicitamente:
     public function getAuthPassword()
