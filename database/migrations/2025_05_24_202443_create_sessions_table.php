@@ -7,15 +7,13 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('sessions', function (Blueprint $table) {
-    $table->id();
-    $table->unsignedBigInteger('user_id');
-    $table->foreign('user_id')->references('id_usuarios')->on('usuarios')->onDelete('cascade');
+       Schema::create('sessions', function (Blueprint $table) {
+    $table->string('id')->primary();
+    $table->foreignId('user_id')->nullable()->constrained('usuarios', 'id_usuarios')->onDelete('cascade');
     $table->string('ip_address', 45)->nullable();
     $table->text('user_agent')->nullable();
-    $table->longText('payload');
-    $table->timestamp('last_activity');
-    $table->timestamps();
+    $table->text('payload');
+    $table->integer('last_activity')->index();
 });
 
     }
