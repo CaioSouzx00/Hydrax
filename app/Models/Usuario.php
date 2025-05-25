@@ -2,33 +2,42 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Usuario extends Model
+class Usuario extends Authenticatable
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
 
     protected $table = 'usuarios';
-    protected $primaryKey = 'id_usuarios'; // Necessário se você não usar 'id'
+    protected $primaryKey = 'id_usuarios';
+    public $timestamps = false;
 
     protected $fillable = [
         'sexo',
         'nome_completo',
         'data_nascimento',
         'email',
-        'senha',
+        'password',
         'telefone',
         'cpf',
         'foto',
     ];
 
-    protected $hidden = ['senha'];
-    protected $casts = ['data_nascimento' => 'date'];
+    protected $hidden = ['password'];
+    protected $casts = [
+        'data_nascimento' => 'date',
+    ];
 
     public function enderecos()
     {   
         return $this->hasMany(EnderecoUsuarioFinal::class, 'usuarios_id', 'id_usuarios');
     }
-}
 
+    // Se o campo da senha no banco for 'senha' (e não 'password'), informe explicitamente:
+    public function getAuthPassword()
+    {
+        return $this->password;
+    }
+}

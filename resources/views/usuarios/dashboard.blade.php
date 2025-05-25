@@ -20,6 +20,8 @@
         <h1 class="text-xl font-[Orbitron] tracking-wide text-white">Hydrax</h1>
       </div>
 
+
+
 <!-- Menu principal -->
 <nav class="hidden md:flex items-center gap-3 text-sm">
   <a href="#" class="hover:text-gray-300 transition">Início</a>
@@ -99,11 +101,6 @@
       <div class="bg-white text-black rounded-lg p-6 hover:scale-105 transition">
         <h3 class="text-lg font-semibold">Fornecedor</h3>
         <p class="text-sm mt-2 text-gray-700">Gerencie produtos e entregas.</p>
-        <form method="POST" action="{{ route('logout') }}">
-          @csrf
-          <button type="submit" class="block px-4 py-2 rounded-md bg-red-600 hover:bg-red-700 transition text-white text-sm mt-4">
-              Sair
-          </button>
         </form>
       </div>
     </div>
