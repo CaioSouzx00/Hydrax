@@ -128,7 +128,7 @@
             </div>
 
             <div class="flex justify-between items-center text-sm">
-              <a href="" class="text-indigo-400 hover:text-indigo-600 transition">Esqueceu sua senha?</a>
+              <a href="{{ route('password.esqueciSenhaForm') }}" class="text-indigo-400 hover:text-indigo-600 transition">Esqueceu sua senha?</a>
               <button type="submit"
                       class="relative px-5 py-2 border-2 border-indigo-500 text-indigo-400 rounded-xl hover:text-white hover:bg-indigo-600 transition-all duration-300">
                 Entrar
