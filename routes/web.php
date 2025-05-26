@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\EnderecoUsuarioController;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\PasswordResetController;
 
 // Página inicial
@@ -50,3 +51,29 @@ Route::get('/senha/redefinir', [PasswordResetController::class, 'mostrarFormular
 
 // Salva a nova senha
 Route::post('/senha/redefinir', [PasswordResetController::class, 'redefinirSenha'])->name('password.redefinirSenha');
+
+// Página principal do dashboard (ex: Dashboard geral)
+Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+
+
+
+Route::get('/admin/login', [AdminController::class, 'showLoginForm'])->name('admin.login');
+Route::post('/admin/login', [AdminController::class, 'login'])->name('admin.login.submit');
+
+
+// Rota para logout ou sair
+Route::get('/logout', function () {
+    // Deslogar o usuário
+    Auth::logout();
+    return redirect('/login');
+})->name('logout');
+
+Route::get('/admin/login', function () {
+    return view('admin.login');
+})->name('admin.login');
+
+
+Route::get('/admin/login', [AdminController::class, 'showLoginForm'])->name('admin.login.form');
+Route::post('/admin/login', [AdminController::class, 'login'])->name('admin.login');
+Route::post('/admin/logout', [AdminController::class, 'logout'])->name('admin.logout');
+Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');

@@ -10,6 +10,7 @@ return new class extends Migration {
         Schema::create('administradores', function (Blueprint $table) {
             $table->id('id_administradores');
             $table->string('nome_usuario')->unique();
+            $table->string('password');
             $table->timestamps();
         });
     }
