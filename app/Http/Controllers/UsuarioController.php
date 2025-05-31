@@ -30,6 +30,7 @@ class UsuarioController extends Controller
             'cpf.regex' => 'O CPF deve conter exatamente 11 dígitos numéricos.',
         ]);
 
+        // Normaliza sexo para M ou F
         if (isset($dados['sexo'])) {
             $sexo = strtolower($dados['sexo']);
             $dados['sexo'] = $sexo === 'masculino' ? 'M' : ($sexo === 'feminino' ? 'F' : null);
@@ -55,42 +56,42 @@ class UsuarioController extends Controller
     }
 
     public function login(Request $request)
-    {
-        $dados = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
+{
+    $dados = $request->validate([
+        'email' => 'required|email',
+        'password' => 'required',
+    ]);
 
-        if (Auth::attempt(['email' => $dados['email'], 'password' => $dados['password']])) {
-            $request->session()->regenerate();
+    if (Auth::guard('usuarios')->attempt($dados)) {
+        $request->session()->regenerate();
 
-            // Salvar dados do usuário na sessão
-            $usuario = Auth::user();
-            session([
-                'usuario_id' => $usuario->id_usuarios,
-                'usuario_nome' => $usuario->nome_completo,
-            ]);
-
-            return redirect()->intended(route('dashboard'));
-        }
-
-        return back()->withErrors(['login' => 'Credenciais inválidas'])->withInput();
+        return redirect()->intended(route('dashboard'));
     }
 
-    public function logout()
-    {
-        session()->flush(); // limpa tudo
-        Auth::logout();
-        return redirect()->route('login.form')->with('success', 'Você saiu do sistema.');
+    return back()->withErrors(['login' => 'Credenciais inválidas'])->withInput();
+}
+
+public function logout(Request $request)
+{
+    Auth::guard('usuarios')->logout();
+
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+
+    return redirect()->route('login.form')->with('success', 'Você saiu do sistema.');
+}
+
+public function dashboard()
+{
+    if (!Auth::guard('usuarios')->check()) {
+        return redirect()->route('login.form')->withErrors(['acesso' => 'Faça login para acessar o sistema.']);
     }
 
-    public function dashboard()
-    {
-        if (!session()->has('usuario_id')) {
-            return redirect()->route('login.form')->withErrors(['acesso' => 'Faça login para acessar o sistema.']);
-        }
+    $usuario = Auth::guard('usuarios')->user();
+    $nome = $usuario->nome_completo;
 
-        $nome = session('usuario_nome');
-        return view('usuarios.dashboard', compact('nome'));
-    }
+    return view('usuarios.dashboard', compact('nome'));
+}
+
+
 }

@@ -52,23 +52,23 @@
   <a href="#" class="hover:text-gray-300 transition">Ofertas</a>
   <a href="#" class="hover:text-gray-300 transition">Contato</a>
 
-  <!-- Dropdown de endereços -->
-  @if(session()->has('usuario_id'))
-    @php $id = session('usuario_id'); @endphp
-    <div class="relative group">
-      <button class="hover:text-gray-300 transition">Endereço ▾</button>
-      <div
-        class="absolute hidden group-hover:block bg-black border border-gray-700 rounded-md mt-2 shadow-lg py-2 min-w-[180px] z-50"
-      >
-        <a href="{{ route('endereco.create', $id) }}" class="block px-4 py-2 text-sm hover:bg-gray-800">
-          Cadastrar Endereço
-        </a>
-        <a href="{{ route('usuario.enderecos', $id) }}" class="block px-4 py-2 text-sm hover:bg-gray-800">
-          Listar Endereços
-        </a>
-      </div>
+@if(Auth::guard('usuarios')->check())
+  @php $id = Auth::guard('usuarios')->id(); @endphp
+  <div class="relative group">
+    <button class="hover:text-gray-300 transition">Endereço ▾</button>
+    <div
+      class="absolute hidden group-hover:block bg-black border border-gray-700 rounded-md mt-2 shadow-lg py-2 min-w-[180px] z-50"
+    >
+      <a href="{{ route('endereco.create', $id) }}" class="block px-4 py-2 text-sm hover:bg-gray-800">
+        Cadastrar Endereço
+      </a>
+      <a href="{{ route('usuario.enderecos', $id) }}" class="block px-4 py-2 text-sm hover:bg-gray-800">
+        Listar Endereços
+      </a>
     </div>
-  @endif
+  </div>
+@endif
+
 
   <!-- Ícone do carrinho -->
   <a href="#" class="relative hover:text-gray-300 transition">
@@ -87,31 +87,30 @@
       />
     </svg>
   </a>
-
-  <!-- Login / Logout -->
-  @if (!session()->has('usuario_id'))
+  @if (!Auth::guard('usuarios')->check())
     <a href="{{ route('usuarios.create') }}" class="bg-blue-600 px-4 py-2 rounded hover:bg-blue-700 transition">
       Cadastrar
     </a>
     <a href="{{ route('login.form') }}" class="bg-black px-4 py-2 rounded hover:bg-gray-800 transition ml-2">
       Entrar
     </a>
-  @else
-    <span class="mr-4">Olá, {{ session('usuario_nome') }}</span>
+@else
+    <span class="mr-4">Olá, {{ Auth::guard('usuarios')->user()->nome_completo }}</span>
     <form id="logoutForm" method="POST" action="{{ route('logout') }}" class="inline">
       @csrf
       <button type="submit" class="bg-red-600 px-4 py-2 rounded hover:bg-red-700 transition">
         Sair
       </button>
     </form>
-  @endif
+@endif
+
 </nav>
 
     </div>
   </header>
 
   <!-- Sidebar -->
-  @if (!session()->has('usuario_id'))
+  @if (!Auth::guard('usuarios')->check())
     <input type="checkbox" id="menu-toggle" class="hidden peer" />
     <label
       for="menu-toggle"

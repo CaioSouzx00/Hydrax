@@ -12,32 +12,32 @@ class Usuario extends Authenticatable
 
     protected $table = 'usuarios';
     protected $primaryKey = 'id_usuarios';
-    public $timestamps = false;
+
+    public $timestamps = false; // Se não tem created_at e updated_at
 
     protected $fillable = [
         'sexo',
         'nome_completo',
         'data_nascimento',
         'email',
-        'password',
+        'password', // lembre-se que seu campo no DB deve ser password (ou ajustar getAuthPassword)
         'telefone',
         'cpf',
         'foto',
     ];
 
-    protected $hidden = ['password'];
+    protected $hidden = ['password', 'remember_token']; // adiciona remember_token se usar
+
     protected $casts = [
         'data_nascimento' => 'date',
     ];
 
     public function enderecos()
-{
-    // 'id_usuarios' é a FK na tabela endereco_usuarios que referencia usuarios.id_usuarios
-    return $this->hasMany(EnderecoUsuario::class, 'id_usuarios', 'id_usuarios');
-}
+    {
+        // FK na tabela endereco_usuarios: id_usuarios
+        return $this->hasMany(EnderecoUsuario::class, 'id_usuarios', 'id_usuarios');
+    }
 
-
-    // Se o campo da senha no banco for 'senha' (e não 'password'), informe explicitamente:
     public function getAuthPassword()
     {
         return $this->password;

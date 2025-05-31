@@ -2,13 +2,18 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Administrador extends Model
+class Administrador extends Authenticatable
 {
     protected $table = 'administradores';
-    protected $fillable = ['nome_usuario', 'password']; // ajusta aqui conforme seu banco
-    public $timestamps = true; // seu banco tem created_at e updated_at, então timestamps ficam true
 
-    protected $hidden = ['password']; // para não mostrar a senha em JSON, por exemplo
+    protected $fillable = ['nome_usuario', 'password'];
+
+    public $timestamps = true;
+
+    protected $hidden = ['password', 'remember_token'];
+
+    // Se usa autenticação com remember me, precisa da coluna remember_token no DB
+    // Caso use, pode adicionar a propriedade $casts para 'email_verified_at', se quiser
 }
