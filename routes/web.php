@@ -6,6 +6,8 @@ use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\EnderecoUsuarioController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\PasswordResetController;
+use \App\Http\Middleware\UsuarioMiddleware;
+use \App\Http\Middleware\AdministradorMiddleware;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,7 +47,8 @@ Route::get('/logout', function () {
 | Rotas Protegidas - Usuário (middleware: usuario)
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth:usuarios'])->group(function () {
+//Route::middleware('auth')->group(function () {
+Route::middleware([UsuarioMiddleware::class])->group(function () {
     Route::get('/dashboard', [UsuarioController::class, 'dashboard'])->name('dashboard');
     Route::post('/logout', [UsuarioController::class, 'logout'])->name('logout');
 
@@ -65,7 +68,7 @@ Route::middleware(['auth:usuarios'])->group(function () {
 | Rotas Protegidas - Administrador (middleware: admin)
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth:admin'])->group(function () {
+Route::middleware([AdministradorMiddleware::class])->group(function () {
 
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     Route::post('/admin/logout', [AdminController::class, 'logout'])->name('admin.logout');
