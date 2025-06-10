@@ -28,6 +28,10 @@ Route::post('/usuarios', [UsuarioController::class, 'store'])->name('usuarios.st
 Route::get('/admin/login', [AdminController::class, 'showLoginForm'])->name('admin.login');
 Route::post('/admin/login', [AdminController::class, 'login'])->name('admin.login.submit');
 
+// Login - Fornecedores
+Route::get('/fonecedores/login', [AdminController::class, 'showLoginForm'])->name('fonecedores.login');
+Route::post('/fonecedores/login', [AdminController::class, 'login'])->name('fonecedores.login.submit');
+
 // Recuperação de Senha - Usuário
 Route::get('/senha/esqueci', [PasswordResetController::class, 'mostrarFormulario'])->name('password.esqueciSenhaForm');
 Route::post('/senha/enviar-codigo', [PasswordResetController::class, 'enviarCodigo'])->name('password.enviarCodigo');
