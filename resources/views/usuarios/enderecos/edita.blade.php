@@ -80,16 +80,14 @@
   <div class="line line2"></div>
   <div class="line line3"></div>
 
-  <!-- Botão de Voltar com efeito roxo estilizado -->
-  <div class="fixed top-4 left-4 z-50">
-    <a href="{{ route('dashboard') }}" class="relative rounded px-5 py-2.5 overflow-hidden group bg-indigo-700 hover:bg-gradient-to-r hover:from-indigo-700 hover:to-purple-600 text-white hover:ring-2 hover:ring-offset-2 hover:ring-purple-500 transition-all ease-out duration-300 flex items-center gap-2">
-      <span class="absolute right-0 w-8 h-32 -mt-12 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 rotate-12 group-hover:-translate-x-40 ease"></span>
-      <svg class="w-4 h-4 relative z-10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-      </svg>
-      <span class="relative z-10">Voltar</span>
-    </a>
-  </div>
+  <!-- Botão voltar -->
+  <a href="{{route('dashboard')}}"
+    class="fixed top-4 left-4 z-50 w-9 h-9 flex items-center justify-center rounded-full bg-indigo-600 hover:bg-purple-700 transition-colors duration-300 shadow-[0_4px_20px_rgba(102,51,153,0.5)]"
+    title="Voltar para o Dashboard">
+    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+    </svg>
+  </a>
 
   <!-- Formulário -->
   <main class="flex flex-col items-center justify-center w-full h-full relative z-10">

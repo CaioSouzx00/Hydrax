@@ -63,28 +63,39 @@
   </style>
 </head>
 <body>
-  <!-- Animações -->
+
+  <!-- Partículas e Linhas 
   <div class="particle particle1"></div>
   <div class="particle particle2"></div>
   <div class="particle particle3"></div>
   <div class="particle particle4"></div>
   <div class="particle particle5"></div>
-
   <div class="line line1"></div>
   <div class="line line2"></div>
   <div class="line line3"></div>
+  -->
 
-  <!-- Botão de Voltar (fixo no canto superior esquerdo, tamanho pequeno) -->
-  <a href="{{ route('dashboard') }}"
-     class="fixed top-4 left-4 z-50 w-9 h-9 flex items-center justify-center rounded-full bg-indigo-700 hover:bg-purple-600 transition-colors duration-300 shadow-md">
-    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-    </svg>
-  </a>
+  <!-- Navbar -->
+  <nav class="fixed top-0 left-0 w-full z-50 bg-black/30  border-b border-gray-700 shadow-md">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+      <div class="text-lg font-semibold text-white tracking-wide">
+        <span class="text-indigo-400">HYDRAX</span> | Painel de Endereços
+      </div>
+      <a href="{{ route('dashboard') }}"
+         class="w-9 h-9 flex items-center justify-center rounded-full bg-indigo-600 hover:bg-indigo-700 transition-colors duration-300 shadow">
+        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+        </svg>
+      </a>
+    </div>
+  </nav>
 
-  <div class="relative z-10 min-h-screen flex items-center justify-center px-4 py-12">
-    <div class="bg-black bg-opacity-50 backdrop-blur-md border border-gray-700 shadow-xl rounded-3xl p-8 w-full max-w-6xl">
-      <h2 class="text-3xl font-bold text-center mb-6 text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-500 to-white">Endereços de {{ $usuario->nome_completo }}</h2>
+  <!-- Conteúdo Principal -->
+  <div class="relative z-10 pt-28 pb-12 px-4 min-h-screen flex justify-center">
+    <div class="bg-black/30 border border-gray-700 shadow-xl rounded-3xl p-8 w-full max-w-6xl">
+      <h2 class="text-3xl font-bold text-center mb-6 text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-500 to-white">
+        Endereços de {{ $usuario->nome_completo }}
+      </h2>
 
       @if (session('success'))
         <div class="mb-4 text-green-400 font-semibold text-center">
@@ -110,7 +121,7 @@
             </thead>
             <tbody class="bg-gray-900 bg-opacity-50 border-t border-gray-700">
               @foreach ($usuario->enderecos as $endereco)
-                <tr class="hover:bg-gray-800">
+                <tr class="hover:bg-gray-800 transition duration-200">
                   <td class="px-4 py-2">{{ $endereco->cidade }}</td>
                   <td class="px-4 py-2">{{ $endereco->cep }}</td>
                   <td class="px-4 py-2">{{ $endereco->bairro }}</td>
@@ -118,11 +129,14 @@
                   <td class="px-4 py-2">{{ $endereco->rua }}</td>
                   <td class="px-4 py-2">{{ $endereco->numero }}</td>
                   <td class="px-4 py-2 space-x-2">
-                    <a href="{{ route('endereco.edit', ['id' => $usuario->id_usuarios, 'endereco_id' => $endereco->id_endereco]) }}" class="text-blue-400 hover:text-blue-600 font-semibold">Editar</a>
-                    <form action="{{ route('endereco.destroy', ['id' => $usuario->id_usuarios, 'endereco_id' => $endereco->id_endereco]) }}" method="POST" class="inline">
+                    <a href="{{ route('endereco.edit', ['id' => $usuario->id_usuarios, 'endereco_id' => $endereco->id_endereco]) }}"
+                       class="text-blue-400 hover:text-blue-600 font-semibold">Editar</a>
+                    <form action="{{ route('endereco.destroy', ['id' => $usuario->id_usuarios, 'endereco_id' => $endereco->id_endereco]) }}"
+                          method="POST" class="inline">
                       @csrf
                       @method('DELETE')
-                      <button type="submit" class="text-red-400 hover:text-red-600 font-semibold ml-2">Excluir</button>
+                      <button type="submit"
+                              class="text-red-400 hover:text-red-600 font-semibold ml-2">Excluir</button>
                     </form>
                   </td>
                 </tr>

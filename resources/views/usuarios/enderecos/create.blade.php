@@ -1,158 +1,212 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SURA - Endereço</title>
+  <title>Hydrax - Cadastro Endereço</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
   <style>
     @keyframes moveBackground {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
+      0% {
+        background-position: 0% 50%;
+      }
 
-    @keyframes particleMovement {
-      0% { transform: translate(-50%, -50%) scale(0.8); }
-      50% { transform: translate(50%, 50%) scale(1.5); }
-      100% { transform: translate(-50%, -50%) scale(0.8); }
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
     }
 
     body {
-      background: linear-gradient(135deg, #0d0d0d, #1a0033, #000c40);
-      animation: moveBackground 20s linear infinite;
-      overflow: hidden;
-      margin: 0;
-      padding: 0;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-family: 'Inter', sans-serif;
-      color: white;
+      background: linear-gradient(45deg, rgb(23, 2, 28), rgb(28, 5, 53), #000000);
+      background-size: 400% 400%;
+      animation: moveBackground 15s ease infinite;
+      position: relative;
+      font-family: 'Poppins', sans-serif;
     }
 
-    .particle {
+    body::before {
+      content: "";
       position: absolute;
-      border-radius: 50%;
-      background: rgba(100, 100, 255, 0.1);
-      box-shadow: 0 0 15px rgba(100, 100, 255, 0.2);
-      opacity: 0.7;
-      pointer-events: none;
-      animation: particleMovement 5s ease-in-out infinite;
+      inset: 0;
+      z-index: -2;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent 60%);
     }
 
-    .particle1 { width: 80px; height: 80px; top: 10%; left: 25%; animation-duration: 6s; }
-    .particle2 { width: 100px; height: 100px; top: 50%; left: 60%; animation-duration: 7s; }
-    .particle3 { width: 60px; height: 60px; top: 70%; left: 30%; animation-duration: 8s; }
-    .particle4 { width: 120px; height: 120px; top: 20%; left: 75%; animation-duration: 9s; }
-    .particle5 { width: 70px; height: 70px; top: 40%; left: 10%; animation-duration: 10s; }
-
-    .line {
+    #particles-js {
       position: absolute;
-      background-color: rgba(138, 43, 226, 0.1);
-      height: 2px;
-      animation: lineMovement 10s infinite ease-in-out;
-      box-shadow: 0 0 8px rgba(138, 43, 226, 0.4);
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
     }
-
-    @keyframes lineMovement {
-      0% { transform: translateX(-100%); }
-      100% { transform: translateX(100%); }
-    }
-
-    .line1 { width: 30vw; top: 20%; left: 5%; animation-duration: 12s; }
-    .line2 { width: 40vw; top: 50%; left: 10%; animation-duration: 15s; }
-    .line3 { width: 50vw; top: 70%; left: 15%; animation-duration: 18s; }
   </style>
 </head>
-<body>
-  <!-- Partículas e Linhas -->
-  <div class="particle particle1"></div>
-  <div class="particle particle2"></div>
-  <div class="particle particle3"></div>
-  <div class="particle particle4"></div>
-  <div class="particle particle5"></div>
 
-  <div class="line line1"></div>
-  <div class="line line2"></div>
-  <div class="line line3"></div>
-
-  <!-- Botão de Voltar -->
-  <a href="{{ route('dashboard') }}"
-    class="fixed top-4 left-4 z-50 w-9 h-9 flex items-center justify-center rounded-full bg-indigo-700 hover:bg-purple-600 transition-colors duration-300 shadow-md">
+<body class="min-h-screen overflow-hidden">
+  
+  <!-- Botão voltar -->
+  <a href="{{route('dashboard')}}"
+    class="fixed top-4 left-4 z-50 w-9 h-9 flex items-center justify-center rounded-full bg-indigo-600 hover:bg-purple-700 transition-colors duration-300 shadow-[0_4px_20px_rgba(102,51,153,0.5)]"
+    title="Voltar para o Dashboard">
     <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
       <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
     </svg>
   </a>
 
-  <!-- Formulário -->
-  <main class="flex flex-col items-center justify-center w-full h-full">
-    <section class="bg-black bg-opacity-50 backdrop-blur-md p-8 rounded-3xl shadow-2xl w-full max-w-lg text-white border border-gray-800">
-      <h1 class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-white bg-[length:200%_200%] bg-left hover:bg-right transition-all duration-700 ease-in-out drop-shadow-xl mb-6 text-center">
+  <!-- Partículas -->
+  <div id="particles-js"></div>
+
+  <main class="flex items-center justify-center min-h-screen px-4">
+    <div class="w-full max-w-2xl bg-black/30 border border-purple-700/25 rounded-2xl shadow-[0_0_30px_rgba(139,92,246,0.05)] p-8">
+
+      <h1
+        class="text-3xl font-semibold text-center text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-500 to-indigo-200 mb-6">
         Cadastro de Endereço
       </h1>
 
-      <!-- MENSAGENS -->
-      @if (session('success'))
-          <div class="bg-green-600 text-white p-4 mb-6 rounded shadow-md text-center font-semibold">
-              {{ session('success') }}
-          </div>
+      <!-- Mensagens de erro ou sucesso -->
+      @if ($errors->any())
+        <div class="bg-red-500 text-white p-4 mb-6 rounded">
+          <ul>
+            @foreach ($errors->all() as $error)
+              <li>{{ $error }}</li>
+            @endforeach
+          </ul>
+        </div>
       @endif
 
-      @if ($errors->has('limite'))
-          <div class="bg-yellow-500 text-white p-4 mb-6 rounded shadow-md text-center font-semibold">
-              ⚠️ {{ $errors->first('limite') }}
+      <!-- Formulário -->
+      <form action="{{ route('endereco.store', ['id' => $usuario->id_usuarios]) }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+
+       @csrf
+      <input type="hidden" name="id_usuario" value="{{ $usuario->id }}">
+        <div class="grid grid-cols-2 gap-4">
+          <!-- Cidade -->
+          <div>
+            <label for="cidade"
+              class="block text-sm font-medium text-gray-300 drop-shadow-[0_0_2px_rgba(139,92,246,0.4)]">Cidade</label>
+            <input id="cidade" type="text" name="cidade" value="{{ old('cidade') }}" required minlength="3" maxlength="255"
+              class="w-full mt-1 px-4 py-2 bg-gray-900/40 text-white/30 focus:text-white hover:text-white border border-indigo-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-indigo-900/40" />
           </div>
-      @endif
 
-      @if ($errors->any() && !$errors->has('limite'))
-          <div class="bg-red-600 text-white p-4 mb-6 rounded shadow-md">
-              <ul class="list-disc list-inside">
-                  @foreach ($errors->all() as $error)
-                      <li>{{ $error }}</li>
-                  @endforeach
-              </ul>
+          <!-- CEP -->
+          <div>
+            <label for="cep"
+              class="block text-sm font-medium text-gray-300 drop-shadow-[0_0_2px_rgba(139,92,246,0.4)]">CEP</label>
+            <input id="cep" type="cep" name="cep" value="{{ old('cep') }}" required minlength="8" required maxlength="8"
+              class="w-full mt-1 px-4 py-2 bg-gray-900/40 text-white/30 hover:text-white focus:text-white border border-indigo-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-indigo-900/40" />
           </div>
-      @endif
 
-      
-        <form action="{{ route('endereco.store', ['id' => $usuario->id_usuarios]) }}" method="POST">
 
-        @csrf
-        <input type="hidden" name="id_usuario" value="{{ $usuario->id }}">
+          <!-- Bairro -->
+          <div>
+            <label for="bairro"
+              class="block text-sm font-medium text-gray-300 drop-shadow-[0_0_2px_rgba(139,92,246,0.4)]">Bairro</label>
+            <input id="bairro" type="text" name="bairro" value="{{ old('bairro') }}" required maxlength="15"
+              class="w-full mt-1 px-4 py-2 bg-gray-900/40 text-white/30 hover:text-white focus:text-white border border-indigo-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-indigo-900/40" />
+          </div>
 
-        <input type="text" name="cidade" placeholder="Cidade..." required
-          class="w-full h-10 px-4 rounded-md border border-gray-700 bg-gray-800 text-white placeholder-gray-400 text-sm">
+          <!-- Estado -->
+          <div>
+            <label for="estado"
+              class="block text-sm font-medium text-gray-300 drop-shadow-[0_0_2px_rgba(139,92,246,0.4)]">Estado (UF)</label>
+            <input id="estado" type="text" name="estado" value="{{ old('estado') }}" required minlength="2" maxlength="2"
+              class="w-full mt-1 px-4 py-2 bg-gray-900/40 text-white/30 hover:text-white focus:text-white border border-indigo-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-indigo-900/40" />
+          </div>
 
-        <input type="text" name="cep" placeholder="CEP..." required maxlength="8" minlength="8"
-          class="w-full h-10 px-4 rounded-md border border-gray-700 bg-gray-800 text-white placeholder-gray-400 text-sm">
+          <!-- Rua -->
+          <div>
+            <label for="rua"
+              class="block text-sm font-medium text-gray-300 drop-shadow-[0_0_2px_rgba(139,92,246,0.4)]">Rua</label>
+            <input id="rua" type="text" name="rua" value="{{ old('rua') }}" required minlength="11" maxlength="11"
+              class="w-full mt-1 px-4 py-2 bg-gray-900/40 text-white/30 hover:text-white focus:text-white border border-indigo-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-indigo-900/40" />
+          </div>
 
-        <input type="text" name="bairro" placeholder="Bairro..." required maxlength="50" minlength="2"
-          class="w-full h-10 px-4 rounded-md border border-gray-700 bg-gray-800 text-white placeholder-gray-400 text-sm">
+          <!-- Número -->
+          <div>
+            <label for="numero"
+              class="block text-sm font-medium text-gray-300 drop-shadow-[0_0_2px_rgba(139,92,246,0.4)]">Número</label>
+            <input id="numero" type="text" name="numero" value="{{ old('numero') }}" maxlength="255"
+              class="w-full mt-1 px-4 py-2 bg-gray-900/40 text-white/30 hover:text-white focus:text-white border border-indigo-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-indigo-900/40" />
+          </div>
 
-        <input type="text" name="estado" placeholder="Estado (UF)" maxlength="2" required maxlength="2" minlength="2"
-          class="w-full h-10 px-4 rounded-md border border-gray-700 bg-gray-800 text-white placeholder-gray-400 text-sm">
-
-        <input type="text" name="rua" placeholder="Rua..." required maxlength="50" minlength="2"
-          class="w-full h-10 px-4 rounded-md border border-gray-700 bg-gray-800 text-white placeholder-gray-400 text-sm">
-
-        <input type="text" name="numero" placeholder="Número..." required maxlength="12" minlength="1"
-          class="w-full h-10 px-4 rounded-md border border-gray-700 bg-gray-800 text-white placeholder-gray-400 text-sm">
-
+        <!-- Botão de envio -->
         <button type="submit"
-          class="relative inline-flex items-center justify-start inline-block px-5 py-3 overflow-hidden font-bold rounded-full group">
-          <span class="w-32 h-32 rotate-45 translate-x-12 -translate-y-2 absolute left-0 top-0 bg-white opacity-[3%]"></span>
-          <span class="absolute top-0 left-0 w-48 h-48 -mt-1 transition-all duration-500 ease-in-out rotate-45 -translate-x-56 -translate-y-24 bg-white opacity-100 group-hover:-translate-x-8"></span>
-          <span class="relative w-full text-left text-white transition-colors duration-200 ease-in-out group-hover:text-gray-900">Salvar</span>
-          <span class="absolute inset-0 border-2 border-white rounded-full"></span>
+          class="relative w-full mt-4 py-3 inline-flex items-center justify-center text-lg font-medium bg-black/20 text-indigo-600 border-2 border-indigo-600 rounded-full hover:text-white group overflow-hidden">
+          <span class="absolute left-0 block w-full h-0 transition-all bg-indigo-600 opacity-100 group-hover:h-full top-1/2 group-hover:top-0 duration-400 ease"></span>
+          <span class="absolute right-0 flex items-center justify-start w-10 h-10 duration-300 transform translate-x-full group-hover:translate-x-0 ease">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+            </svg>
+          </span>
+          <span class="relative">Cadastrar</span>
         </button>
       </form>
-    </section>
-
-    <footer class="mt-12 text-sm text-gray-500 transition-all duration-700 ease-out hover:text-indigo-600 text-center">
-      &copy; 2025 <strong>SURA</strong> - Sistema Unificado de Registro e Administração
-    </footer>
+    </div>
+    <footer class="mt-6 flex justify-center text-xs text-gray-500">
+  <p class="text-center">&copy; 2025 <strong>Hydrax</strong>. Todos os direitos reservados.</p>
+</footer>
   </main>
+
+  <script>
+    particlesJS("particles-js", {
+      particles: {
+        number: { value: 60, density: { enable: true, value_area: 800 } },
+        color: { value: "#000" },
+        shape: { type: "polygon", polygon: { nb_sides: 5 } },
+        opacity: { value: 0.5, random: false },
+        size: {
+          value: 4,
+          random: true,
+          anim: { enable: true, speed: 5, size_min: 0.3, sync: false }
+        },
+        line_linked: { enable: false },
+        move: {
+          enable: true,
+          speed: 1.5,
+          direction: "bottom",
+          random: false,
+          straight: false,
+          out_mode: "out",
+          bounce: false
+        }
+      },
+      interactivity: {
+        detect_on: "canvas",
+        events: {
+          onhover: { enable: true, mode: "repulse" },
+          onclick: { enable: true, mode: "repulse" },
+          resize: true
+        },
+        modes: { repulse: { distance: 100, duration: 0.4 } }
+      },
+      retina_detect: true
+    });
+  </script>
+    <!-- Script -->
+    <script>
+    function togglepassword(inputId) {
+      const input = document.getElementById(inputId);
+      const icon = input.nextElementSibling.querySelector("img");
+
+      if (input.type === "password") {
+        input.type = "text";
+        icon.src = "/imagens/Post Jif 2025 (2).png";
+        icon.alt = "Ocultar senha";
+      } else {
+        input.type = "password";
+        icon.src = "/imagens/Post Jif 2025.png";
+        icon.alt = "Mostrar senha";
+      }
+    }
+  </script>
 </body>
+
 </html>
