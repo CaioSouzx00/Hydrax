@@ -102,7 +102,7 @@
 
       <!-- Links empilhados -->
       <div class="flex flex-col space-y-4">
-        <a href="#" class="w-full relative inline-flex items-center justify-start px-6 py-3 overflow-hidden font-medium transition-all bg-white rounded hover:bg-white group shadow-[0_4px_20px_rgba(128,0,255,0.5)]">
+        <a href="{{ route('fornecedores.pendentes') }}" class="w-full relative inline-flex items-center justify-start px-6 py-3 overflow-hidden font-medium transition-all bg-white rounded hover:bg-white group shadow-[0_4px_20px_rgba(128,0,255,0.5)]">
           <span class="w-48 h-48 rounded rotate-[-40deg] bg-purple-600 absolute bottom-0 left-0 -translate-x-full ease-out duration-500 transition-all translate-y-full mb-9 ml-9 group-hover:ml-0 group-hover:mb-32 group-hover:translate-x-0"></span>
           <span class="relative w-full text-left text-purple-600 transition-colors duration-300 ease-in-out group-hover:text-white">Pendentes</span>
         </a>
@@ -183,49 +183,71 @@
 <div id="particles-js"></div>
 
 <script>
-  // Inicializa partículas
-  particlesJS.load('particles-js', '/particlesjs-config.json', function() {
-    console.log('particles.js config loaded');
-  });
+ const ctx = document.getElementById('userChart').getContext('2d');
+let userChart;
 
-  // Dados do gráfico
-  const ctx = document.getElementById('userChart').getContext('2d');
-  const userChart = new Chart(ctx, {
+function montarGrafico(labels, usuarios, fornecedores) {
+  if (userChart) {
+    userChart.destroy();
+  }
+
+  userChart = new Chart(ctx, {
     type: 'line',
     data: {
-      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-      datasets: [{
-        label: 'Usuários',
-        data: [65, 59, 80, 81, 56, 55, 40],
-        backgroundColor: 'rgba(122, 72, 255, 0.2)',
-        borderColor: 'rgba(122, 72, 255, 1)',
-        borderWidth: 2,
-        fill: true,
-        tension: 0.4,
-        pointRadius: 4,
-        pointHoverRadius: 6,
-        pointBackgroundColor: 'rgba(122, 72, 255, 1)',
-      }]
+      labels: labels.map(m => {
+        const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+        return meses[m - 1];
+      }),
+      datasets: [
+        {
+          label: 'Usuários',
+          data: usuarios,
+          backgroundColor: 'rgba(122, 72, 255, 0.2)',
+          borderColor: 'rgba(122, 72, 255, 1)',
+          borderWidth: 2,
+          fill: true,
+          tension: 0.4,
+          pointRadius: 4,
+          pointHoverRadius: 6,
+          pointBackgroundColor: 'rgba(122, 72, 255, 1)',
+        },
+        {
+          label: 'Fornecedores',
+          data: fornecedores,
+          backgroundColor: 'rgba(72, 187, 255, 0.2)',
+          borderColor: 'rgba(72, 187, 255, 1)',
+          borderWidth: 2,
+          fill: true,
+          tension: 0.4,
+          pointRadius: 4,
+          pointHoverRadius: 6,
+          pointBackgroundColor: 'rgba(72, 187, 255, 1)',
+        }
+      ]
     },
     options: {
       responsive: true,
       scales: {
-        y: {
-          beginAtZero: true,
-          ticks: { color: '#ddd' },
-          grid: { color: '#444' }
-        },
-        x: {
-          ticks: { color: '#ddd' },
-          grid: { color: '#444' }
-        }
+        y: { beginAtZero: true, ticks: { color: '#ddd' }, grid: { color: '#444' } },
+        x: { ticks: { color: '#ddd' }, grid: { color: '#444' } }
       },
-      plugins: {
-        legend: { labels: { color: '#ddd' } }
-      }
+      plugins: { legend: { labels: { color: '#ddd' } } }
     }
   });
+}
+
+// Pega dados do backend (Laravel) via AJAX
+fetch('{{ route('dashboard.dadosGraficos') }}')
+  .then(response => response.json())
+  .then(data => {
+    montarGrafico(data.labels, data.usuarios, data.fornecedores);
+  })
+  .catch(error => {
+    console.error('Erro ao carregar dados do gráfico:', error);
+  });
+
 </script>
+
 
 </body>
 </html>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 use App\Models\Administrador;
 
 class AdminController extends Controller
@@ -37,25 +38,6 @@ class AdminController extends Controller
     {
         return view('admin.login');
     }
-
-    // Realiza o login 
-    /*public function login(Request $request)
-    {
-        $credentials = $request->validate([
-            'nome_usuario' => 'required',
-            'password' => 'required',
-        ]);
-
-        if (Auth::guard('admin')->attempt($credentials)) {
-            $request->session()->regenerate();
-            return redirect()->route('admin.dashboard');
-        }
-
-        return back()->withErrors([
-            'nome_usuario' => 'Usuário ou senha inválidos.',
-        ])->withInput();
-    }*/
-
 
 public function login(Request $request)
 {
@@ -92,4 +74,45 @@ public function login(Request $request)
 
         return view('admin.dashboard', compact('admin'));
     }
+
+      public function dadosGraficos()
+{
+    $anoAtual = date('Y');
+
+    // Usuários por mês no ano atual e created_at não nulo
+    $usuariosPorMes = DB::table('usuarios')
+        ->select(DB::raw('MONTH(created_at) as mes'), DB::raw('count(*) as total'))
+        ->whereNotNull('created_at')
+        ->whereYear('created_at', $anoAtual)
+        ->groupBy(DB::raw('MONTH(created_at)'))
+        ->orderBy(DB::raw('MONTH(created_at)'))
+        ->pluck('total', 'mes');
+
+    // Fornecedores por mês no ano atual e created_at não nulo
+    $fornecedoresPorMes = DB::table('fornecedores')
+        ->select(DB::raw('MONTH(created_at) as mes'), DB::raw('count(*) as total'))
+        ->whereNotNull('created_at')
+        ->whereYear('created_at', $anoAtual)
+        ->groupBy(DB::raw('MONTH(created_at)'))
+        ->orderBy(DB::raw('MONTH(created_at)'))
+        ->pluck('total', 'mes');
+
+    $labels = range(1, 12);
+
+    // Preencher meses sem dados com zero
+    $usuarios = array_map(function ($mes) use ($usuariosPorMes) {
+        return $usuariosPorMes->get($mes, 0);
+    }, $labels);
+
+    $fornecedores = array_map(function ($mes) use ($fornecedoresPorMes) {
+        return $fornecedoresPorMes->get($mes, 0);
+    }, $labels);
+
+    return response()->json([
+        'labels' => $labels,
+        'usuarios' => $usuarios,
+        'fornecedores' => $fornecedores,
+    ]);
+}
+
 }

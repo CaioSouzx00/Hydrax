@@ -7,8 +7,8 @@ use App\Http\Controllers\EnderecoUsuarioController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\PasswordResetController;
 use \App\Http\Middleware\UsuarioMiddleware;
-//use \App\Http\Middleware\AdministradorMiddleware;
 use App\Http\Middleware\AdministradorMiddleware;
+use App\Http\Controllers\FornecedorController;
 
 
 /*
@@ -77,6 +77,11 @@ Route::middleware([UsuarioMiddleware::class])->group(function () {
 Route::middleware([AdministradorMiddleware::class])->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     Route::post('/admin/logout', [AdminController::class, 'logout'])->name('admin.logout');
+    Route::get('/dashboard/dados-graficos', [AdminController::class, 'dadosGraficos'])->name('dashboard.dadosGraficos');
+    Route::get('/fornecedores/pendentes', [FornecedorController::class, 'listarPendentes'])->name('fornecedores.pendentes');
+    Route::post('/fornecedores/{id}/aprovar', [FornecedorController::class, 'aprovar'])->name('fornecedores.aprovar');
+    Route::post('/fornecedores/{id}/rejeitar', [FornecedorController::class, 'rejeitar'])->name('fornecedores.rejeitar');
+
 });
 
 /*
