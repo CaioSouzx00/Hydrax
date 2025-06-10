@@ -7,7 +7,9 @@ use App\Http\Controllers\EnderecoUsuarioController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\PasswordResetController;
 use \App\Http\Middleware\UsuarioMiddleware;
-use \App\Http\Middleware\AdministradorMiddleware;
+//use \App\Http\Middleware\AdministradorMiddleware;
+use App\Http\Middleware\AdministradorMiddleware;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -26,7 +28,7 @@ Route::post('/usuarios', [UsuarioController::class, 'store'])->name('usuarios.st
 
 // Login - Admin
 Route::get('/admin/login', [AdminController::class, 'showLoginForm'])->name('admin.login');
-Route::post('/admin/login', [AdminController::class, 'login'])->name('admin.login.submit');
+Route::post('/admin/login', [AdminController::class, 'login']);
 
 // Login - Fornecedores
 Route::get('/fonecedores/login', [AdminController::class, 'showLoginForm'])->name('fonecedores.login');
@@ -73,7 +75,6 @@ Route::middleware([UsuarioMiddleware::class])->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::middleware([AdministradorMiddleware::class])->group(function () {
-
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     Route::post('/admin/logout', [AdminController::class, 'logout'])->name('admin.logout');
 });

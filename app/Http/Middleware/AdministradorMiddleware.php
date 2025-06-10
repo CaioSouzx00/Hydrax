@@ -10,9 +10,9 @@ class AdministradorMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
+        // Verifica se o admin está autenticado no guard 'admin'
         if (!Auth::guard('admin')->check()) {
-            // Redireciona para a página de login do admin com mensagem
-            return redirect()->route('admin.login')->withErrors(['acesso' => 'Faça login para acessar o sistema.']);
+            return redirect()->route('admin.login')->withErrors(['acesso' => 'Faça login para acessar o painel.']);
         }
 
         return $next($request);

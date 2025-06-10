@@ -62,16 +62,15 @@ public function login(Request $request)
     $credentials = $request->only('nome_usuario', 'password');
 
     if (Auth::guard('admin')->attempt($credentials)) {
+        $request->session()->regenerate(); // <- ESSENCIAL
         return redirect()->route('admin.dashboard');
     }
 
-    // Falha no login
     return back()->withErrors([
         'nome_usuario' => 'Credenciais inválidas.',
     ])->withInput();
 }
 
-    // Faz logout
     public function logout(Request $request)
     {
         Auth::guard('admin')->logout();
