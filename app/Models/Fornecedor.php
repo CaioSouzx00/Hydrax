@@ -2,19 +2,34 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
-class Fornecedor extends Model
+class Fornecedor extends Authenticatable
 {
+    use Notifiable;
+
     protected $table = 'fornecedores';
+
+    protected $primaryKey = 'id_fornecedores';
+
+    public $incrementing = true;
+
+    protected $keyType = 'int';
 
     protected $fillable = [
         'nome_empresa',
         'cnpj',
         'email',
         'telefone',
-        'senha',
+        'password',
+        'status',
     ];
 
-    public $timestamps = false; // Se a tabela não tiver created_at/updated_at
+    protected $hidden = ['password'];
+
+    public function setSenhaAttribute($value)
+    {
+        $this->attributes['password'] = bcrypt($value);
+    }
 }

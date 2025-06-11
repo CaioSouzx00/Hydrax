@@ -52,19 +52,23 @@
         <p><strong>Telefone:</strong> {{ $fornecedor->telefone }}</p>
 
         <div class="mt-4 flex gap-4">
-          <form action="{{ route('fornecedor.aprovar', $fornecedor->id) }}" method="POST">
-            @csrf
-            <button class="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg transition text-white">
-              Aprovar
-            </button>
-          </form>
+       @if ($fornecedor->id_fornecedores)
+  <form method="POST" action="{{ route('fornecedores.aprovar', ['id' => $fornecedor->id_fornecedores]) }}">
+    @csrf
+    <button type="submit">Aprovar</button>
+  </form>
 
-          <form action="{{ route('fornecedor.rejeitar', $fornecedor->id) }}" method="POST">
-            @csrf
-            <button class="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg transition text-white">
-              Rejeitar
-            </button>
-          </form>
+  <form method="POST" action="{{ route('fornecedores.rejeitar', ['id' => $fornecedor->id_fornecedores]) }}">
+    @csrf
+    <button class="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg transition text-white">
+      Rejeitar
+    </button>
+  </form>
+@else
+  <p class="text-red-400">Erro: Fornecedor sem ID válido</p>
+@endif
+
+
         </div>
       </div>
     @empty

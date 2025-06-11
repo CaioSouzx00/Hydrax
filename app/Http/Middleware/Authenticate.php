@@ -22,8 +22,8 @@ class Authenticate extends Middleware
             }
 
             // Verifica se está acessando rotas do fornecedor
-            if ($request->is('fornecedor') || $request->is('fornecedor/*')) {
-                return route('fornecedor.login');
+            if ($request->is('fornecedores') || $request->is('fornecedores/*')) {
+                return route('fornecedores.login');
             }
 
             // Qualquer outro caso: assume que é um usuário final

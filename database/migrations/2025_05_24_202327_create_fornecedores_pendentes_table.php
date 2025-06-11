@@ -13,7 +13,7 @@ return new class extends Migration {
             $table->string('cnpj')->unique();
             $table->string('email')->unique();
             $table->string('telefone');
-            $table->string('senha');
+            $table->string('password');
             $table->enum('status', ['PENDENTE', 'REJEITADO'])->default('PENDENTE');
             $table->timestamps();
         });

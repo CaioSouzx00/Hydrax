@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->string('telefone');
             $table->string('email')->unique();
             $table->enum('status', ['ATIVO', 'INATIVO'])->default('ATIVO');
-            $table->string('senha');
+            $table->string('password');
             $table->timestamps();
         });
     }

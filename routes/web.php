@@ -92,9 +92,8 @@ Route::middleware([AdministradorMiddleware::class])->group(function () {
 |--------------------------------------------------------------------------
 | (Opcional) Rotas Protegidas - Fornecedor (middleware: fornecedor)
 |--------------------------------------------------------------------------
-| Adicione aqui as rotas dos fornecedores, se for o caso.
-| Exemplo:
-| Route::middleware(['fornecedor'])->group(function () {
-|     Route::get('/fornecedor/dashboard', ...);
-| });
 */
+Route::middleware([FornecedorMiddleware::class])->group(function () {
+    Route::get('/fornecedores/dashboard', [FornecedorController::class, 'dashboard'])->name('fornecedores.dashboard');
+    Route::post('/fornecedores/logout', [FornecedorController::class, 'logout'])->name('fornecedores.logout');
+});

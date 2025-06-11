@@ -39,12 +39,12 @@
 
         @if (!Auth::guard('usuarios')->check())
           <!-- Links para visitante -->
-          <a href="{{ route('usuarios.create') }}" class="relative rounded-2xl px-5 py-2.5 overflow-hidden group bg-indigo-500 hover:bg-gradient-to-r hover:from-indigo-500 hover:to-indigo-400 hover:ring-2 hover:ring-offset-2 hover:ring-indigo-400 transition-all ease-out duration-300">
+          <a href="#" class="relative rounded-2xl px-5 py-2.5 overflow-hidden group bg-indigo-500 hover:bg-gradient-to-r hover:from-indigo-500 hover:to-indigo-400 hover:ring-2 hover:ring-offset-2 hover:ring-indigo-400 transition-all ease-out duration-300">
             <span class="absolute right-0 w-8 h-32 -mt-12 transition-all duration-1000 transform translate-x-12 opacity-10 rotate-12 group-hover:-translate-x-40 ease"></span>
             <span class="relative">Cadastrar</span>
           </a>
 
-          <a href="{{ route('login.form') }}" class="relative inline-flex items-center justify-start px-5 py-2.5 font-bold rounded-2xl group overflow-hidden">
+          <a href="#" class="relative inline-flex items-center justify-start px-5 py-2.5 font-bold rounded-2xl group overflow-hidden">
             <span class="w-32 h-32 rotate-45 translate-x-12 -translate-y-2 absolute left-0 top-0 bg-white opacity-[3%]"></span>
             <span class="absolute top-0 left-0 w-48 h-48 -mt-1 transition-all duration-500 ease-in-out rotate-45 -translate-x-56 -translate-y-24 bg-white opacity-100 group-hover:-translate-x-8"></span>
             <span class="relative w-full text-left text-white group-hover:text-gray-900">Entrar</span>
@@ -69,7 +69,7 @@
 
             <!-- Menu logout -->
             <div id="logout-menu" class="absolute right-0 hidden bg-gray-900 border border-indigo-600 rounded-md shadow-lg mt-2 py-2 min-w-[140px] z-50">
-              <form id="logoutForm" method="POST" action="{{ route('logout') }}">
+              <form id="logoutForm" method="POST" action="#">
                 @csrf
                 <button type="submit" class="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-white hover:bg-indigo-600/30 transition-colors">
                   <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -93,8 +93,8 @@
             </button>
 
             <div id="enderecoDropdown" class="absolute hidden bg-gray-900 border border-indigo-600 rounded-md shadow-lg mt-2 py-2 min-w-[180px] z-50">
-              <a href="{{ route('endereco.create', $id) }}" class="block px-4 py-2 text-sm text-white hover:bg-indigo-600/30">Cadastrar Endereço</a>
-              <a href="{{ route('usuario.enderecos', $id) }}" class="block px-4 py-2 text-sm text-white hover:bg-indigo-600/30">Listar Endereços</a>
+              <a href="#" class="block px-4 py-2 text-sm text-white hover:bg-indigo-600/30">Cadastrar Endereço</a>
+              <a href="#" class="block px-4 py-2 text-sm text-white hover:bg-indigo-600/30">Listar Endereços</a>
             </div>
           </div>
 
@@ -109,29 +109,6 @@
       </nav>
     </div>
   </header>
-
-  <!-- Sidebar Mobile -->
-  @if (!Auth::guard('usuarios')->check())
-    <input type="checkbox" id="menu-toggle" class="hidden peer" />
-    <label for="menu-toggle" class="fixed top-4 left-5 z-50 text-white text-2xl p-2 cursor-pointer peer-checked:hidden">☰</label>
-    <aside class="fixed top-0 left-0 h-full w-64 bg-black/80 backdrop-blur-md text-white z-50 transform -translate-x-full peer-checked:translate-x-0 transition-transform duration-300 ease-in-out">
-      <label for="menu-toggle" class="absolute top-4 right-4 text-white text-2xl cursor-pointer">✕</label>
-      <div class="mt-16 px-4 py-6">
-        <div class="flex justify-center mb-6">
-          <img src="/imagens/Post Jif 2025 (8).png" alt="Hydrax Logo" class="h-40 opacity-80" />
-        </div>
-        <hr class="border-gray-700 opacity-50 mb-4" />
-        <nav class="space-y-3 text-sm">
-          <a href="{{ route('admin.login') }}" class="block px-4 py-2 rounded-md bg-gray-800 hover:bg-gray-700 transition">Administrador</a>
-          <a href="{{ route('fornecedores.login') }}" class="block px-4 py-2 rounded-md bg-gray-800 hover:bg-gray-700 transition">Fornecedor</a>
-        </nav>
-        <hr class="border-gray-700 opacity-50 mt-6" />
-        <p class="text-xs text-center text-gray-500 mt-6">
-          &copy; 2025 <strong class="text-indigo-400">Hydrax</strong>
-        </p>
-      </div>
-    </aside>
-  @endif
 
   <!-- Conteúdo Principal -->
   <main class="pt-28 max-w-7xl mx-auto px-6">

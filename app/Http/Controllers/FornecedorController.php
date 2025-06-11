@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\FornecedorPendente;
-//use App\Models\Fornecedor;
+use App\Models\Fornecedor;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class FornecedorController extends Controller
 {
@@ -24,24 +25,50 @@ public function store(Request $request)
 {
     $validated = $request->validate([
         'nome_empresa' => 'required|string|max:255',
-        'cnpj' => 'required|string|max:20|unique:fornecedores_pendentes,cnpj',
+        'cnpj' => 'required|string|min:14|unique:fornecedores_pendentes,cnpj',
         'email' => 'required|email|unique:fornecedores_pendentes,email',
         'telefone' => 'required|string|max:20',
-        'senha' => 'required|string|min:6|confirmed',
+        'password' => 'required|string|min:6|confirmed',
     ]);
 
     FornecedorPendente::create([
-        'nome_empresa' => $validated['nome_empresa'],
+        'nome_empresa' => $validated['nome_empresa'], 
         'cnpj' => $validated['cnpj'],
         'email' => $validated['email'],
         'telefone' => $validated['telefone'],
-        'senha' => $validated['senha'], // passará pelo mutator
+        'password' => $validated['password'],
         'status' => 'pendente',
     ]);
 
     return redirect()->route('fornecedores.login')->with('success', 'Cadastro enviado para análise.');
 }
 
+public function login(Request $request)
+{
+    $credentials = [
+    'email' => $request->input('email'),
+    'password' => $request->input('password'),
+];
+    // Usar Auth::guard com o nome correto da guard: 'fornecedores'
+    if (Auth::guard('fornecedores')->attempt($credentials)) {
+        $request->session()->regenerate(); // ESSENCIAL para proteção CSRF
+        return redirect()->route('fornecedores.dashboard');
+    }
+
+    return back()->withErrors([
+        'email' => 'Credenciais inválidas.',
+    ])->withInput();
+}
+
+public function logout(Request $request)
+{
+    Auth::guard('fornecedores')->logout();
+
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+
+    return redirect()->route('fornecedores.login')->with('success', 'Você saiu do sistema.');
+}
 
 public function listarPendentes()
 {
@@ -58,7 +85,8 @@ public function aprovar($id)
         'cnpj' => $pendente->cnpj,
         'email' => $pendente->email,
         'telefone' => $pendente->telefone,
-        'senha' => $pendente->senha,
+        'password' => Hash::make($pendente->password),
+
     ]);
 
     $pendente->delete();
@@ -73,5 +101,13 @@ public function rejeitar($id)
 
     return redirect()->route('fornecedores.pendentes')->with('success', 'Fornecedor rejeitado!');
 }
+
+public function dashboard()
+{
+    $fornecedor = Auth::guard('fornecedores')->user();
+
+    return view('fornecedores.dashboard', compact('fornecedor'));
+}
+
 
 }

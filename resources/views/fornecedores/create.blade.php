@@ -73,6 +73,17 @@
         </div>
       @endif
 
+      
+@if ($errors->any())
+  <div class="bg-red-500/20 border border-red-500 text-red-200 px-4 py-2 rounded mb-4 text-sm">
+    <ul class="list-disc list-inside">
+      @foreach ($errors->all() as $error)
+        <li>{{ $error }}</li>
+      @endforeach
+    </ul>
+  </div>
+@endif
+
       <!-- Formulário -->
       <form method="POST" action="{{ route('fornecedores.store') }}" class="space-y-4">
         @csrf
@@ -90,7 +101,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="relative">
             <label class="block text-sm font-medium text-gray-300">Telefone</label>
-            <input type="text" name="telefone" required minlength="8" maxlength="9" class="w-full mt-1 px-4 py-2 pr-10 bg-gray-900/40 text-white/30 hover:text-white focus:text-white border border-indigo-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-indigo-900/40"/>
+            <input type="text" name="telefone" required minlength="10" maxlength="15" class="w-full mt-1 px-4 py-2 pr-10 bg-gray-900/40 text-white/30 hover:text-white focus:text-white border border-indigo-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-indigo-900/40"/>
           </div>
           <div class="relative">
             <label class="block text-sm font-medium text-gray-300">CNPJ</label>
@@ -100,9 +111,15 @@
 
         <div class="relative">
           <label class="block text-sm font-medium text-gray-300">Senha</label>
-          <input id="password" type="password" name="senha" required minlength="6" class="w-full mt-1 px-4 py-2 pr-10 bg-gray-900/40 text-white/30 hover:text-white focus:text-white border border-indigo-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-indigo-900/40" />
+          <input id="password" type="password" name="password" required minlength="6" class="w-full mt-1 px-4 py-2 pr-10 bg-gray-900/40 text-white/30 hover:text-white focus:text-white border border-indigo-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-indigo-900/40" />
+          <div class="relative">
+          <label class="block text-sm font-medium text-gray-300">Confirme a Senha</label>
+          <input id="password_confirmation" type="password" name="password_confirmation" required minlength="6" class="w-full mt-1 px-4 py-2 pr-10 bg-gray-900/40 text-white/30 hover:text-white focus:text-white border border-indigo-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-indigo-900/40" />
+          </div>
+
+          
           <!-- Botão de alternar senha -->
-          <button type="button" onclick="toggleSenha('password')" class="absolute right-3 top-[33px] w-6 h-6">
+          <button type="button" onclick="togglepassword('password')" class="absolute right-3 top-[33px] w-6 h-6">
             <img src="/imagens/Post Jif 2025.png" alt="Mostrar senha" id="eye-icon" class="w-6 h-6 opacity-40 hover:opacity-80 transition-opacity">
           </button>
         </div>
@@ -168,7 +185,7 @@
   </script>
       <!-- Script -->
       <script>
-    function toggleSenha(inputId) {
+    function togglepassword(inputId) {
       const input = document.getElementById(inputId);
       const icon = input.nextElementSibling.querySelector("img");
 

@@ -10,11 +10,9 @@ class FornecedorMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
-        if (!Auth::guard('fornecedor')->check()) {
+        if (!Auth::guard('fornecedores')->check()) {
             // Melhor redirecionar para a página de login do fornecedor com mensagem de erro
-            return redirect()->route('fornecedor.login.form')->withErrors(['acesso' => 'Faça login para acessar o sistema.']);
-            // Ou, se quiser usar view, mantenha a resposta da view:
-            // return response()->view('errors.sem-acesso');
+            return redirect()->route('fornecedores.login')->withErrors(['acesso' => 'Faça login para acessar o sistema.']);
         }
 
         return $next($request);
