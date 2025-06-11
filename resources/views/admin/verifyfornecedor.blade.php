@@ -55,7 +55,7 @@
        @if ($fornecedor->id_fornecedores)
   <form method="POST" action="{{ route('fornecedores.aprovar', ['id' => $fornecedor->id_fornecedores]) }}">
     @csrf
-    <button type="submit">Aprovar</button>
+    <button type="submit" class="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg transition text-white">Aprovar</button>
   </form>
 
   <form method="POST" action="{{ route('fornecedores.rejeitar', ['id' => $fornecedor->id_fornecedores]) }}">

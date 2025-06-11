@@ -50,16 +50,16 @@
     
   <!-- Itens do menu -->
   <div class="flex flex-col space-y-4 w-full px-2">
-    <a href="#" class="flex items-center space-x-3 px-2 py-2 hover:bg-purple-600/30 rounded-md transition active">
-      <span class="text-lg">🏠</span>
-      <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">Dashboard</span>
-    </a>
     <a href="#" class="flex items-center space-x-3 px-2 py-2 hover:bg-purple-600/30 rounded-md transition">
-      <span class="text-lg">⚙️</span>
+      <span class="text-lg"></span>
       <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">Ação Futura</span>
     </a>
     <a href="#" class="flex items-center space-x-3 px-2 py-2 hover:bg-purple-600/30 rounded-md transition">
-      <span class="text-lg">📋</span>
+      <span class="text-lg"></span>
+      <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">Ação Futura</span>
+    </a>
+    <a href="#" class="flex items-center space-x-3 px-2 py-2 hover:bg-purple-600/30 rounded-md transition">
+      <span class="text-lg"></span>
       <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">Ação Futura</span>
     </a>
   </div>
@@ -80,7 +80,7 @@
 <!-- Conteúdo principal -->
 <div class="ml-[17.5rem] mt-8 mr-64 h-[calc(7vh-0.5rem)] bg-black/25 backdrop-blur-md border border-white/25 shadow-xl text-white rounded-3xl p-6 flex items-center justify-center"> 
   <div class="h-8 w-[2%] mr-32 bg-black/20 rounded-2xl shadow-inner px-4 flex items-center justify-center">
-    <h1 class="flex items-center justify-left">Hz</h1>
+    <h1 class="flex items-center justify-left">Hx</h1>
   </div>
   <div class="h-8 w-[70%] bg-black/20 rounded-2xl shadow-inner px-4 flex items-center">
     <p class="text-sm md:text-base text-white">
@@ -148,7 +148,7 @@
         <h1>Ações futuras</h1>
         <a href="#_" class="px-5 py-2.5 relative rounded group overflow-hidden font-medium bg-purple-50 text-purple-600 inline-block">
           <span class="absolute top-0 left-0 flex w-full h-0 mb-0 transition-all duration-200 ease-out transform translate-y-0 bg-purple-600 group-hover:h-full opacity-90"></span>
-          <span class="relative group-hover:text-white">Button Text</span>
+          <span class="relative group-hover:text-white">Futuro</span>
         </a>
       </div>
       
@@ -183,6 +183,61 @@
 <div id="particles-js"></div>
 
 <script>
+    // Configuração do Particles.js
+    particlesJS("particles-js", {
+        "particles": {
+            "number": {
+                "value": 100,
+                "density": {
+                    "enable": true,
+                    "value_area": 900
+                }
+            },
+            "color": {
+                "value": "#fff"
+            },
+            "shape": {
+                "type": "circle",
+            },
+            "opacity": {
+                "value": 0.4,
+                "random": true
+            },
+            "size": {
+                "value": 3,
+                "random": true
+            },
+            "line_linked": {
+                "enable": true,
+                "distance": 150,
+                "color": "#fff",
+                "opacity": 0.4,
+                "width": 1
+            },
+            "move": {
+                "enable": true,
+                "speed": 2,
+                "direction": "none",
+                "random": false,
+                "straight": false,
+                "out_mode": "out",
+                "bounce": false
+            }
+        },
+        "interactivity": {
+            "events": {
+                "onhover": {
+                    "enable": true,
+                    "mode": "repulse"
+                },
+                "onclick": {
+                    "enable": false
+                },
+                "resize": true
+            }
+        },
+        "retina_detect": true });
+
  const ctx = document.getElementById('userChart').getContext('2d');
 let userChart;
 

@@ -1,169 +1,68 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
-
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hydrax</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard - Fornecedor</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <style>
     body {
       font-family: 'Poppins', sans-serif;
+      height: 100vh;
+      overflow: hidden; /* evita scroll na página toda */
     }
   </style>
 </head>
+<body class="bg-gray-900 text-white flex">
 
-<body class="bg-gray-900 text-white">
+  <!-- Sidebar -->
+  <aside class="w-64 h-screen bg-gray-950 fixed shadow-md flex flex-col justify-between">
+    <!-- Logo -->
+    <div class="h-40 border-b border-indigo-800 flex items-center justify-center">
+      <img src="/imagens/Post Jif 2025 (8).png" alt="Hydrax Logo" class="h-40" />
+    </div>
 
-  <!-- Navbar -->
-  <header class="fixed top-0 left-0 w-full z-50 backdrop-blur-md bg-gray-950/80 border-b border-indigo-800 shadow-sm">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-
-      <!-- Logo -->
-      <div class="flex items-center gap-3">
-        <img src="/imagens/Post Jif 2025 (8).png" alt="Hydrax Logo" class="h-12" />
-        <h1 class="text-2xl font-[Orbitron] tracking-[0.15em] text-indigo-300">Hydrax</h1>
-      </div>
-
-      <!-- Menu principal -->
-      <nav class="hidden md:flex items-center gap-6 text-sm">
-
-        <!-- Busca -->
-        <div class="relative flex items-center bg-gray-200 rounded-full px-3 py-1.5 text-black focus-within:ring-2 focus-within:ring-blue-500">
-          <input type="text" placeholder="Procurar" class="bg-transparent outline-none text-sm placeholder-gray-600 w-28 focus:w-44 transition-all duration-300" />
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 ml-2 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1010.5 18a7.5 7.5 0 006.15-3.35z" />
-          </svg>
-        </div>
-
-        @if (!Auth::guard('usuarios')->check())
-          <!-- Links para visitante -->
-          <a href="#" class="relative rounded-2xl px-5 py-2.5 overflow-hidden group bg-indigo-500 hover:bg-gradient-to-r hover:from-indigo-500 hover:to-indigo-400 hover:ring-2 hover:ring-offset-2 hover:ring-indigo-400 transition-all ease-out duration-300">
-            <span class="absolute right-0 w-8 h-32 -mt-12 transition-all duration-1000 transform translate-x-12 opacity-10 rotate-12 group-hover:-translate-x-40 ease"></span>
-            <span class="relative">Cadastrar</span>
-          </a>
-
-          <a href="#" class="relative inline-flex items-center justify-start px-5 py-2.5 font-bold rounded-2xl group overflow-hidden">
-            <span class="w-32 h-32 rotate-45 translate-x-12 -translate-y-2 absolute left-0 top-0 bg-white opacity-[3%]"></span>
-            <span class="absolute top-0 left-0 w-48 h-48 -mt-1 transition-all duration-500 ease-in-out rotate-45 -translate-x-56 -translate-y-24 bg-white opacity-100 group-hover:-translate-x-8"></span>
-            <span class="relative w-full text-left text-white group-hover:text-gray-900">Entrar</span>
-            <span class="absolute inset-0 border-2 border-white rounded-2xl"></span>
-          </a>
-
-        @else
-          @csrf
-
-          <!-- Usuário logado -->
-          <div class="relative inline-block text-left" id="user-dropdown">
-            <div id="user-name" class="flex items-center space-x-2">
-              <div class="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center hover:bg-indigo-400 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                </svg>
-              </div>
-              <span class="mr-4 cursor-pointer font-semibold hover:text-indigo-400 transition-colors">
-                Olá, {{ Auth::guard('usuarios')->user()->nome_completo }} ▾
-              </span>
-            </div>
-
-            <!-- Menu logout -->
-            <div id="logout-menu" class="absolute right-0 hidden bg-gray-900 border border-indigo-600 rounded-md shadow-lg mt-2 py-2 min-w-[140px] z-50">
-              <form id="logoutForm" method="POST" action="#">
-                @csrf
-                <button type="submit" class="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-white hover:bg-indigo-600/30 transition-colors">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7" />
-                  </svg>
-                  <span>Sair</span>
-                </button>
-              </form>
-            </div>
-          </div>
-
-          @php $id = Auth::guard('usuarios')->id(); @endphp
-
-          <!-- Dropdown Endereço -->
-          <div class="relative text-white hover:text-indigo-400" id="enderecoWrapper">
-            <button id="enderecoBtn" class="flex items-center gap-2 px-4 py-2  transition-all duration-300 shadow-md hover:shadow-lg">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 " fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11.5a2 2 0 100-4 2 2 0 000 4zm0 9.5c-4.418 0-8-5.373-8-9a8 8 0 1116 0c0 3.627-3.582 9-8 9z" />
-            </svg>
-            <span>Endereço ▾</span>
-            </button>
-
-            <div id="enderecoDropdown" class="absolute hidden bg-gray-900 border border-indigo-600 rounded-md shadow-lg mt-2 py-2 min-w-[180px] z-50">
-              <a href="#" class="block px-4 py-2 text-sm text-white hover:bg-indigo-600/30">Cadastrar Endereço</a>
-              <a href="#" class="block px-4 py-2 text-sm text-white hover:bg-indigo-600/30">Listar Endereços</a>
-            </div>
-          </div>
-
-        @endif
-
-        <!-- Carrinho -->
-        <a href="#" class="relative hover:text-gray-300 transition">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.5 7h13L17 13M7 13H5.4" />
-          </svg>
-        </a>
+    <!-- Menu de Funções -->
+    <div class="flex-1 p-4 border-b border-indigo-800 overflow-auto">
+      <nav class="flex flex-col gap-4">
+        <button class="text-left px-4 py-2 rounded hover:bg-indigo-700 transition">Ações Futuras</button>
+        <button class="text-left px-4 py-2 rounded hover:bg-indigo-700 transition">Ações Futuras</button>
+        <button class="text-left px-4 py-2 rounded hover:bg-indigo-700 transition">Ações Futuras</button>
+        <button class="text-left px-4 py-2 rounded hover:bg-indigo-700 transition">Ações Futuras</button>
       </nav>
     </div>
-  </header>
+
+    <!-- Logout -->
+<div class="p-4">
+  <button class="w-full text-left px-4 py-2 rounded hover:bg-red-700 transition">
+    Logout
+  </button>
+</div>
+
+  </aside>
 
   <!-- Conteúdo Principal -->
-  <main class="pt-28 max-w-7xl mx-auto px-6">
-    <h2 class="text-3xl font-bold mb-10">Destaques Hydrax</h2>
-    <div class="grid md:grid-cols-3 gap-6">
-      <div class="bg-white text-black rounded-xl p-6 shadow-md hover:shadow-xl hover:scale-[1.03] transition-all">
-        <h3 class="text-xl font-semibold">Administrador</h3>
-        <p class="text-sm mt-3 text-gray-600">Controle geral do sistema.</p>
+  <div class="ml-64 flex flex-col flex-1 h-screen">
+    <!-- Navbar -->
+    <header class="bg-gray-950/80 backdrop-blur-md shadow px-6 py-4 flex items-center justify-between border-b border-indigo-800 fixed top-0 left-64 right-0 z-40 h-16">
+      <h2 class="text-xl font-semibold">Dashboard<span class="text-indigo-600"> | Fornecedor</span> </h2>
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center hover:bg-indigo-500 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+              d="M3 21h18M9 8h6M9 12h6M9 16h6M4 21V5a1 1 0 011-1h3v4h8V4h3a1 1 0 011 1v16" />
+          </svg>
+        </div>
+        <span class="font-medium">Olá, {{ Auth::guard('fornecedores')->user()->nome_empresa }}</span>
       </div>
-      <div class="bg-white text-black rounded-xl p-6 shadow-md hover:shadow-xl hover:scale-[1.03] transition-all">
-        <h3 class="text-xl font-semibold">Usuário</h3>
-        <p class="text-sm mt-3 text-gray-600">Acesse funcionalidades de usuário.</p>
-      </div>
-      <div class="bg-white text-black rounded-xl p-6 shadow-md hover:shadow-xl hover:scale-[1.03] transition-all">
-        <h3 class="text-xl font-semibold">Fornecedor</h3>
-        <p class="text-sm mt-3 text-gray-600">Gerencie produtos e entregas.</p>
-      </div>
-    </div>
-  </main>
+    </header>
 
-  <!-- Scripts -->
-  <script>
-    const btn = document.getElementById('enderecoBtn');
-    const dropdown = document.getElementById('enderecoDropdown');
-    const wrapper = document.getElementById('enderecoWrapper');
-    let timeout;
+    <!-- Conteúdo abaixo da navbar -->
+    <main class="pt-16 px-8 bg-gray-900 flex-1 overflow-hidden">
 
-    wrapper.addEventListener('mouseenter', () => {
-      clearTimeout(timeout);
-      dropdown.classList.remove('hidden');
-    });
-
-    wrapper.addEventListener('mouseleave', () => {
-      timeout = setTimeout(() => {
-        dropdown.classList.add('hidden');
-      }, 200);
-    });
-  </script>
-
-  <script>
-    const userDropdown = document.getElementById('user-dropdown');
-    const logoutMenu = document.getElementById('logout-menu');
-    let hideTimeout;
-
-    userDropdown.addEventListener('mouseenter', () => {
-      clearTimeout(hideTimeout);
-      logoutMenu.classList.remove('hidden');
-    });
-
-    userDropdown.addEventListener('mouseleave', () => {
-      hideTimeout = setTimeout(() => {
-        logoutMenu.classList.add('hidden');
-      }, 150);
-    });
-  </script>
+    </main>
+  </div>
 
 </body>
 </html>
