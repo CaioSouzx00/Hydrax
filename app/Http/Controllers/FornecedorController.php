@@ -7,6 +7,9 @@ use App\Models\Fornecedor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\FornecedorAprovadoMail;
+use App\Mail\FornecedorRejeitadoMail;
 
 class FornecedorController extends Controller
 {
@@ -86,8 +89,10 @@ public function aprovar($id)
         'email' => $pendente->email,
         'telefone' => $pendente->telefone,
         'password' => Hash::make($pendente->password),
-
     ]);
+
+    // Enviar e-mail de aprovação
+    Mail::to($pendente->email)->send(new FornecedorAprovadoMail($pendente));
 
     $pendente->delete();
 
@@ -97,10 +102,15 @@ public function aprovar($id)
 public function rejeitar($id)
 {
     $pendente = FornecedorPendente::findOrFail($id);
+
+    // Enviar e-mail de rejeição
+    Mail::to($pendente->email)->send(new FornecedorRejeitadoMail($pendente));
+
     $pendente->delete();
 
     return redirect()->route('fornecedores.pendentes')->with('success', 'Fornecedor rejeitado!');
 }
+
 
 public function dashboard()
 {

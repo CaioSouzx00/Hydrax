@@ -129,9 +129,10 @@
 
             <div class="flex justify-between items-center text-sm">
 
-            <a href="#" class="text-purple-400 hover:text-purple-600 transition">
-                Esqueceu a senha?
-              </a>
+            <a href="{{ route('fornecedores.senha.form') }}" class="text-purple-400 hover:text-purple-600 transition">
+                    Esqueceu a senha?
+            </a>
+
 
               <button type="submit"
                       class="relative px-5 py-2 border-2 border-violet-600 text-violet-400 rounded-xl hover:text-white hover:bg-violet-700 transition-all duration-300">
