@@ -11,21 +11,6 @@
     body {
       font-family: 'Poppins', sans-serif;
     }
-
-      #overlay {
-    position: fixed;
-    inset: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-    z-index: 40;
-  }
-
-  #overlay.active {
-    opacity: 0.5;
-    pointer-events: auto;
-  }
   </style>
 </head>
 
@@ -125,8 +110,6 @@
     </div>
   </header>
 
-<div id="overlay"></div>
-
   <!-- Sidebar Mobile -->
   @if (!Auth::guard('usuarios')->check())
     <input type="checkbox" id="menu-toggle" class="hidden peer" />
@@ -169,59 +152,41 @@
     </div>
   </main>
 
-<script>
-  const overlay = document.getElementById('overlay');
-  const userDropdown = document.getElementById('user-dropdown');
-  const logoutMenu = document.getElementById('logout-menu');
-  const enderecoWrapper = document.getElementById('enderecoWrapper');
-  const enderecoDropdown = document.getElementById('enderecoDropdown');
+  <!-- Scripts -->
+  <script>
+    const btn = document.getElementById('enderecoBtn');
+    const dropdown = document.getElementById('enderecoDropdown');
+    const wrapper = document.getElementById('enderecoWrapper');
+    let timeout;
 
-  let userTimeout, enderecoTimeout;
+    wrapper.addEventListener('mouseenter', () => {
+      clearTimeout(timeout);
+      dropdown.classList.remove('hidden');
+    });
 
-  function showOverlay() {
-    overlay.classList.add('active');
-  }
+    wrapper.addEventListener('mouseleave', () => {
+      timeout = setTimeout(() => {
+        dropdown.classList.add('hidden');
+      }, 200);
+    });
+  </script>
 
-  function hideOverlay() {
-    overlay.classList.remove('active');
-  }
+  <script>
+    const userDropdown = document.getElementById('user-dropdown');
+    const logoutMenu = document.getElementById('logout-menu');
+    let hideTimeout;
 
-  // Dropdown usuário
-  userDropdown.addEventListener('mouseenter', () => {
-    clearTimeout(userTimeout);
-    logoutMenu.classList.remove('hidden');
-    showOverlay();
-  });
+    userDropdown.addEventListener('mouseenter', () => {
+      clearTimeout(hideTimeout);
+      logoutMenu.classList.remove('hidden');
+    });
 
-  userDropdown.addEventListener('mouseleave', () => {
-    userTimeout = setTimeout(() => {
-      logoutMenu.classList.add('hidden');
-      hideOverlay();
-    }, 150);
-  });
-
-  // Dropdown endereço
-  enderecoWrapper.addEventListener('mouseenter', () => {
-    clearTimeout(enderecoTimeout);
-    enderecoDropdown.classList.remove('hidden');
-    showOverlay();
-  });
-
-  enderecoWrapper.addEventListener('mouseleave', () => {
-    enderecoTimeout = setTimeout(() => {
-      enderecoDropdown.classList.add('hidden');
-      hideOverlay();
-    }, 200);
-  });
-
-  // Fechar dropdowns ao clicar no overlay
-  overlay.addEventListener('click', () => {
-    logoutMenu.classList.add('hidden');
-    enderecoDropdown.classList.add('hidden');
-    hideOverlay();
-  });
-</script>
+    userDropdown.addEventListener('mouseleave', () => {
+      hideTimeout = setTimeout(() => {
+        logoutMenu.classList.add('hidden');
+      }, 150);
+    });
+  </script>
 
 </body>
-
 </html>
