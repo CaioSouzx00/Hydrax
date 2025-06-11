@@ -110,7 +110,7 @@
             </div>
           @endif
 
-          <form method="POST" action="{{ route('fornecedor.login.post') }}" class="space-y-4 mt-6">
+          <form method="POST" action="{{ route('fornecedores.login.submit') }}" class="space-y-4 mt-6">
             @csrf
             <div class="flex items-center space-x-3">
               <img src="/imagens/Post Jif 2025/4.png" alt="Ícone de e-mail" class="w-5 h-5">
@@ -129,7 +129,7 @@
 
             <div class="flex justify-between items-center text-sm">
 
-              <a href="{{ route('fornecedor.password.esqueciSenhaForm') }}" class="text-purple-400 hover:text-purple-600 transition">
+            <a href="#" class="text-purple-400 hover:text-purple-600 transition">
                 Esqueceu a senha?
               </a>
 
@@ -140,7 +140,7 @@
             </div>
             <div class="mt-4 text-sm text-center">
             <p>Não possui conta?
-              <a href="{{ route('fornecedor.create') }}" class="text-purple-400 hover:text-purple-600 transition">Cadastrar</a>
+              <a href="{{ route('fornecedores.create') }}" class="text-purple-400 hover:text-purple-600 transition">Cadastrar</a>
             </p>
           </div>
           </form>

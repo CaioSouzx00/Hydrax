@@ -8,6 +8,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\PasswordResetController;
 use \App\Http\Middleware\UsuarioMiddleware;
 use App\Http\Middleware\AdministradorMiddleware;
+use App\Http\Middleware\FornecedorMiddleware;
 use App\Http\Controllers\FornecedorController;
 
 
@@ -31,8 +32,11 @@ Route::get('/admin/login', [AdminController::class, 'showLoginForm'])->name('adm
 Route::post('/admin/login', [AdminController::class, 'login']);
 
 // Login - Fornecedores
-Route::get('/fonecedores/login', [AdminController::class, 'showLoginForm'])->name('fonecedores.login');
-Route::post('/fonecedores/login', [AdminController::class, 'login'])->name('fonecedores.login.submit');
+Route::get('/fornecedores/login', [FornecedorController::class, 'showLoginForm'])->name('fornecedores.login');
+Route::post('/fornecedores/login', [FornecedorController::class, 'login'])->name('fornecedores.login.submit');
+
+Route::get('/fornecedores/create', [FornecedorController::class, 'create'])->name('fornecedores.create');
+Route::post('/fornecedores', [FornecedorController::class, 'store'])->name('fornecedores.store');
 
 // Recuperação de Senha - Usuário
 Route::get('/senha/esqueci', [PasswordResetController::class, 'mostrarFormulario'])->name('password.esqueciSenhaForm');

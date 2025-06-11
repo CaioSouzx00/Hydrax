@@ -123,7 +123,7 @@
         <hr class="border-gray-700 opacity-50 mb-4" />
         <nav class="space-y-3 text-sm">
           <a href="{{ route('admin.login') }}" class="block px-4 py-2 rounded-md bg-gray-800 hover:bg-gray-700 transition">Administrador</a>
-          <a href="#" class="block px-4 py-2 rounded-md bg-gray-800 hover:bg-gray-700 transition">Fornecedor</a>
+          <a href="{{ route('fornecedores.login') }}" class="block px-4 py-2 rounded-md bg-gray-800 hover:bg-gray-700 transition">Fornecedor</a>
         </nav>
         <hr class="border-gray-700 opacity-50 mt-6" />
         <p class="text-xs text-center text-gray-500 mt-6">
