@@ -99,7 +99,7 @@ public function login(Request $request)
 
     $labels = range(1, 12);
 
-    // Preencher meses sem dados com zero
+    // Preencher meses sem dados com zero 
     $usuarios = array_map(function ($mes) use ($usuariosPorMes) {
         return $usuariosPorMes->get($mes, 0);
     }, $labels);

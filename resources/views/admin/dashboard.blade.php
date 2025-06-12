@@ -255,7 +255,7 @@ function montarGrafico(labels, usuarios, fornecedores) {
       }),
       datasets: [
         {
-          label: 'Usuários',
+          label: 'Usuarios',
           data: usuarios,
           backgroundColor: 'rgba(122, 72, 255, 0.2)',
           borderColor: 'rgba(122, 72, 255, 1)',
@@ -302,7 +302,6 @@ fetch('{{ route('dashboard.dadosGraficos') }}')
   });
 
 </script>
-
 
 </body>
 </html>
