@@ -13,36 +13,20 @@ use App\Http\Controllers\FornecedorController;
 use App\Http\Controllers\Auth\FornecedorPasswordResetController;
 
 
-
-
 Route::prefix('fornecedores/senha')->group(function () {
     // 1. Formulário para digitar o e-mail
-    Route::get('/esqueci', [FornecedorPasswordResetController::class, 'mostrarFormulario'])
-        ->name('fornecedores.senha.form');
-
+    Route::get('/esqueci', [FornecedorPasswordResetController::class, 'mostrarFormulario'])->name('fornecedores.senha.form');
     // 2. Envio do código por e-mail
-    Route::post('/enviar-codigo', [FornecedorPasswordResetController::class, 'enviarCodigo'])
-        ->name('fornecedores.senha.enviar');
-
+    Route::post('/enviar-codigo', [FornecedorPasswordResetController::class, 'enviarCodigo'])->name('fornecedores.senha.enviar');
     // 3. Formulário para digitar o código de verificação
-    Route::get('/verificar', [FornecedorPasswordResetController::class, 'mostrarFormularioVerificacao'])
-        ->name('fornecedores.senha.verificar.form');
-
+    Route::get('/verificar', [FornecedorPasswordResetController::class, 'mostrarFormularioVerificacao'])->name('fornecedores.senha.verificar.form');
     // 4. Verificação do código
-    Route::post('/verificar', [FornecedorPasswordResetController::class, 'verificarCodigo'])
-        ->name('fornecedores.senha.verificar');
-
+    Route::post('/verificar', [FornecedorPasswordResetController::class, 'verificarCodigo'])->name('fornecedores.senha.verificar');
     // 5. Formulário para redefinir a senha
-    Route::get('/redefinir', [FornecedorPasswordResetController::class, 'mostrarFormularioRedefinir'])
-        ->name('fornecedores.senha.redefinir.form');
-
+    Route::get('/redefinir', [FornecedorPasswordResetController::class, 'mostrarFormularioRedefinir'])->name('fornecedores.senha.redefinir.form');
     // 6. Processamento da nova senha
-    Route::post('/redefinir', [FornecedorPasswordResetController::class, 'redefinirSenha'])
-        ->name('fornecedores.senha.redefinir');
+    Route::post('/redefinir', [FornecedorPasswordResetController::class, 'redefinirSenha'])->name('fornecedores.senha.redefinir');
 });
-
-
-
 
 /*
 |--------------------------------------------------------------------------
