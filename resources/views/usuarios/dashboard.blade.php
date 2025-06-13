@@ -131,23 +131,25 @@
   @if (!Auth::guard('usuarios')->check())
     <input type="checkbox" id="menu-toggle" class="hidden peer" />
     <label for="menu-toggle" class="fixed top-4 left-5 z-50 text-white text-2xl p-2 cursor-pointer peer-checked:hidden">☰</label>
-    <aside class="fixed top-0 left-0 h-full w-64 bg-black/80 backdrop-blur-md text-white z-50 transform -translate-x-full peer-checked:translate-x-0 transition-transform duration-300 ease-in-out">
-      <label for="menu-toggle" class="absolute top-4 right-4 text-white text-2xl cursor-pointer">✕</label>
-      <div class="mt-16 px-4 py-6">
-        <div class="flex justify-center mb-6">
-          <img src="/imagens/Post Jif 2025 (8).png" alt="Hydrax Logo" class="h-40 opacity-80" />
-        </div>
-        <hr class="border-gray-700 opacity-50 mb-4" />
-        <nav class="space-y-3 text-sm">
-          <a href="{{ route('admin.login') }}" class="block px-4 py-2 rounded-md bg-gray-800 hover:bg-gray-700 transition">Administrador</a>
-          <a href="{{ route('fornecedores.login') }}" class="block px-4 py-2 rounded-md bg-gray-800 hover:bg-gray-700 transition">Fornecedor</a>
-        </nav>
-        <hr class="border-gray-700 opacity-50 mt-6" />
-        <p class="text-xs text-center text-gray-500 mt-6">
-          &copy; 2025 <strong class="text-indigo-400">Hydrax</strong>
-        </p>
-      </div>
-    </aside>
+<aside class="fixed top-0 left-0 h-full w-64 bg-black/80 backdrop-blur-md text-white z-50 transform -translate-x-full peer-checked:translate-x-0 transition-transform duration-300 ease-in-out shadow-2xl border-r border-indigo-500/30">
+  <label for="menu-toggle" class="absolute top-4 right-4 text-indigo-400 text-2xl cursor-pointer hover:text-indigo-300 transition">✕</label>
+  <div class="mt-16 px-4 py-6">
+    <div class="flex justify-center mb-6">
+      <img src="/imagens/Post Jif 2025 (8).png" alt="Hydrax Logo" class="h-40 opacity-90 hover:opacity-100 transition" />
+    </div>
+    <hr class="border-indigo-500/40 mb-4" />
+    <nav class="space-y-3 text-sm">
+      <a href="{{ route('admin.login') }}" class="block px-4 py-2 rounded-md bg-indigo-700 hover:bg-indigo-400 transition shadow-md">Administrador</a>
+      <a href="{{ route('fornecedores.login') }}" class="block px-4 py-2 rounded-md bg-indigo-700 hover:bg-indigo-400 transition shadow-md">Fornecedor</a>
+    </nav>
+    <hr class="border-indigo-500/40 mt-6" />
+    <p class="text-xs text-center text-indigo-300 mt-6">
+      &copy; 2025 <strong class="text-indigo-400">Hydrax</strong>
+    </p>
+  </div>
+</aside>
+
+
   @endif
 
   <!-- Conteúdo Principal -->
