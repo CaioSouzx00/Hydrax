@@ -27,7 +27,11 @@
     <!-- Menu de Funções -->
     <div class="flex-1 p-4 border-b border-indigo-800 overflow-auto">
       <nav class="flex flex-col gap-4">
-        <button class="text-left px-4 py-2 rounded hover:bg-indigo-700 transition">Ações Futuras</button>
+        <button class="text-left px-4 py-2 rounded hover:bg-indigo-700 transition"><a href="{{ route('fornecedores.produtos.create') }}"
+   class="text-left px-4 py-2 rounded hover:bg-indigo-700 transition bg-indigo-600 text-white">
+   Cadastrar Produto
+</a>
+</button>
         <button class="text-left px-4 py-2 rounded hover:bg-indigo-700 transition">Ações Futuras</button>
         <button class="text-left px-4 py-2 rounded hover:bg-indigo-700 transition">Ações Futuras</button>
         <button class="text-left px-4 py-2 rounded hover:bg-indigo-700 transition">Ações Futuras</button>

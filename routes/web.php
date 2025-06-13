@@ -11,6 +11,8 @@ use App\Http\Middleware\AdministradorMiddleware;
 use App\Http\Middleware\FornecedorMiddleware;
 use App\Http\Controllers\FornecedorController;
 use App\Http\Controllers\Auth\FornecedorPasswordResetController;
+use App\Http\Controllers\ProdutoFornecedorController;
+
 
 
 Route::prefix('fornecedores/senha')->group(function () {
@@ -109,7 +111,12 @@ Route::middleware([AdministradorMiddleware::class])->group(function () {
 | (Opcional) Rotas Protegidas - Fornecedor (middleware: fornecedor)
 |--------------------------------------------------------------------------
 */
-Route::middleware([FornecedorMiddleware::class])->group(function () {
-    Route::get('/fornecedores/dashboard', [FornecedorController::class, 'dashboard'])->name('fornecedores.dashboard');
-    Route::post('/fornecedores/logout', [FornecedorController::class, 'logout'])->name('fornecedores.logout');
+Route::middleware([FornecedorMiddleware::class])->prefix('fornecedores')->name('fornecedores.')->group(function () {
+    Route::get('/dashboard', [FornecedorController::class, 'dashboard'])->name('dashboard');
+    Route::post('/logout', [FornecedorController::class, 'logout'])->name('logout');
+
+    Route::get('/produtos/create', [ProdutoFornecedorController::class, 'create'])->name('produtos.create');
+    Route::post('/produtos/store', [ProdutoFornecedorController::class, 'store'])->name('produtos.store');
+
+
 });
