@@ -20,7 +20,7 @@ class Usuario extends Authenticatable
         'nome_completo',
         'data_nascimento',
         'email',
-        'password', // lembre-se que seu campo no DB deve ser password (ou ajustar getAuthPassword)
+        'password',
         'telefone',
         'cpf',
         'foto',

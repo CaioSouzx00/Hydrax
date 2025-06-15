@@ -64,21 +64,19 @@ Route::post('/senha/verificar-codigo', [PasswordResetController::class, 'verific
 Route::get('/senha/redefinir', [PasswordResetController::class, 'mostrarFormularioRedefinir'])->name('password.redefinirSenhaForm');
 Route::post('/senha/redefinir', [PasswordResetController::class, 'redefinirSenha'])->name('password.redefinirSenha');
 
-// Logout geral
-Route::get('/logout', function () {
-    Auth::logout();
-    return redirect('/login');
-})->name('logout');
-
 /*
 |--------------------------------------------------------------------------
 | Rotas Protegidas - Usuário (middleware: usuario)
 |--------------------------------------------------------------------------
 */
-//Route::middleware('auth')->group(function () {
 Route::middleware([UsuarioMiddleware::class])->group(function () {
     Route::get('/dashboard', [UsuarioController::class, 'dashboard'])->name('dashboard');
     Route::post('/logout', [UsuarioController::class, 'logout'])->name('logout');
+    Route::get('/painel', [UsuarioController::class, 'painel'])->name('usuario.painel');
+    Route::put('/usuarios/perfil', [UsuarioController::class, 'update'])->name('usuario.perfil.atualizar');
+    Route::get('/usuario/perfil/conteudo', [UsuarioController::class, 'perfilConteudo'])->name('usuarios.perfil.conteudo');
+    Route::get('usuarios/{id}/enderecos/conteudo', [EnderecoUsuarioController::class, 'conteudo'])->name('usuarios.enderecos.conteudo');
+
 
     // Endereços do Usuário
     Route::prefix('usuarios/{id}')->group(function () {
@@ -86,9 +84,12 @@ Route::middleware([UsuarioMiddleware::class])->group(function () {
         Route::get('enderecos/create', [EnderecoUsuarioController::class, 'create'])->name('endereco.create');
         Route::post('enderecos', [EnderecoUsuarioController::class, 'store'])->name('endereco.store');
         Route::get('enderecos/{endereco_id}/edit', [EnderecoUsuarioController::class, 'edit'])->name('endereco.edit');
-        Route::put('enderecos/{endereco_id}', [EnderecoUsuarioController::class, 'update'])->name('endereco.update');
+       // Route::put('enderecos/{endereco_id}', [EnderecoUsuarioController::class, 'update'])->name('endereco.update');
+        Route::put('usuarios/{id}/enderecos/{endereco_id}', [EnderecoUsuarioController::class, 'update'])->name('endereco.update');
+
         Route::delete('enderecos/{endereco_id}', [EnderecoUsuarioController::class, 'destroy'])->name('endereco.destroy');
     });
+
 });
 
 /*
