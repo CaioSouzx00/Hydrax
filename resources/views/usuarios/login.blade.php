@@ -13,7 +13,7 @@
 
 
 <a href="http://127.0.0.1:8080"
-   class="group fixed top-4 left-4 z-50 flex h-10 w-10 items-center rounded-full bg-[#14ba88] text-white overflow-hidden transition-all duration-300 ease-in-out hover:w-28"
+   class="group fixed top-4 left-4 z-50 flex h-10 w-10 items-center rounded-full bg-[#14ba88] text-white overflow-hidden transition-all duration-300 ease-in-out hover:w-28 hover:bg-[#4a8978]"
    title="Voltar para Início" aria-label="Botão Voltar">
 
   <!-- Ícone sempre visível e centralizado -->
@@ -79,7 +79,7 @@
             <img src="/imagens/Post Jif 2025/5.png" alt="Ícone de senha" class="w-5 h-5">
             <input type="password" name="password" id="password" required placeholder="password"
                    class="h-11 px-4 pr-10 rounded-md border border-[#7f3a0e] bg-[#17110d]/40 text-white placeholder-gray-300 text-sm w-full focus:outline-none focus:ring-2 focus:ring-[#e29b37]">
-            <button type="button" onclick="togglepassword()" class="absolute right-3 top-2 w-6 h-6">
+            <button type="button" onclick="togglepassword()" class="absolute right-3 top-2 w-6 h-7">
               <img src="/imagens/Post Jif 2025.png" alt="Mostrar password" id="eye-icon" class="w-6 h-6 opacity-40 hover:opacity-80 transition-opacity">
             </button>
           </div>
