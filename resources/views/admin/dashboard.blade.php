@@ -134,7 +134,7 @@
           <img src="/imagens/Post Jif 2025 (8).png"
                alt="Logo"
                class="h-full w-full object-cover transition-opacity duration-500 group-hover:opacity-0"/>
-          <div class="absolute inset-0 bg-gray-900 bg-opacity-80 text-white flex flex-col items-center justify-center px-4 text-center opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+          <div class="absolute inset-0 bg-gray-900/10 bg-opacity-80 text-white flex flex-col items-center justify-center px-4 text-center opacity-0 transition-opacity duration-500 group-hover:opacity-100">
             <h4 class="text-lg font-bold mb-1 border-b-4 border-indigo-600 inline-block">Hydrax</h4>
             <p class="text-xs leading-tight">Este é o painel de Admins.</p>
             <p class="text-[10px] mt-1 text-gray-300">Gerenciamento de Usuários, Controle de Conteúdo, Acesso a Relatórios, Gerenciamento de Configurações e Monitoramento de Atividades.</p>

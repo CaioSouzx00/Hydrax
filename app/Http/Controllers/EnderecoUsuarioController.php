@@ -51,7 +51,7 @@ class EnderecoUsuarioController extends Controller
         $endereco->save();
 
         return redirect()
-            ->route('usuario.enderecos', $id)
+            ->route('usuario.painel', $id)
             ->with('success', 'Endereço cadastrado com sucesso!');
     }
 
@@ -61,29 +61,29 @@ class EnderecoUsuarioController extends Controller
         $usuario = Usuario::findOrFail($id);
         $endereco = $usuario->enderecos()->where('id_endereco', $endereco_id)->firstOrFail();
 
-        return view('usuarios.enderecos.edita', compact('usuario', 'endereco'));
+        return redirect()->route('usuario.enderecos', ['id' => $id])
+        ->with('success', 'Endereço atualizado com sucesso!');
     }
 
-    // Processa a atualização do endereço
-    public function update(Request $request, $id, $endereco_id)
-    {
-        $endereco = EnderecoUsuario::where('id_usuarios', $id)
-            ->where('id_endereco', $endereco_id)
-            ->firstOrFail();
+public function update(Request $request, $id, $endereco_id)
+{
 
-        $validated = $request->validate([
-            'cidade' => 'required|string|max:60',
-            'cep' => 'required|string|max:10',
-            'bairro' => 'required|string|max:60',
-            'estado' => 'required|string|size:2',
-            'rua' => 'required|string|max:60',
-            'numero' => 'required|string|max:10',
-        ]);
+    $validated = $request->validate([
+        'cidade' => 'required|string|max:100',
+        'cep' => 'required|string|max:15',
+        'bairro' => 'required|string|max:100',
+        'estado' => 'required|string|max:50',
+        'rua' => 'required|string|max:255',
+        'numero' => 'required|string|max:10',
+    ]);
 
-        $endereco->update($validated);
+    $endereco = EnderecoUsuario::where('id_usuarios', $id)->where('id_endereco', $endereco_id)->firstOrFail();
 
-        return redirect()->route('usuario.enderecos', ['id' => $id])->with('success', 'Endereço atualizado com sucesso!');
-    }
+    $endereco->update($validated);
+
+    return redirect()->route('usuario.enderecos', ['id' => $id])
+        ->with('success', 'Endereço atualizado com sucesso!');
+}
 
     // Exibe todos os endereços de um usuário
     public function index($id)
@@ -91,7 +91,7 @@ class EnderecoUsuarioController extends Controller
         $usuario = Usuario::findOrFail($id);
         $enderecos = EnderecoUsuario::where('id_usuarios', $id)->get();
 
-        return view('usuarios.enderecos.index', compact('usuario', 'enderecos'));
+       return view('usuarios.enderecos.index', compact('usuario', 'enderecos'));
     }
 
     // Remove um endereço
@@ -103,6 +103,16 @@ class EnderecoUsuarioController extends Controller
 
         $endereco->delete();
 
-        return redirect()->route('usuario.enderecos', ['id' => $id])->with('success', 'Endereço excluído com sucesso!');
+        return redirect()->route('usuario.painel', ['id' => $id])->with('success', 'Endereço excluído com sucesso!');
     }
+
+
+public function conteudo($id)
+{
+    $usuario = Usuario::findOrFail($id);
+    $enderecos = EnderecoUsuario::where('id_usuarios', $id)->get();
+
+    return view('usuarios.partials.enderecos', compact('usuario', 'enderecos'));
+}
+
 }
