@@ -112,7 +112,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="relative">
             <label class="block text-sm font-medium text-gray-300">Telefone</label>
-            <input type="text" name="telefone" required minlength="10" maxlength="15" class="w-full mt-1 px-4 py-2 pr-10 bg-gray-900/40 text-white/30 hover:text-white focus:text-white border border-indigo-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-indigo-900/40"/>
+            <input type="text" name="telefone" required minlength="11" maxlength="11" class="w-full mt-1 px-4 py-2 pr-10 bg-gray-900/40 text-white/30 hover:text-white focus:text-white border border-indigo-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-indigo-900/40"/>
           </div>
           <div class="relative">
             <label class="block text-sm font-medium text-gray-300">CNPJ</label>
