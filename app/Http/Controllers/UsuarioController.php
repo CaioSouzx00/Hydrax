@@ -11,28 +11,28 @@ class UsuarioController extends Controller
 {
     public function create()
     {
-        return view('usuarios.create'); 
+        return view('usuarios.create');
     }
 
     public function store(Request $request)
     {
         $dados = $request->validate([
-            'sexo' => 'required|string',
-            'nome_completo' => 'required|string|max:50',
+            'sexo'            => 'required|string',
+            'nome_completo'   => 'required|string|max:50',
             'data_nascimento' => 'required|date',
-            'email' => 'required|email|unique:usuarios,email',
-            'password' => 'required|string|min:6',
-            'telefone' => 'required|string',
-            'cpf' => ['required', 'regex:/^\d{11}$/', 'unique:usuarios,cpf'],
-            'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'email'           => 'required|email|unique:usuarios,email',
+            'password'        => 'required|string|min:6',
+            'telefone'        => 'required|string',
+            'cpf'             => ['required', 'regex:/^\d{11}$/', 'unique:usuarios,cpf'],
+            'foto'            => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ], [
             'password.min' => 'A senha deve ter no mínimo 6 caracteres.',
-            'cpf.regex' => 'O CPF deve conter exatamente 11 dígitos numéricos.',
+            'cpf.regex'    => 'O CPF deve conter exatamente 11 dígitos numéricos.',
         ]);
 
         // Normaliza sexo para M ou F
         if (isset($dados['sexo'])) {
-            $sexo = strtolower($dados['sexo']);
+            $sexo         = strtolower($dados['sexo']);
             $dados['sexo'] = $sexo === 'masculino' ? 'M' : ($sexo === 'feminino' ? 'F' : null);
             if (!$dados['sexo']) {
                 return back()->withErrors(['sexo' => 'Sexo inválido.'])->withInput();
@@ -50,68 +50,78 @@ class UsuarioController extends Controller
         return redirect()->route('login.form')->with('success', 'Cadastro realizado com sucesso! Faça login para continuar.');
     }
 
-public function showLoginForm(Request $request)
-{
-    if (Auth::guard('usuarios')->check()) {
-        return redirect()->back()->withErrors([
-            'login_ja_autenticado' => 'Você já está logado. Faça logout se quiser acessar a tela de login.'
-        ]);
-    }
+    public function showLoginForm(Request $request)
+    {
+        if (Auth::guard('usuarios')->check()) {
+            return redirect()->back()->withErrors([
+                'login_ja_autenticado' => 'Você já está logado. Faça logout se quiser acessar a tela de login.'
+            ]);
+        }
 
-    return view('usuarios.login');
-}
+        return view('usuarios.login');
+    }
 
     public function login(Request $request)
-{
-    $dados = $request->validate([
-        'email' => 'required|email',
-        'password' => 'required',
-    ]);
+    {
+        $dados = $request->validate([
+            'email'    => 'required|email',
+            'password' => 'required',
+        ]);
 
-    if (Auth::guard('usuarios')->attempt($dados)) {
-        $request->session()->regenerate();
+        if (Auth::guard('usuarios')->attempt($dados)) {
+            $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard'));
+            return redirect()->intended(route('dashboard'));
+        }
+
+        return back()->withErrors(['login' => 'Credenciais inválidas'])->withInput();
     }
 
-    return back()->withErrors(['login' => 'Credenciais inválidas'])->withInput();
-}
+    public function logout(Request $request)
+    {
+        Auth::guard('usuarios')->logout();
 
-public function logout(Request $request)
-{
-    Auth::guard('usuarios')->logout(); 
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
-    $request->session()->invalidate();
-    $request->session()->regenerateToken();
-
-    return redirect()->route('login.form')->with('success', 'Você saiu do sistema.');
-}
-
-public function dashboard()
-{
-    if (!Auth::guard('usuarios')->check()) {
-        return redirect()->route('login.form')->withErrors(['acesso' => 'Faça login para acessar o sistema.']);
+        return redirect()->route('login.form')->with('success', 'Você saiu do sistema.');
     }
 
-    $usuario = Auth::guard('usuarios')->user();
-    $nome = $usuario->nome_completo;
+    public function dashboard()
+    {
+        if (!Auth::guard('usuarios')->check()) {
+            return redirect()->route('login.form')->withErrors(['acesso' => 'Faça login para acessar o sistema.']);
+        }
 
-    return view('usuarios.dashboard', compact('nome'));
-}
+        $usuario = Auth::guard('usuarios')->user();
+        $nome    = $usuario->nome_completo;
 
+        return view('usuarios.dashboard', compact('nome'));
+    }
 
-public function update(Request $request)
-{
-    $usuario = Auth::guard('usuarios')->user();
+    public function update(Request $request)
+    {
+        $usuario = Auth::guard('usuarios')->user();
 
-    $dados = $request->validate([
-        'nome_completo' => 'required|string|max:50',
-    ]);
+        $dados = $request->validate([
+            'nome_completo' => 'required|string|max:50',
+        ]);
 
-    $usuario->update($dados);
+        $usuario->update($dados);
 
-    return redirect()->back()->with('success', 'Perfil atualizado com sucesso!');
-}
+        return redirect()->back()->with('success', 'Perfil atualizado com sucesso!');
+    }
 
+    public function edit()
+    {
+        $usuario = Auth::guard('usuarios')->user();
+        return view('usuarios.partials.perfil', compact('usuario'));
+    }
 
+    public function painel()
+    {
+        $usuario   = Auth::guard('usuarios')->user();
+        $enderecos = $usuario->enderecos; // Relacionamento já deve existir no model
+        return view('usuarios.perfil', compact('usuario', 'enderecos'));
+    }
 }
