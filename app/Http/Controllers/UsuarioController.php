@@ -93,13 +93,6 @@ public function dashboard()
     return view('usuarios.dashboard', compact('nome'));
 }
 
-public function painel()
-{
-    $usuario = Auth::guard('usuarios')->user();
-    $enderecos = $usuario->enderecos; // Relacionamento já deve existir no model
-    return view('usuarios.perfil', compact('usuario', 'enderecos'));
-}
-
 
 public function update(Request $request)
 {
@@ -113,20 +106,6 @@ public function update(Request $request)
 
     return redirect()->back()->with('success', 'Perfil atualizado com sucesso!');
 }
-
-public function perfilConteudo()
-{
-    $usuario = Auth::guard('usuarios')->user();
-    return view('usuarios.partials.perfil', compact('usuario'));
-}
-
-public function enderecosConteudo()
-{
-    $usuario = Auth::guard('usuarios')->user();
-    $enderecos = $usuario->enderecos()->get();
-    return view('usuarios.partials.enderecos', compact('enderecos'));
-}
-
 
 
 }
