@@ -32,7 +32,6 @@
 
 <body class="min-h-screen bg-gradient-to-br from-[#211828] via-[#0b282a] to-[#17110d] text-white">
 
-
   <!-- Navbar -->
   <header class="fixed top-0 left-0 w-full z-50 backdrop-blur-md bg-black/50 border-b border-[#7f3a0e] shadow-sm">
     <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
@@ -81,6 +80,12 @@
               <span class="mr-4 cursor-pointer font-semibold hover:text-[#d5891b] transition-colors">
                 Olá, {{ Auth::guard('usuarios')->user()->nome_completo }} ▾
               </span>
+              @if ($errors->has('login_ja_autenticado'))
+  <span class="text-sm text-yellow-300 ml-2">
+    {{ $errors->first('login_ja_autenticado') }}
+  </span>
+@endif
+
             </div>
 
             <!-- Menu logout -->
@@ -103,22 +108,6 @@
           </div>
 
           @php $id = Auth::guard('usuarios')->id(); @endphp
-
-          <!-- Dropdown Endereço -->
-          <div class="relative text-white hover:text-indigo-400" id="enderecoWrapper">
-            <button id="enderecoBtn" class="flex items-center gap-2 px-4 py-2  transition-all duration-300 shadow-md hover:shadow-lg">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 " fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11.5a2 2 0 100-4 2 2 0 000 4zm0 9.5c-4.418 0-8-5.373-8-9a8 8 0 1116 0c0 3.627-3.582 9-8 9z" />
-            </svg>
-            <span>Endereço ▾</span>
-            </button>
-
-            <div id="enderecoDropdown" class="absolute hidden bg-gray-900 border border-indigo-600 rounded-md shadow-lg mt-2 py-2 min-w-[180px] z-50">
-              <a href="{{ route('endereco.create', $id) }}" class="block px-4 py-2 text-sm text-white hover:bg-indigo-600/30">Cadastrar Endereço</a>
-              <a href="{{ route('usuario.enderecos', $id) }}" class="block px-4 py-2 text-sm text-white hover:bg-indigo-600/30">Listar Endereços</a>
-            </div>
-          </div>
-
         @endif
 
         <!-- Carrinho -->

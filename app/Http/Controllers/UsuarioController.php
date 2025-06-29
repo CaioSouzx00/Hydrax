@@ -50,10 +50,16 @@ class UsuarioController extends Controller
         return redirect()->route('login.form')->with('success', 'Cadastro realizado com sucesso! Faça login para continuar.');
     }
 
-    public function showLoginForm()
-    {
-        return view('usuarios.login');
+public function showLoginForm(Request $request)
+{
+    if (Auth::guard('usuarios')->check()) {
+        return redirect()->back()->withErrors([
+            'login_ja_autenticado' => 'Você já está logado. Faça logout se quiser acessar a tela de login.'
+        ]);
     }
+
+    return view('usuarios.login');
+}
 
     public function login(Request $request)
 {
