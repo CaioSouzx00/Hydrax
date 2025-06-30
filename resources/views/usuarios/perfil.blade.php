@@ -7,26 +7,21 @@
 </head>
 <body class="bg-gray-100 font-sans">
 
+<!-- Botão flutuante voltar -->
 <a href="http://127.0.0.1:8080/dashboard"
    class="group fixed top-4 left-4 z-50 flex h-10 w-10 items-center rounded-full bg-[#14ba88] text-white overflow-hidden transition-all duration-300 ease-in-out hover:w-28 hover:bg-[#4a8978]"
    title="Voltar para Início" aria-label="Botão Voltar">
-
-  <!-- Ícone sempre visível e centralizado -->
   <div class="flex items-center justify-center w-10 h-10 shrink-0">
     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
       <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
     </svg>
   </div>
-
-  <!-- Texto invisível até o hover, mas com espaço reservado -->
   <span class="ml-2 w-0 group-hover:w-auto opacity-0 group-hover:opacity-100 overflow-hidden whitespace-nowrap transition-all duration-300 ease-in-out">
     Voltar
   </span>
 </a>
 
-
 <div class="flex min-h-screen p-8">
-
     <!-- Menu lateral -->
     <aside class="w-1/4 bg-white rounded-lg shadow p-5">
         <div class="text-center mb-6">
@@ -42,7 +37,6 @@
             </li>
             <li class="relative">
                 <a href="#" data-tab="enderecos" class="menu-link hover:text-orange-600 block">🏠 Endereços</a>
-                <!-- Submenu de Endereços -->
                 <div id="submenu-enderecos" class="hidden flex flex-col ml-6 mt-1 text-sm text-gray-700">
                     <a href="#" id="criar-endereco-link" class="py-1 hover:text-orange-600">➕ Create</a>
                 </div>
@@ -52,6 +46,9 @@
             </li>
             <li>
                 <a href="#" data-tab="senha" class="menu-link hover:text-orange-600">🔒 Trocar Senha</a>
+            </li>
+            <li>
+                <a href="#" data-tab="email" class="menu-link hover:text-orange-600">🔒 Trocar Email</a>
             </li>
             <li>
                 <a href="#" data-tab="privacidade" class="menu-link hover:text-orange-600">🔐 Configurações de Privacidade</a>
@@ -70,7 +67,6 @@
 </div>
 
 <script>
-    // Função para adicionar event listeners nos botões de editar dentro da lista de endereços
     function adicionarListenersEditarEnderecos() {
         document.querySelectorAll('.editar-endereco').forEach(btn => {
             btn.addEventListener('click', function(e) {
@@ -132,6 +128,22 @@
                     document.getElementById('conteudo-principal').innerHTML = '<p class="text-red-600">Erro ao carregar perfil.</p>';
                 });
 
+            } else if (tab === 'email') {
+                submenu.classList.add('hidden');
+                fetch('/usuarios/email', {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error('Erro ao carregar tela de troca de e-mail');
+                    return response.text();
+                })
+                .then(html => {
+                    document.getElementById('conteudo-principal').innerHTML = html;
+                })
+                .catch(() => {
+                    document.getElementById('conteudo-principal').innerHTML = '<p class="text-red-600">Erro ao carregar conteúdo.</p>';
+                });
+
             } else {
                 submenu.classList.add('hidden');
                 document.getElementById('conteudo-principal').innerHTML = '';
@@ -139,7 +151,7 @@
         });
     });
 
-    // Listener para o botão Create do submenu Endereços
+    // Botão "Create" dos endereços
     document.getElementById('criar-endereco-link').addEventListener('click', function(e) {
         e.preventDefault();
 
@@ -158,6 +170,55 @@
         });
     });
 </script>
+
+<!-- Rodapé estilo Nike -->
+<footer class="bg-black text-gray-400 mt-8">
+    <div class="max-w-7xl mx-auto px-6 py-12 grid grid-cols-2 md:grid-cols-4 gap-8 text-sm">
+        <div>
+            <h3 class="text-white font-semibold mb-4">Ajuda</h3>
+            <ul class="space-y-2">
+                <li><a href="#" class="hover:text-white transition">Status do pedido</a></li>
+                <li><a href="#" class="hover:text-white transition">Envio e Entrega</a></li>
+                <li><a href="#" class="hover:text-white transition">Devoluções</a></li>
+                <li><a href="#" class="hover:text-white transition">Opções de Pagamento</a></li>
+            </ul>
+        </div>
+
+        <div>
+            <h3 class="text-white font-semibold mb-4">Sobre a Hydrax</h3>
+            <ul class="space-y-2">
+                <li><a href="#" class="hover:text-white transition">Quem Somos</a></li>
+                <li><a href="#" class="hover:text-white transition">Sustentabilidade</a></li>
+                <li><a href="#" class="hover:text-white transition">Trabalhe Conosco</a></li>
+            </ul>
+        </div>
+
+        <div>
+            <h3 class="text-white font-semibold mb-4">Redes Sociais</h3>
+            <ul class="space-y-2">
+                <li><a href="#" class="hover:text-white transition">Instagram</a></li>
+                <li><a href="#" class="hover:text-white transition">Facebook</a></li>
+                <li><a href="#" class="hover:text-white transition">Twitter</a></li>
+            </ul>
+        </div>
+
+        <div>
+            <h3 class="text-white font-semibold mb-4">Legal</h3>
+            <ul class="space-y-2">
+                <li><a href="#" class="hover:text-white transition">Termos de Uso</a></li>
+                <li><a href="#" class="hover:text-white transition">Política de Privacidade</a></li>
+                <li><a href="#" class="hover:text-white transition">Cookies</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="border-t border-gray-700">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500">
+            <span>&copy; {{ date('Y') }} Hydrax. Todos os direitos reservados.</span>
+            <span class="mt-2 md:mt-0">Feito com 💧 por Caio Daniel</span>
+        </div>
+    </div>
+</footer>
 
 </body>
 </html>

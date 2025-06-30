@@ -85,6 +85,14 @@ Route::put('/usuarios/enderecos/{endereco}', [EnderecoUsuarioController::class, 
 Route::delete('/usuarios/enderecos/{endereco}', [EnderecoUsuarioController::class, 'destroy'])->name('usuarios.enderecos.destroy');
 
 
+Route::get('/usuarios/email', [UsuarioController::class, 'showEmailForm'])->name('usuarios.email.form');
+Route::post('/usuarios/email/update', [UsuarioController::class, 'updateEmailRequest'])->name('usuarios.email.update');
+
+
+Route::get('/usuarios/email/confirmar/{token}', [UsuarioController::class, 'confirmarNovoEmail'])->name('usuarios.email.confirmar');
+
+
+
 });
 
 /*

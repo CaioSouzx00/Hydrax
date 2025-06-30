@@ -6,6 +6,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Usuario;
+use Illuminate\Support\Str;
+use App\Models\PendingEmailChange;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\EmailChangeConfirmation;
 
 class UsuarioController extends Controller
 {
@@ -124,4 +128,63 @@ class UsuarioController extends Controller
         $enderecos = $usuario->enderecos; // Relacionamento já deve existir no model
         return view('usuarios.perfil', compact('usuario', 'enderecos'));
     }
+
+public function showEmailForm()
+    {
+        $usuario = Auth::guard('usuarios')->user();
+        return view('usuarios.partials.email', compact('usuario'));
+    }
+
+    // Processar pedido de troca de e-mail e enviar o e-mail de confirmação
+    public function updateEmailRequest(Request $request)
+{
+    $request->validate([
+        'novo_email' => 'required|email|unique:usuarios,email|unique:pending_email_changes,novo_email',
+    ]);
+
+    $usuario = Auth::guard('usuarios')->user();
+
+    if (!$usuario) {
+        return redirect()->route('login.form')->withErrors('Você precisa estar logado para trocar o e-mail.');
+    }
+
+    $token = bin2hex(random_bytes(30));
+
+    PendingEmailChange::create([
+        'usuario_id' => $usuario->id_usuarios,
+        'novo_email' => $request->input('novo_email'),
+        'token'     => $token,
+    ]);
+
+    // Enviar email para o e-mail atual (não para o novo)
+    Mail::to($usuario->email)->send(new EmailChangeConfirmation($usuario, $token));
+
+    return redirect()->back()->with('success', 'Um e-mail de confirmação foi enviado para seu endereço atual.');
+}
+
+
+    // Confirmar troca de e-mail via token
+   public function confirmarNovoEmail($token)
+{
+    $pending = PendingEmailChange::where('token', $token)->first();
+
+    if (!$pending) {
+        return redirect()->route('dashboard')->withErrors('Token inválido ou expirado.');
+    }
+
+    $usuario = Usuario::find($pending->usuario_id);
+
+    if (!$usuario) {
+        return redirect()->route('dashboard')->withErrors('Usuário não encontrado.');
+    }
+
+    // Atualiza e-mail do usuário
+    $usuario->email = $pending->novo_email;
+    $usuario->save();
+
+    $pending->delete();
+
+    return redirect()->route('dashboard')->with('success', 'Seu e-mail foi atualizado com sucesso!');
+}
+
 }
