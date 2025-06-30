@@ -79,10 +79,8 @@ Route::put('/usuarios/perfil', [UsuarioController::class, 'update'])->name('usua
 Route::get('/usuarios/enderecos/create', [EnderecoUsuarioController::class, 'create'])->name('usuarios.enderecos.create');
 Route::post('/usuarios/enderecos', [EnderecoUsuarioController::class, 'store'])->name('usuarios.enderecos.store');
 
-
-
 Route::get('/usuarios/enderecos', [EnderecoUsuarioController::class, 'index'])->name('usuarios.enderecos.index');
-Route::get('/usuarios/enderecos/{endereco}', [EnderecoUsuarioController::class, 'edit'])->name('usuarios.enderecos.edit');
+Route::get('/usuarios/enderecos/{endereco}/edit', [EnderecoUsuarioController::class, 'edit'])->name('usuarios.enderecos.edit');
 Route::put('/usuarios/enderecos/{endereco}', [EnderecoUsuarioController::class, 'update'])->name('usuarios.enderecos.update');
 Route::delete('/usuarios/enderecos/{endereco}', [EnderecoUsuarioController::class, 'destroy'])->name('usuarios.enderecos.destroy');
 
