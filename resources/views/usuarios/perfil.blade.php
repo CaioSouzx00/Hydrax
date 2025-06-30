@@ -12,8 +12,10 @@
     <!-- Menu lateral -->
     <aside class="w-1/4 bg-white rounded-lg shadow p-5">
         <div class="text-center mb-6">
-            <img src="https://via.placeholder.com/80" alt="Foto do usuário" class="w-20 h-20 rounded-full mx-auto object-cover" />
-            <p class="mt-2 font-semibold"></p>
+            <div class="w-20 h-20 rounded-full bg-orange-500 text-white flex items-center justify-center text-3xl font-bold select-none mx-auto">
+                {{ collect(explode(' ', $usuario->nome_completo))->map(fn($p) => strtoupper(substr($p, 0, 1)))->join('') }}
+            </div>
+            <p class="mt-2 font-semibold text-gray-800">{{ $usuario->nome_completo }}</p>
         </div>
 
         <ul class="text-sm space-y-3 text-gray-700">
@@ -24,73 +26,120 @@
                 <a href="#" data-tab="enderecos" class="menu-link hover:text-orange-600 block">🏠 Endereços</a>
                 <!-- Submenu de Endereços -->
                 <div id="submenu-enderecos" class="hidden flex flex-col ml-6 mt-1 text-sm text-gray-700">
-                    <a href="#" class="py-1 hover:text-orange-600">➕ Create</a>
-                    <a href="#" class="py-1 hover:text-orange-600">✏️ Update</a>
-                    <a href="#" class="py-1 hover:text-red-600">🗑️ Delete</a>
+                    <a href="#" id="criar-endereco-link" class="py-1 hover:text-orange-600">➕ Create</a>
                 </div>
             </li>
             <li>
-                <a href="#" class="menu-link hover:text-orange-600">💳 Cartões / Contas Bancárias</a>
+                <a href="#" data-tab="cartoes" class="menu-link hover:text-orange-600">💳 Cartões / Contas Bancárias</a>
             </li>
             <li>
-                <a href="#" class="menu-link hover:text-orange-600">🔒 Trocar Senha</a>
+                <a href="#" data-tab="senha" class="menu-link hover:text-orange-600">🔒 Trocar Senha</a>
             </li>
             <li>
-                <a href="#" class="menu-link hover:text-orange-600">🔐 Configurações de Privacidade</a>
+                <a href="#" data-tab="privacidade" class="menu-link hover:text-orange-600">🔐 Configurações de Privacidade</a>
             </li>
         </ul>
     </aside>
 
     <!-- Conteúdo dinâmico -->
     <main id="conteudo-principal" class="flex-1 bg-white rounded-lg shadow ml-8 p-6 overflow-auto">
-
+        <div class="text-center mt-20">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">👋 Olá! Seja bem-vindo ao seu painel</h2>
+            <p class="text-gray-600">Selecione uma opção no menu à esquerda para começar a gerenciar suas informações.</p>
+            <img src="https://cdn-icons-png.flaticon.com/512/747/747376.png" alt="Bem-vindo" class="w-32 mx-auto mt-6 opacity-70" />
+        </div>
     </main>
 </div>
 
-<!-- JS para troca de abas e menus -->
 <script>
+    // Função para adicionar event listeners nos botões de editar dentro da lista de endereços
+    function adicionarListenersEditarEnderecos() {
+        document.querySelectorAll('.editar-endereco').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const enderecoId = this.dataset.id;
+
+                fetch(`/usuarios/enderecos/${enderecoId}/edit`, {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                .then(res => {
+                    if (!res.ok) throw new Error('Erro ao carregar formulário de edição');
+                    return res.text();
+                })
+                .then(formHtml => {
+                    document.getElementById('conteudo-principal').innerHTML = formHtml;
+                })
+                .catch(() => alert('Erro ao carregar formulário de edição'));
+            });
+        });
+    }
+
+    // Clique nos links do menu lateral
     document.querySelectorAll('.menu-link').forEach(link => {
-        link.addEventListener('click', function (e) {
+        link.addEventListener('click', function(e) {
             e.preventDefault();
             const tab = this.dataset.tab;
-
             const submenu = document.getElementById('submenu-enderecos');
+
             if (tab === 'enderecos') {
                 submenu.classList.remove('hidden');
+                fetch('/usuarios/enderecos', {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error('Erro ao carregar lista de endereços');
+                    return response.text();
+                })
+                .then(html => {
+                    document.getElementById('conteudo-principal').innerHTML = html;
+                    adicionarListenersEditarEnderecos();
+                })
+                .catch(() => {
+                    document.getElementById('conteudo-principal').innerHTML = '<p class="text-red-600">Erro ao carregar conteúdo.</p>';
+                });
+
+            } else if (tab === 'perfil') {
+                submenu.classList.add('hidden');
+                fetch('/usuarios/perfil', {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error('Erro ao carregar perfil');
+                    return response.text();
+                })
+                .then(html => {
+                    document.getElementById('conteudo-principal').innerHTML = html;
+                })
+                .catch(() => {
+                    document.getElementById('conteudo-principal').innerHTML = '<p class="text-red-600">Erro ao carregar perfil.</p>';
+                });
+
             } else {
                 submenu.classList.add('hidden');
+                document.getElementById('conteudo-principal').innerHTML = '';
             }
+        });
+    });
 
-            let url = '';
-            if (tab === 'perfil') {
-                url = '/usuarios/perfil';
-            } else {
-                return;
-            }
+    // Listener para o botão Create do submenu Endereços
+    document.getElementById('criar-endereco-link').addEventListener('click', function(e) {
+        e.preventDefault();
 
-            // AQUI VOCÊ SUBSTITUI ESSA PARTE:
-            fetch(url, {
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            })
-            .then(response => {
-                if (!response.ok) throw new Error('Erro na resposta');
-                return response.text();
-            })
-            .then(html => {
-                document.getElementById('conteudo-principal').innerHTML = html;
-            })
-            .catch(() => {
-                document.getElementById('conteudo-principal').innerHTML = '<p class="text-red-600">Erro ao carregar conteúdo.</p>';
-            });
-
+        fetch('/usuarios/enderecos/create', {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('Erro ao carregar formulário de criação');
+            return response.text();
+        })
+        .then(html => {
+            document.getElementById('conteudo-principal').innerHTML = html;
+        })
+        .catch(() => {
+            document.getElementById('conteudo-principal').innerHTML = '<p class="text-red-600">Erro ao carregar conteúdo.</p>';
         });
     });
 </script>
-
-
-
 
 </body>
 </html>

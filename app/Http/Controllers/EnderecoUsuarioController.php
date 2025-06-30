@@ -5,23 +5,88 @@ namespace App\Http\Controllers;
 use App\Models\EnderecoUsuario;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class EnderecoUsuarioController extends Controller
 {
-    // Exibe o formulário de criação do endereço
-    public function create($id)
-    {
-        $usuario = Usuario::findOrFail($id);
-        return view('usuarios.enderecos.create', compact('usuario'));
-    }
+public function create()
+{
+    $usuario = Auth::guard('usuarios')->user();
+    return view('usuarios.partials.create', compact('usuario'));
+}
+
 
     // Processa o formulário de cadastro de endereço
-    public function store(Request $request, $id)
-    {
-        $quantidadeEnderecos = EnderecoUsuario::where('id_usuarios', $id)->count();
+public function store(Request $request)
+{
+    $usuario = Auth::guard('usuarios')->user();
 
-        if ($quantidadeEnderecos >= 3) {
-            return redirect()->back()->withErrors(['limite' => 'Você já cadastrou o número máximo de 3 endereços.']);
+    $quantidadeEnderecos = EnderecoUsuario::where('id_usuarios', $usuario->id_usuarios)->count();
+
+    if ($quantidadeEnderecos >= 3) {
+        return redirect()->back()->withErrors(['limite' => 'Você já cadastrou o número máximo de 3 endereços.']);
+    }
+
+    $validated = $request->validate([
+        'cidade' => 'required|string|max:60',
+        'cep' => 'required|string|max:10',
+        'bairro' => 'required|string|max:60',
+        'estado' => 'required|string|size:2',
+        'rua' => 'required|string|max:60',
+        'numero' => 'required|string|max:10',
+    ]);
+
+    $enderecoExistente = EnderecoUsuario::where('id_usuarios', $usuario->id_usuarios)
+        ->where('cidade', $validated['cidade'])
+        ->where('cep', $validated['cep'])
+        ->where('bairro', $validated['bairro'])
+        ->where('estado', $validated['estado'])
+        ->where('rua', $validated['rua'])
+        ->where('numero', $validated['numero'])
+        ->exists();
+
+    if ($enderecoExistente) {
+        return redirect()->back()->withErrors(['duplicado' => 'Este endereço já está cadastrado.']);
+    }
+
+    $endereco = new EnderecoUsuario($validated);
+    $endereco->id_usuarios = $usuario->id_usuarios;
+    $endereco->save();
+
+    return redirect()
+        ->route('usuario.painel')
+        ->with('success', 'Endereço cadastrado com sucesso!');
+}
+
+public function index()
+{
+    $usuario = Auth::guard('usuarios')->user();
+    $enderecos = EnderecoUsuario::where('id_usuarios', $usuario->id_usuarios)->get();
+
+    return view('usuarios.partials.enderecos', compact('usuario', 'enderecos'));
+}
+
+
+    // Exibe o formulário para editar o endereço
+    public function edit(EnderecoUsuario $endereco)
+    {
+        $usuario = Auth::guard('usuarios')->user();
+
+        // Garante que o endereço pertence ao usuário logado
+        if ($endereco->id_usuarios !== $usuario->id_usuarios) {
+            abort(403, 'Acesso negado');
+        }
+
+        return view('usuarios.partials.edit', compact('endereco'));
+    }
+
+    // Atualiza o endereço no banco
+    public function update(Request $request, EnderecoUsuario $endereco)
+    {
+        $usuario = Auth::guard('usuarios')->user();
+
+        if ($endereco->id_usuarios !== $usuario->id_usuarios) {
+            abort(403, 'Acesso negado');
         }
 
         $validated = $request->validate([
@@ -33,78 +98,19 @@ class EnderecoUsuarioController extends Controller
             'numero' => 'required|string|max:10',
         ]);
 
-        $enderecoExistente = EnderecoUsuario::where('id_usuarios', $id)
-            ->where('cidade', $validated['cidade'])
-            ->where('cep', $validated['cep'])
-            ->where('bairro', $validated['bairro'])
-            ->where('estado', $validated['estado'])
-            ->where('rua', $validated['rua'])
-            ->where('numero', $validated['numero'])
-            ->exists();
+        $endereco->update($validated);
 
-        if ($enderecoExistente) {
-            return redirect()->back()->withErrors(['duplicado' => 'Este endereço já está cadastrado.']);
-        }
-
-        $endereco = new EnderecoUsuario($validated);
-        $endereco->id_usuarios = $id;
-        $endereco->save();
-
-        return redirect()
-            ->route('usuario.painel', $id)
-            ->with('success', 'Endereço cadastrado com sucesso!');
+        return redirect()->route('usuario.painel')->with('success', 'Endereço atualizado com sucesso!');
     }
 
-    // Exibe o formulário de edição do endereço
-    public function edit($id, $endereco_id)
-    {
-        $usuario = Usuario::findOrFail($id);
-        $endereco = $usuario->enderecos()->where('id_endereco', $endereco_id)->firstOrFail();
-
-        return redirect()->route('usuario.enderecos', ['id' => $id])
-        ->with('success', 'Endereço atualizado com sucesso!');
-    }
-
-public function update(Request $request, $id, $endereco_id)
+public function destroy(EnderecoUsuario $endereco)
 {
+    $endereco->delete();
 
-    $validated = $request->validate([
-        'cidade' => 'required|string|max:100',
-        'cep' => 'required|string|max:15',
-        'bairro' => 'required|string|max:100',
-        'estado' => 'required|string|max:50',
-        'rua' => 'required|string|max:255',
-        'numero' => 'required|string|max:10',
-    ]);
-
-    $endereco = EnderecoUsuario::where('id_usuarios', $id)->where('id_endereco', $endereco_id)->firstOrFail();
-
-    $endereco->update($validated);
-
-    return redirect()->route('usuario.enderecos', ['id' => $id])
-        ->with('success', 'Endereço atualizado com sucesso!');
+    return redirect()->route('usuario.painel')->with('success', 'Endereço excluído com sucesso!');
 }
 
-    // Exibe todos os endereços de um usuário
-    public function index($id)
-    {
-        $usuario = Usuario::findOrFail($id);
-        $enderecos = EnderecoUsuario::where('id_usuarios', $id)->get();
 
-       return view('usuarios.enderecos.index', compact('usuario', 'enderecos'));
-    }
-
-    // Remove um endereço
-    public function destroy($id, $endereco_id)
-    {
-        $endereco = EnderecoUsuario::where('id_usuarios', $id)
-            ->where('id_endereco', $endereco_id)
-            ->firstOrFail();
-
-        $endereco->delete();
-
-        return redirect()->route('usuario.painel', ['id' => $id])->with('success', 'Endereço excluído com sucesso!');
-    }
 
 
 public function conteudo($id)
