@@ -67,6 +67,34 @@
 </div>
 
 <script>
+    // Event delegation para capturar submit do form-verificar-senha dentro do conteúdo dinâmico
+    document.getElementById('conteudo-principal').addEventListener('submit', function(e) {
+        if (e.target && e.target.id === 'form-verificar-senha') {
+            e.preventDefault();
+
+            const formData = new FormData(e.target);
+
+            fetch('/verificar', {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': formData.get('_token')
+                },
+                body: formData
+            })
+            .then(res => {
+                if (res.status === 401) throw new Error('Senha incorreta.');
+                if (!res.ok) throw new Error('Erro ao verificar senha.');
+                return res.text();
+            })
+            .then(html => {
+                document.getElementById('conteudo-principal').innerHTML = html;
+            })
+            .catch(err => alert(err.message));
+        }
+    });
+
+    // Função para adicionar listeners nos botões de editar endereço (quando conteúdo é carregado)
     function adicionarListenersEditarEnderecos() {
         document.querySelectorAll('.editar-endereco').forEach(btn => {
             btn.addEventListener('click', function(e) {
@@ -144,6 +172,21 @@
                     document.getElementById('conteudo-principal').innerHTML = '<p class="text-red-600">Erro ao carregar conteúdo.</p>';
                 });
 
+            } else if (tab === 'senha') {
+                submenu.classList.add('hidden');
+                fetch('/verificar', {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error('Erro ao carregar verificação de senha');
+                    return response.text();
+                })
+                .then(html => {
+                    document.getElementById('conteudo-principal').innerHTML = html;
+                })
+                .catch(() => {
+                    document.getElementById('conteudo-principal').innerHTML = '<p class="text-red-600">Erro ao carregar conteúdo.</p>';
+                });
             } else {
                 submenu.classList.add('hidden');
                 document.getElementById('conteudo-principal').innerHTML = '';
@@ -170,6 +213,8 @@
         });
     });
 </script>
+
+
 
 <!-- Rodapé estilo Nike -->
 <footer class="bg-black text-gray-400 mt-8">

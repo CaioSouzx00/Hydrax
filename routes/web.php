@@ -12,6 +12,7 @@ use App\Http\Middleware\FornecedorMiddleware;
 use App\Http\Controllers\FornecedorController;
 use App\Http\Controllers\Auth\FornecedorPasswordResetController;
 use App\Http\Controllers\ProdutoFornecedorController;
+use App\Http\Controllers\SenhaUsuarioController;
 
 Route::prefix('fornecedores/senha')->group(function () {
     // 1. Formulário para digitar o e-mail
@@ -68,13 +69,13 @@ Route::post('/senha/redefinir', [PasswordResetController::class, 'redefinirSenha
 |--------------------------------------------------------------------------
 */
 Route::middleware([UsuarioMiddleware::class])->group(function () {
-    Route::get('/dashboard', [UsuarioController::class, 'dashboard'])->name('dashboard');
-    Route::post('/logout', [UsuarioController::class, 'logout'])->name('logout');
-    Route::get('/painel', [UsuarioController::class, 'painel'])->name('usuario.painel');
+
+Route::get('/dashboard', [UsuarioController::class, 'dashboard'])->name('dashboard');
+Route::post('/logout', [UsuarioController::class, 'logout'])->name('logout');
+Route::get('/painel', [UsuarioController::class, 'painel'])->name('usuario.painel');
 
 Route::get('/usuarios/perfil', [UsuarioController::class, 'edit'])->name('usuario.perfil');
 Route::put('/usuarios/perfil', [UsuarioController::class, 'update'])->name('usuario.update');
-
 
 Route::get('/usuarios/enderecos/create', [EnderecoUsuarioController::class, 'create'])->name('usuarios.enderecos.create');
 Route::post('/usuarios/enderecos', [EnderecoUsuarioController::class, 'store'])->name('usuarios.enderecos.store');
@@ -84,13 +85,15 @@ Route::get('/usuarios/enderecos/{endereco}/edit', [EnderecoUsuarioController::cl
 Route::put('/usuarios/enderecos/{endereco}', [EnderecoUsuarioController::class, 'update'])->name('usuarios.enderecos.update');
 Route::delete('/usuarios/enderecos/{endereco}', [EnderecoUsuarioController::class, 'destroy'])->name('usuarios.enderecos.destroy');
 
-
 Route::get('/usuarios/email', [UsuarioController::class, 'showEmailForm'])->name('usuarios.email.form');
 Route::post('/usuarios/email/update', [UsuarioController::class, 'updateEmailRequest'])->name('usuarios.email.update');
-
-
 Route::get('/usuarios/email/confirmar/{token}', [UsuarioController::class, 'confirmarNovoEmail'])->name('usuarios.email.confirmar');
 
+
+    Route::get('/verificar', [SenhaUsuarioController::class, 'verificarForm'])->name('usuarios.senha.verificar.form');
+    Route::post('/verificar', [SenhaUsuarioController::class, 'verificar'])->name('usuarios.senha.verificar');
+    Route::get('/trocar', [SenhaUsuarioController::class, 'trocarForm'])->name('usuarios.senha.trocar.form');
+    Route::post('/trocar', [SenhaUsuarioController::class, 'trocar'])->name('usuarios.senha.trocar');
 
 
 });

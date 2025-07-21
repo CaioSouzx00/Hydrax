@@ -10,6 +10,9 @@ use Illuminate\Support\Str;
 use App\Models\PendingEmailChange;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\EmailChangeConfirmation;
+use App\Mail\CodigoRedefinicaoSenha;
+use Illuminate\Support\Facades\DB;
+
 
 class UsuarioController extends Controller
 {
@@ -186,5 +189,8 @@ public function showEmailForm()
 
     return redirect()->route('dashboard')->with('success', 'Seu e-mail foi atualizado com sucesso!');
 }
+
+
+
 
 }
