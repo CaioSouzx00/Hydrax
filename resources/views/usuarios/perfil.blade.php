@@ -42,16 +42,10 @@
                 </div>
             </li>
             <li>
-                <a href="#" data-tab="cartoes" class="menu-link hover:text-orange-600">💳 Cartões / Contas Bancárias</a>
-            </li>
-            <li>
                 <a href="#" data-tab="senha" class="menu-link hover:text-orange-600">🔒 Trocar Senha</a>
             </li>
             <li>
                 <a href="#" data-tab="email" class="menu-link hover:text-orange-600">🔒 Trocar Email</a>
-            </li>
-            <li>
-                <a href="#" data-tab="privacidade" class="menu-link hover:text-orange-600">🔐 Configurações de Privacidade</a>
             </li>
         </ul>
     </aside>

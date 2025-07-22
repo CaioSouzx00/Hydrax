@@ -36,6 +36,7 @@ class SenhaUsuarioController extends Controller
 
     public function trocar(Request $request)
 {
+
     $request->validate([
         'nova_senha' => 'required|min:6|confirmed',
     ]);
