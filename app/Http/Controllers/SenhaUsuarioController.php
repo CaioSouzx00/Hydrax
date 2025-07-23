@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\CodigoVerificacaoMail;
+
 
 class SenhaUsuarioController extends Controller
 {
@@ -48,5 +52,53 @@ class SenhaUsuarioController extends Controller
 
     return response()->json(['sucesso' => 'Senha alterada com sucesso.']);
 }
+
+
+
+public function enviarCodigo(Request $request)
+{
+    $usuario = Auth::guard('usuarios')->user();
+
+    if (!$usuario) {
+        return redirect()->route('login')->withErrors(['msg' => 'Faça login para redefinir sua senha.']);
+    }
+
+    $codigo = rand(100000, 999999);
+    Cache::put('codigo_verificacao_' . $usuario->id, $codigo, now()->addMinutes(10)); // válido por 10min
+
+    Mail::to($usuario->email)->send(new CodigoVerificacaoMail($codigo));
+
+    return view('usuarios.partials.verificar-codigo');
+
+}
+
+public function verificarCodigo(Request $request)
+{
+    $usuario = Auth::guard('usuarios')->user();
+
+    if (!$usuario) {
+        return redirect()->route('login')->withErrors(['msg' => 'Faça login para verificar o código.']);
+    }
+
+    $codigoCache = Cache::get('codigo_verificacao_' . $usuario->id);
+
+    if ($request->codigo == $codigoCache) {
+        Cache::forget('codigo_verificacao_' . $usuario->id);
+        return view('usuarios.partials.trocar_senha');
+    } else {
+        return back()->withErrors(['codigo' => 'Código incorreto ou expirado.']);
+    }
+}
+
+public function mostrarFormularioVerificarCodigo(Request $request)
+{
+    if ($request->ajax()) {
+        return view('usuarios.partials.verificar-codigo'); // só o formulário parcial, sem layout
+    }
+    return redirect('/painel'); // ou onde quiser redirecionar fora do ajax
+}
+
+
+
 
 }

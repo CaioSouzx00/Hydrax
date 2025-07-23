@@ -90,10 +90,16 @@ Route::post('/usuarios/email/update', [UsuarioController::class, 'updateEmailReq
 Route::get('/usuarios/email/confirmar/{token}', [UsuarioController::class, 'confirmarNovoEmail'])->name('usuarios.email.confirmar');
 
 
-    Route::get('/verificar', [SenhaUsuarioController::class, 'verificarForm'])->name('usuarios.senha.verificar.form');
-    Route::post('/verificar', [SenhaUsuarioController::class, 'verificar'])->name('usuarios.senha.verificar');
-    Route::get('/trocar', [SenhaUsuarioController::class, 'trocarForm'])->name('usuarios.senha.trocar.form');
-    Route::post('/trocar', [SenhaUsuarioController::class, 'trocar'])->name('usuarios.senha.trocar');
+Route::get('/verificar', [SenhaUsuarioController::class, 'verificarForm'])->name('usuarios.senha.verificar.form');
+Route::post('/verificar', [SenhaUsuarioController::class, 'verificar'])->name('usuarios.senha.verificar');
+Route::get('/trocar', [SenhaUsuarioController::class, 'trocarForm'])->name('usuarios.senha.trocar.form');
+Route::post('/trocar', [SenhaUsuarioController::class, 'trocar'])->name('usuarios.senha.trocar');
+
+
+Route::get('/usuarios/senha/enviar-codigo', [SenhaUsuarioController::class, 'enviarCodigo'])->name('usuarios.senha.enviarCodigo');
+Route::post('/usuarios/senha/verificar-codigo', [SenhaUsuarioController::class, 'verificarCodigo'])->name('usuarios.senha.verificarCodigo');
+Route::get('/usuarios/senha/verificar-codigo', [SenhaUsuarioController::class, 'mostrarFormularioVerificarCodigo'])->name('usuarios.senha.verificarCodigo.form');
+
 
 
 });
