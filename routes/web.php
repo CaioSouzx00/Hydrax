@@ -96,7 +96,6 @@ Route::get('/trocar', [SenhaUsuarioController::class, 'trocarForm'])->name('usua
 Route::post('/trocar', [SenhaUsuarioController::class, 'trocar'])->name('usuarios.senha.trocar');
 
 
-Route::get('/usuarios/senha/enviar-codigo', [SenhaUsuarioController::class, 'enviarCodigo'])->name('usuarios.senha.enviarCodigo');
 Route::post('/usuarios/senha/verificar-codigo', [SenhaUsuarioController::class, 'verificarCodigo'])->name('usuarios.senha.verificarCodigo');
 Route::get('/usuarios/senha/verificar-codigo', [SenhaUsuarioController::class, 'mostrarFormularioVerificarCodigo'])->name('usuarios.senha.verificarCodigo.form');
 

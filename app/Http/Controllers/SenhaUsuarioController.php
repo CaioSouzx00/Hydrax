@@ -55,23 +55,6 @@ class SenhaUsuarioController extends Controller
 
 
 
-public function enviarCodigo(Request $request)
-{
-    $usuario = Auth::guard('usuarios')->user();
-
-    if (!$usuario) {
-        return redirect()->route('login')->withErrors(['msg' => 'Faça login para redefinir sua senha.']);
-    }
-
-    $codigo = rand(100000, 999999);
-    Cache::put('codigo_verificacao_' . $usuario->id, $codigo, now()->addMinutes(10)); // válido por 10min
-
-    Mail::to($usuario->email)->send(new CodigoVerificacaoMail($codigo));
-
-    return view('usuarios.partials.verificar-codigo');
-
-}
-
 public function verificarCodigo(Request $request)
 {
     $usuario = Auth::guard('usuarios')->user();
@@ -90,13 +73,21 @@ public function verificarCodigo(Request $request)
     }
 }
 
-public function mostrarFormularioVerificarCodigo(Request $request)
+
+public function mostrarFormularioVerificarCodigo()
 {
-    if ($request->ajax()) {
-        return view('usuarios.partials.verificar-codigo'); // só o formulário parcial, sem layout
+    $usuario = Auth::guard('usuarios')->user();
+    if ($usuario) {
+        $codigo = rand(100000, 999999);
+        Cache::put('codigo_verificacao_' . $usuario->id, $codigo, now()->addMinutes(10));
+        Mail::to($usuario->email)->send(new CodigoVerificacaoMail($codigo));
     }
-    return redirect('/painel'); // ou onde quiser redirecionar fora do ajax
+
+    return view('usuarios.partials.verificar-codigo');
 }
+
+
+
 
 
 
