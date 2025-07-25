@@ -3,6 +3,8 @@
 namespace App\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
+use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends HttpKernel
 {
@@ -49,4 +51,16 @@ class Kernel extends HttpKernel
         //'admin' => \App\Http\Middleware\AdministradorMiddleware::class,
         //'fornecedor' => \App\Http\Middleware\FornecedorMiddleware::class,
     ];
+
+    protected function schedule(Schedule $schedule)
+    {
+        $schedule->command('usuarios:limpar-exclusoes')->everyMinute();
+    }
+
+    protected function commands()
+    {
+        $this->load(__DIR__.'/Commands');
+
+        require base_path('routes/console.php');
+    }
 }

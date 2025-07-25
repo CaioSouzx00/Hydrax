@@ -13,7 +13,6 @@ class Usuario extends Authenticatable
     protected $table = 'usuarios';
     protected $primaryKey = 'id_usuarios';
 
-    public $timestamps = false; // Se não tem created_at e updated_at
 
     protected $fillable = [
         'sexo',
@@ -23,6 +22,7 @@ class Usuario extends Authenticatable
         'password',
         'telefone',
         'cpf',
+        'data_exclusao_agendada',
         'foto',
     ];
 
@@ -30,6 +30,7 @@ class Usuario extends Authenticatable
 
     protected $casts = [
         'data_nascimento' => 'date',
+        'data_exclusao_agendada' => 'datetime',
     ];
 
     public function enderecos()

@@ -16,8 +16,9 @@ class PrivacidadeController extends Controller
         return response()->json(['mensagem' => 'Usuário não autenticado'], 401);
     }
 
-    $usuario->data_exclusao_agendada = now()->addDays(0);
+    $usuario->data_exclusao_agendada = now()->addMinutes(1);
     $usuario->save();
+
 
     return response()->json(['mensagem' => 'Sua conta foi agendada para exclusão em 3 dias.']);
 }

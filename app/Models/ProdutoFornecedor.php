@@ -8,20 +8,22 @@ class ProdutoFornecedor extends Model
 {
     protected $table = 'produtos_fornecedores';
 
-   protected $fillable = [
-    'nome',
-    'descricao',
-    'preco',
-    'estoque_imagem',
-    'caracteristicas',
-    'historico_modelos',
-    'tamanhos_disponiveis',
-    'genero',
-    'categoria',
-    'fotos',
-    'slug',
-    'ativo',
-];
+    protected $primaryKey = 'id_produtos';
+    public $incrementing = true;
+    protected $keyType = 'int';
 
+    protected $fillable = [
+        'nome',
+        'descricao',
+        'preco',
+        'estoque_imagem',
+        'caracteristicas',
+        'historico_modelos',
+        'tamanhos_disponiveis',
+        'genero',
+        'categoria',
+        'fotos',
+        'slug',
+        'ativo',
+    ];
 }
-
