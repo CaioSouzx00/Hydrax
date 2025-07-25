@@ -47,9 +47,11 @@
             <li>
                 <a href="#" data-tab="email" class="menu-link hover:text-orange-600">🔒 Trocar Email</a>
             </li>
+            <li>
+                <a href="#" data-tab="privacidade" class="menu-link hover:text-orange-600">🛡️ Configurações de Privacidade</a>
+            </li>
         </ul>
     </aside>
-
 
     <!-- Loader, inicialmente escondido -->
     <div id="loader-main" class="hidden absolute inset-0 bg-white bg-opacity-70 flex items-center justify-center rounded">
@@ -131,41 +133,37 @@ document.addEventListener('DOMContentLoaded', function () {
     principal.addEventListener('click', function (e) {
         const el = e.target;
         if (el && el.id === 'link-nao-sei-senha') {
-    e.preventDefault();
+            e.preventDefault();
 
-    loader.classList.remove('hidden');  // mostra loader
+            loader.classList.remove('hidden');  // mostra loader
 
-    const start = Date.now(); // marca o tempo
+            const start = Date.now(); // marca o tempo
 
-    fetch('/usuarios/senha/verificar-codigo', {
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest'
+            fetch('/usuarios/senha/verificar-codigo', {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(res => {
+                if (!res.ok) throw new Error('Erro ao carregar formulário de verificação');
+                return res.text();
+            })
+            .then(html => {
+                const elapsed = Date.now() - start;
+                const delay = Math.max(1000 - elapsed, 0); // garante ao menos 1s de loading visual
+                setTimeout(() => {
+                    loader.classList.add('hidden');  // esconde loader
+                    principal.innerHTML = html;
+                }, delay);
+            })
+            .catch(err => {
+                loader.classList.add('hidden');  // esconde loader em erro
+                alert(err.message);
+            });
         }
-    })
-    .then(res => {
-        if (!res.ok) throw new Error('Erro ao carregar formulário de verificação');
-        return res.text();
-    })
-    .then(html => {
-        const elapsed = Date.now() - start;
-        const delay = Math.max(1000 - elapsed, 0); // garante ao menos 1s de loading visual
-        setTimeout(() => {
-            loader.classList.add('hidden');  // esconde loader
-            principal.innerHTML = html;
-        }, delay);
-    })
-    .catch(err => {
-        loader.classList.add('hidden');  // esconde loader em erro
-        alert(err.message);
-    });
-}
 
     });
 });
-
-
-
-
 
 document.getElementById('conteudo-principal').addEventListener('submit', function(e) {
     if (e.target && e.target.id === 'form-verificar-codigo') {
@@ -193,8 +191,6 @@ document.getElementById('conteudo-principal').addEventListener('submit', functio
         .catch(err => alert(err.message));
     }
 });
-
-
 
 document.getElementById('conteudo-principal').addEventListener('submit', function(e) {
   if (e.target && e.target.id === 'form-trocar-senha') {
@@ -225,109 +221,165 @@ document.getElementById('conteudo-principal').addEventListener('submit', functio
 });
 
 
-
-
-
-
-    // Clique nos links do menu lateral
-    document.querySelectorAll('.menu-link').forEach(link => {
-        link.addEventListener('click', function(e) {
+    document.getElementById('conteudo-principal').addEventListener('submit', function (e) {
+        if (e.target && e.target.id === 'form-solicitar-exclusao') {
             e.preventDefault();
-            const tab = this.dataset.tab;
-            const submenu = document.getElementById('submenu-enderecos');
 
-            if (tab === 'enderecos') {
-                submenu.classList.remove('hidden');
-                fetch('/usuarios/enderecos', {
-                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
-                })
-                .then(response => {
-                    if (!response.ok) throw new Error('Erro ao carregar lista de endereços');
-                    return response.text();
-                })
-                .then(html => {
-                    document.getElementById('conteudo-principal').innerHTML = html;
-                    adicionarListenersEditarEnderecos();
-                })
-                .catch(() => {
-                    document.getElementById('conteudo-principal').innerHTML = '<p class="text-red-600">Erro ao carregar conteúdo.</p>';
-                });
+            const form = e.target;
 
-            } else if (tab === 'perfil') {
-                submenu.classList.add('hidden');
-                fetch('/usuarios/perfil', {
-                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
-                })
-                .then(response => {
-                    if (!response.ok) throw new Error('Erro ao carregar perfil');
-                    return response.text();
-                })
-                .then(html => {
-                    document.getElementById('conteudo-principal').innerHTML = html;
-                })
-                .catch(() => {
-                    document.getElementById('conteudo-principal').innerHTML = '<p class="text-red-600">Erro ao carregar perfil.</p>';
-                });
+            fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': form.querySelector('[name=_token]').value,
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: new FormData(form)
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert(data.mensagem);
 
-            } else if (tab === 'email') {
-                submenu.classList.add('hidden');
-                fetch('/usuarios/email', {
-                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
-                })
-                .then(response => {
-                    if (!response.ok) throw new Error('Erro ao carregar tela de troca de e-mail');
-                    return response.text();
-                })
-                .then(html => {
-                    document.getElementById('conteudo-principal').innerHTML = html;
-                })
-                .catch(() => {
-                    document.getElementById('conteudo-principal').innerHTML = '<p class="text-red-600">Erro ao carregar conteúdo.</p>';
-                });
-
-            } else if (tab === 'senha') {
-                submenu.classList.add('hidden');
-                fetch('/verificar', {
-                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
-                })
-                .then(response => {
-                    if (!response.ok) throw new Error('Erro ao carregar verificação de senha');
-                    return response.text();
-                })
-                .then(html => {
-                    document.getElementById('conteudo-principal').innerHTML = html;
-                })
-                .catch(() => {
-                    document.getElementById('conteudo-principal').innerHTML = '<p class="text-red-600">Erro ao carregar conteúdo.</p>';
-                });
-            } else {
-                submenu.classList.add('hidden');
-                document.getElementById('conteudo-principal').innerHTML = '';
-            }
-        });
+                // Opcional: esvaziar ou atualizar o conteúdo principal após exclusão
+                document.getElementById('conteudo-principal').innerHTML = `
+                    <div class="text-center py-12">
+                        <h2 class="text-2xl font-bold text-red-600 mb-4">Conta marcada para exclusão</h2>
+                        <p class="text-gray-700">Você receberá um e-mail com instruções caso deseje cancelar.</p>
+                    </div>
+                `;
+            })
+            .catch(() => alert('Erro ao solicitar exclusão.'));
+        }
     });
 
-    // Botão "Create" dos endereços
-    document.getElementById('criar-endereco-link').addEventListener('click', function(e) {
+
+
+// Clique nos links do menu lateral
+document.querySelectorAll('.menu-link').forEach(link => {
+    link.addEventListener('click', function(e) {
         e.preventDefault();
+        const tab = this.dataset.tab;
+        const submenu = document.getElementById('submenu-enderecos');
 
-        fetch('/usuarios/enderecos/create', {
-            headers: { 'X-Requested-With': 'XMLHttpRequest' }
-        })
-        .then(response => {
-            if (!response.ok) throw new Error('Erro ao carregar formulário de criação');
-            return response.text();
-        })
-        .then(html => {
-            document.getElementById('conteudo-principal').innerHTML = html;
-        })
-        .catch(() => {
-            document.getElementById('conteudo-principal').innerHTML = '<p class="text-red-600">Erro ao carregar conteúdo.</p>';
-        });
+        if (tab === 'enderecos') {
+            submenu.classList.remove('hidden');
+            fetch('/usuarios/enderecos', {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Erro ao carregar lista de endereços');
+                return response.text();
+            })
+            .then(html => {
+                document.getElementById('conteudo-principal').innerHTML = html;
+                adicionarListenersEditarEnderecos();
+            })
+            .catch(() => {
+                document.getElementById('conteudo-principal').innerHTML = '<p class="text-red-600">Erro ao carregar conteúdo.</p>';
+            });
+
+        } else if (tab === 'perfil') {
+            submenu.classList.add('hidden');
+            fetch('/usuarios/perfil', {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Erro ao carregar perfil');
+                return response.text();
+            })
+            .then(html => {
+                document.getElementById('conteudo-principal').innerHTML = html;
+            })
+            .catch(() => {
+                document.getElementById('conteudo-principal').innerHTML = '<p class="text-red-600">Erro ao carregar perfil.</p>';
+            });
+
+        } else if (tab === 'email') {
+            submenu.classList.add('hidden');
+            fetch('/usuarios/email', {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Erro ao carregar tela de troca de e-mail');
+                return response.text();
+            })
+            .then(html => {
+                document.getElementById('conteudo-principal').innerHTML = html;
+            })
+            .catch(() => {
+                document.getElementById('conteudo-principal').innerHTML = '<p class="text-red-600">Erro ao carregar conteúdo.</p>';
+            });
+
+        } else if (tab === 'senha') {
+            submenu.classList.add('hidden');
+            fetch('/verificar', {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Erro ao carregar verificação de senha');
+                return response.text();
+            })
+            .then(html => {
+                document.getElementById('conteudo-principal').innerHTML = html;
+            })
+            .catch(() => {
+                document.getElementById('conteudo-principal').innerHTML = '<p class="text-red-600">Erro ao carregar conteúdo.</p>';
+            });
+        }  else if (tab === 'privacidade') {
+    submenu.classList.add('hidden');
+
+    const loader = document.getElementById('loader-main');
+    const principal = document.getElementById('conteudo-principal');
+
+    loader.classList.remove('hidden');
+
+    const start = Date.now();
+
+    fetch('/privacidade', {
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Erro ao carregar configurações de privacidade');
+        return response.text();
+    })
+    .then(html => {
+        const elapsed = Date.now() - start;
+        const delay = Math.max(1000 - elapsed, 0);
+
+        setTimeout(() => {
+            loader.classList.add('hidden');
+            principal.innerHTML = html;
+        }, delay);
+    })
+    .catch(() => {
+        loader.classList.add('hidden');
+        principal.innerHTML = '<p class="text-red-600">Erro ao carregar configurações de privacidade.</p>';
     });
+    } else {
+            submenu.classList.add('hidden');
+            document.getElementById('conteudo-principal').innerHTML = '';
+        }
+    });
+});
+
+// Botão "Create" dos endereços
+document.getElementById('criar-endereco-link').addEventListener('click', function(e) {
+    e.preventDefault();
+
+    fetch('/usuarios/enderecos/create', {
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Erro ao carregar formulário de criação');
+        return response.text();
+    })
+    .then(html => {
+        document.getElementById('conteudo-principal').innerHTML = html;
+    })
+    .catch(() => {
+        document.getElementById('conteudo-principal').innerHTML = '<p class="text-red-600">Erro ao carregar conteúdo.</p>';
+    });
+});
 </script>
-
-
 
 <!-- Rodapé estilo Nike -->
 <footer class="bg-black text-gray-400 mt-8">

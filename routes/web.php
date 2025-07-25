@@ -13,6 +13,7 @@ use App\Http\Controllers\FornecedorController;
 use App\Http\Controllers\Auth\FornecedorPasswordResetController;
 use App\Http\Controllers\ProdutoFornecedorController;
 use App\Http\Controllers\SenhaUsuarioController;
+use App\Http\Controllers\PrivacidadeController;
 
 Route::prefix('fornecedores/senha')->group(function () {
     // 1. Formulário para digitar o e-mail
@@ -98,6 +99,16 @@ Route::post('/trocar', [SenhaUsuarioController::class, 'trocar'])->name('usuario
 
 Route::post('/usuarios/senha/verificar-codigo', [SenhaUsuarioController::class, 'verificarCodigo'])->name('usuarios.senha.verificarCodigo');
 Route::get('/usuarios/senha/verificar-codigo', [SenhaUsuarioController::class, 'mostrarFormularioVerificarCodigo'])->name('usuarios.senha.verificarCodigo.form');
+
+
+// Página de privacidade
+Route::get('/privacidade', function () {
+    return view('usuarios.partials.privacidade');
+})->name('usuarios.privacidade');
+
+// Exclusão de conta
+Route::post('/excluir-conta', [PrivacidadeController::class, 'excluirConta'])->name('usuarios.excluir-conta');
+
 
 
 

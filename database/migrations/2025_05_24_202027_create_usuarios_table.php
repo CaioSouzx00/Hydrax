@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->string('password');
             $table->string('telefone')->nullable();
             $table->string('cpf')->unique();
+            $table->timestamp('data_exclusao_agendada')->nullable();
             $table->timestamps();
         });
     }
