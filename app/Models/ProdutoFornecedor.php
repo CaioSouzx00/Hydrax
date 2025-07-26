@@ -15,6 +15,7 @@ class ProdutoFornecedor extends Model
     protected $casts = [
     'tamanhos_disponiveis' => 'array',
     'fotos' => 'array',
+    'estoque_imagem' => 'array',
 ];
 
 

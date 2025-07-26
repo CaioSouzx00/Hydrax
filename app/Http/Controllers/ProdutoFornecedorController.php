@@ -13,32 +13,37 @@ class ProdutoFornecedorController extends Controller
     {
          return view('fornecedores.produtos.partials.create');
     }
-
 public function store(Request $request)
 {
-
     $fornecedor = Auth::guard('fornecedores')->user();
 
     $request->validate([
         'nome' => 'required|string|max:255',
         'descricao' => 'required|string',
         'preco' => 'required|numeric|min:0',
-        'estoque_imagem' => 'nullable|string',
+        'estoque_imagem.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // aceita múltiplas imagens
         'caracteristicas' => 'required|string',
         'historico_modelos' => 'nullable|string',
         'tamanhos_disponiveis' => 'nullable|string',
         'genero' => 'required|in:MASCULINO,FEMININO,UNISSEX',
         'categoria' => 'required|string|max:100',
-        'fotos.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // validação para cada imagem
+        'fotos.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         'ativo' => 'required|boolean',
     ]);
 
+    // Salvar imagens fotos
     $imagens = [];
-
     if ($request->hasFile('fotos')) {
         foreach ($request->file('fotos') as $file) {
-            $path = $file->store('produtos', 'public'); // salva em storage/app/public/produtos
-            $imagens[] = $path;
+            $imagens[] = $file->store('produtos', 'public');
+        }
+    }
+
+    // Salvar imagens estoque
+    $imagensEstoque = [];
+    if ($request->hasFile('estoque_imagem')) {
+        foreach ($request->file('estoque_imagem') as $file) {
+            $imagensEstoque[] = $file->store('produtos/estoque', 'public');
         }
     }
 
@@ -46,7 +51,7 @@ public function store(Request $request)
         'nome' => $request->nome,
         'descricao' => $request->descricao,
         'preco' => $request->preco,
-        'estoque_imagem' => $request->estoque_imagem,
+        'estoque_imagem' => !empty($imagensEstoque) ? json_encode($imagensEstoque) : null,
         'caracteristicas' => $request->caracteristicas,
         'historico_modelos' => $request->historico_modelos,
         'tamanhos_disponiveis' => $request->tamanhos_disponiveis
@@ -54,7 +59,7 @@ public function store(Request $request)
             : null,
         'genero' => $request->genero,
         'categoria' => $request->categoria,
-        'fotos' => json_encode($imagens), // salva o array JSON com os caminhos
+        'fotos' => !empty($imagens) ? json_encode($imagens) : null,
         'ativo' => $request->ativo,
         'slug' => Str::slug($request->nome) . '-' . uniqid(),
         'id_fornecedores' => $fornecedor->id_fornecedores,
@@ -63,6 +68,68 @@ public function store(Request $request)
     return redirect()->route('fornecedores.produtos.index')
                      ->with('success', 'Produto cadastrado com sucesso!');
 }
+
+
+public function update(Request $request, $id)
+{
+    $produto = ProdutoFornecedor::findOrFail($id);
+
+    $request->validate([
+        'nome' => 'required|string|max:255',
+        'descricao' => 'required|string',
+        'preco' => 'required|numeric|min:0',
+        'estoque_imagem.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+        'caracteristicas' => 'required|string',
+        'historico_modelos' => 'nullable|string',
+        'tamanhos_disponiveis' => 'nullable|string',
+        'genero' => 'required|in:MASCULINO,FEMININO,UNISSEX',
+        'categoria' => 'required|string|max:100',
+        'fotos.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+        'ativo' => 'required|boolean',
+    ]);
+
+    $data = $request->only([
+        'nome',
+        'descricao',
+        'preco',
+        'caracteristicas',
+        'historico_modelos',
+        'genero',
+        'categoria',
+        'ativo',
+    ]);
+
+    // Atualiza tamanhos disponíveis
+    $data['tamanhos_disponiveis'] = $request->tamanhos_disponiveis
+        ? json_encode(array_map('trim', explode(',', $request->tamanhos_disponiveis)))
+        : null;
+
+    // Atualiza fotos se enviar
+    if ($request->hasFile('fotos')) {
+        $fotosPaths = [];
+        foreach ($request->file('fotos') as $foto) {
+            $fotosPaths[] = $foto->store('produtos', 'public');
+        }
+        $data['fotos'] = json_encode($fotosPaths);
+    }
+
+    // Atualiza estoque_imagem se enviar
+    if ($request->hasFile('estoque_imagem')) {
+        $estoquePaths = [];
+        foreach ($request->file('estoque_imagem') as $img) {
+            $estoquePaths[] = $img->store('produtos/estoque', 'public');
+        }
+        $data['estoque_imagem'] = json_encode($estoquePaths);
+    }
+
+    // Atualiza slug
+    $data['slug'] = \Str::slug($request->nome);
+
+    $produto->update($data);
+
+    return redirect()->back()->with('success', 'Produto atualizado com sucesso!');
+}
+
 
 
     public function index()
@@ -82,7 +149,24 @@ public function listar()
 
     $produtos = ProdutoFornecedor::where('id_fornecedores', $fornecedor->id_fornecedores)->get();
 
+    // Decodifica tamanhos_disponiveis e fotos
+    foreach ($produtos as $produto) {
+        $produto->tamanhos_disponiveis = json_decode($produto->tamanhos_disponiveis ?? '[]');
+        $produto->fotos = json_decode($produto->fotos ?? '[]');
+    }
+
     return view('fornecedores.produtos.partials.listar', compact('produtos'));
 }
+
+
+
+
+public function edit($id)
+{
+    $produto = ProdutoFornecedor::findOrFail($id);
+
+    return view('fornecedores.produtos.partials.edit', compact('produto'));
+}
+
 
 }
