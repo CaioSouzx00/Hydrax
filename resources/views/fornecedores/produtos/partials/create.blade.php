@@ -1,6 +1,5 @@
-<div class="bg-gray-900/80 border border-indigo-800 rounded-xl shadow p-8 max-w-5xl mx-auto text-white">
-
-  <h2 class="text-2xl font-semibold mb-6 text-indigo-400">Cadastrar Produto</h2>
+<div class="bg-[#0b282a]/70 border border-[#14ba88] rounded-xl shadow-lg p-8 max-w-5xl mx-auto text-white font-poppins">
+  <h2 class="text-2xl font-semibold mb-6 text-[#14ba88]">Cadastrar Produto</h2>
 
   @if(session('success'))
     <div class="bg-green-700/70 text-green-100 p-4 rounded mb-6 text-sm font-medium">
@@ -30,9 +29,11 @@
     <input type="text" name="categoria" placeholder="Categoria" class="input-style" />
 
     <div class="md:col-span-2">
-      <label class="block text-sm text-white/60 mb-1">Imagens do Produto</label>
+      <label class="block text-sm text-white/70 mb-1">Imagens do Produto</label>
       <input type="file" name="fotos[]" multiple accept="image/*"
-             class="w-full bg-gray-800/60 border border-indigo-700 rounded-lg px-4 py-2 text-white/70 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-500 transition"/>
+             class="w-full bg-black/40 border border-[#14ba88]/50 rounded-lg px-4 py-2 text-white/70
+                    file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold
+                    file:bg-[#14ba88] file:text-white hover:file:bg-[#0e9b70] transition"/>
     </div>
 
     <select name="ativo" class="input-style" required>
@@ -42,8 +43,8 @@
 
     <div class="md:col-span-2 mt-4">
       <button type="submit"
-        class="w-full py-3 font-semibold bg-indigo-600 rounded-lg hover:bg-indigo-500 transition">
-        Cadastrar Produto
+        class="w-full py-3 font-semibold bg-[#14ba88] hover:bg-[#0e9b70] rounded-lg shadow transition">
+        ✅ Cadastrar Produto
       </button>
     </div>
   </form>
@@ -51,6 +52,7 @@
 
 <style>
   .input-style {
-    @apply w-full px-4 py-3 bg-gray-800/70 text-white/80 placeholder-white/40 border border-indigo-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-gray-800 transition;
+    @apply w-full px-4 py-3 bg-black/40 text-white placeholder-white/40 border border-[#14ba88]/40 rounded-lg
+           focus:outline-none focus:ring-2 focus:ring-[#14ba88] focus:bg-black/30 transition;
   }
 </style>
