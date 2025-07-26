@@ -14,7 +14,14 @@
     <input type="text" name="nome" placeholder="Nome do Produto" class="input-style" required />
     <input type="text" name="descricao" placeholder="Descrição" class="input-style" />
     <input type="number" name="preco" placeholder="Preço (R$)" step="0.01" class="input-style" required />
-    <input type="text" name="estoque_imagem" placeholder="Estoque da Imagem" class="input-style" />
+    <div class="md:col-span-2">
+  <label class="block text-sm text-white/70 mb-1">Imagens do Estoque</label>
+  <input type="file" name="estoque_imagem[]" multiple accept="image/*"
+         class="w-full bg-black/40 border border-[#14ba88]/50 rounded-lg px-4 py-2 text-white/70
+                file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold
+                file:bg-[#14ba88] file:text-white hover:file:bg-[#0e9b70] transition"/>
+</div>
+
     <input type="text" name="caracteristicas" placeholder="Características" class="input-style" />
     <input type="text" name="historico_modelos" placeholder="Histórico de Modelos" class="input-style" />
     <input type="text" name="tamanhos_disponiveis" placeholder="Tamanhos Disponíveis (ex: P,M,G)" class="input-style" />

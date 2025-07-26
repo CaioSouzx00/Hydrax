@@ -44,13 +44,13 @@
     <a href="#" 
        data-url="{{ route('fornecedores.produtos.create') }}" 
        class="link-ajax block px-4 py-2 rounded-md bg-[#14ba88] hover:bg-[#0b282a] transition shadow-md text-center">
-      + Cadastrar Produto
+      Cadastrar Produto
     </a>
 
     <a href="#" 
        data-url="{{ route('fornecedores.produtos.listar') }}" 
        class="link-ajax block px-4 py-2 rounded-md bg-[#14ba88] hover:bg-[#0b282a] transition shadow-md text-center">
-      📋 Listar Produtos
+      Produtos Cadastrados
     </a>
   </div>
 </aside>
@@ -133,6 +133,30 @@
       $('#conteudo-dinamico').html('<p class="text-red-500">Erro ao carregar conteúdo.</p>');
     });
   });
+
+// Essa função deve estar em um script que é carregado na página principal
+document.addEventListener('click', function (e) {
+  if (e.target.classList.contains('js-editar-produto')) {
+    e.preventDefault();
+
+    const id = e.target.getAttribute('data-id');
+
+    fetch(`/fornecedores/produtos/${id}/editar`)
+      .then(response => {
+        if (!response.ok) throw new Error('Erro ao carregar conteúdo');
+        return response.text();
+      })
+      .then(html => {
+        document.querySelector('main').innerHTML = html;
+      })
+      .catch(error => {
+        console.error(error);
+        alert('Erro ao carregar conteúdo.');
+      });
+  }
+});
+
+
 </script>
 
 </body>
