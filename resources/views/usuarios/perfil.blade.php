@@ -29,49 +29,65 @@
 
   <ul class="text-sm space-y-4 text-gray-300">
     <li class="flex items-center gap-2">
-      <!-- ícone perfil -->
       <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-white" viewBox="0 0 24 24">
         <path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z"/>
       </svg>
-      <a href="#" data-tab="perfil" class="menu-link font-semibold hover:text-orange-300">Perfil</a>
+      <a href="#" data-tab="perfil" class="menu-link hover:text-[#D5891B]">Perfil</a>
     </li>
 
     <li class="relative flex items-center gap-2">
-      <!-- ícone endereço -->
       <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-white" viewBox="0 0 24 24">
         <path d="M12 2L2 7v15h20V7L12 2zm0 2.18L18.6 7 12 11.82 5.4 7 12 4.18zM4 9.27l8 5.45 8-5.45V20H4V9.27z"/>
       </svg>
-      <a href="#" data-tab="enderecos" class="menu-link hover:text-orange-300 block">Endereços</a>
+      <a href="#" data-tab="enderecos" class="menu-link hover:text-[#D5891B] block">Endereços</a>
     </li>
+
     <div id="submenu-enderecos" class="hidden flex flex-col ml-7 mt-1 text-sm text-gray-400">
-      <a href="#" id="criar-endereco-link" class="py-1 hover:text-orange-300">+ Create</a>
+      <a href="#" id="criar-endereco-link" class="py-1 hover:text-[#D5891B]">+ Create</a>
     </div>
 
     <li class="flex items-center gap-2">
-      <!-- ícone senha -->
       <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-white" viewBox="0 0 24 24">
         <path d="M12 17a2 2 0 100-4 2 2 0 000 4zm6-6V9a6 6 0 00-12 0v2H4v10h16V11h-2zm-8-2a4 4 0 118 0v2H10V9z"/>
       </svg>
-      <a href="#" data-tab="senha" class="menu-link hover:text-orange-300">Trocar Senha</a>
+      <a href="#" data-tab="senha" class="menu-link hover:text-[#D5891B]">Trocar Senha</a>
     </li>
 
     <li class="flex items-center gap-2">
-      <!-- ícone email -->
       <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-white" viewBox="0 0 24 24">
         <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
       </svg>
-      <a href="#" data-tab="email" class="menu-link hover:text-orange-300">Trocar Email</a>
+      <a href="#" data-tab="email" class="menu-link hover:text-[#D5891B]">Trocar Email</a>
     </li>
 
     <li class="flex items-center gap-2">
-      <!-- ícone privacidade -->
       <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-white" viewBox="0 0 24 24">
         <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 2.18L18.6 7 12 11.82 5.4 7 12 3.18zM12 13l6-4.2V11c0 4.2-2.64 8.16-6 9.75C8.64 19.16 6 15.2 6 11V8.8L12 13z"/>
       </svg>
-      <a href="#" data-tab="privacidade" class="menu-link hover:text-orange-300">Config. de Privacidade</a>
+      <a href="#" data-tab="privacidade" class="menu-link hover:text-[#D5891B]">Config. de Privacidade</a>
     </li>
   </ul>
 </aside>
+
+<!-- Script para trocar a cor ativa -->
+<script>
+  document.querySelectorAll('.menu-link').forEach(link => {
+    link.addEventListener('click', function (e) {
+      e.preventDefault();
+
+      // Remove estilos ativos de todos
+      document.querySelectorAll('.menu-link').forEach(l => {
+        l.classList.remove('text-[#14BA88]', 'font-bold');
+        l.classList.add('text-gray-300');
+      });
+
+      // Aplica ao clicado
+      this.classList.remove('text-gray-300');
+      this.classList.add('text-[#14BA88]', 'font-bold');
+    });
+  });
+</script>
+
 
 
     <!-- Loader -->
