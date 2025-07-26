@@ -20,7 +20,7 @@
   <aside class="w-64 h-screen bg-gray-950 fixed shadow-md flex flex-col justify-between">
     <!-- Logo -->
     <div class="h-40 border-b border-indigo-800 flex items-center justify-center">
-      <img src="/imagens/Post Jif 2025 (8).png" alt="Hydrax Logo" class="h-40" />
+      <img src="/imagens/hydrax/kd17.jpeg" alt="Hydrax Logo" class="h-40" />
 
     </div>
 
