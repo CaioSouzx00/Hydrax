@@ -5,73 +5,103 @@
     <title>Meu Perfil - Hydrax</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 font-sans">
+<body class="bg-gradient-to-br from-[#211828] via-[#0b282a] to-[#17110d] font-sans text-white">
 
-<!-- Botão flutuante voltar -->
+<!-- Botão flutuante voltar - só o círculo -->
 <a href="http://127.0.0.1:8080/dashboard"
-   class="group fixed top-4 left-4 z-50 flex h-10 w-10 items-center rounded-full bg-[#14ba88] text-white overflow-hidden transition-all duration-300 ease-in-out hover:w-28 hover:bg-[#4a8978]"
+   class="fixed top-4 left-4 z-50 flex h-10 w-10 items-center justify-center rounded-full bg-[#0aa174] text-white shadow-md hover:bg-[#0d8c6a] transition-colors duration-300 ease-in-out"
    title="Voltar para Início" aria-label="Botão Voltar">
-  <div class="flex items-center justify-center w-10 h-10 shrink-0">
-    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-    </svg>
-  </div>
-  <span class="ml-2 w-0 group-hover:w-auto opacity-0 group-hover:opacity-100 overflow-hidden whitespace-nowrap transition-all duration-300 ease-in-out">
-    Voltar
-  </span>
+  <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M15 19l-7-7 7-7" />
+  </svg>
 </a>
 
-<div class="flex min-h-screen p-8">
-    <!-- Menu lateral -->
-    <aside class="w-1/4 bg-white rounded-lg shadow p-5">
-        <div class="text-center mb-6">
-            <div class="w-20 h-20 rounded-full bg-orange-500 text-white flex items-center justify-center text-3xl font-bold select-none mx-auto">
-                {{ collect(explode(' ', $usuario->nome_completo))->map(fn($p) => strtoupper(substr($p, 0, 1)))->join('') }}
-            </div>
-            <p class="mt-2 font-semibold text-gray-800">{{ $usuario->nome_completo }}</p>
-        </div>
 
-        <ul class="text-sm space-y-3 text-gray-700">
-            <li>
-                <a href="#" data-tab="perfil" class="menu-link text-orange-500 font-semibold hover:text-orange-600">👤 Perfil</a>
-            </li>
-            <li class="relative">
-                <a href="#" data-tab="enderecos" class="menu-link hover:text-orange-600 block">🏠 Endereços</a>
-                <div id="submenu-enderecos" class="hidden flex flex-col ml-6 mt-1 text-sm text-gray-700">
-                    <a href="#" id="criar-endereco-link" class="py-1 hover:text-orange-600">➕ Create</a>
-                </div>
-            </li>
-            <li>
-                <a href="#" data-tab="senha" class="menu-link hover:text-orange-600">🔒 Trocar Senha</a>
-            </li>
-            <li>
-                <a href="#" data-tab="email" class="menu-link hover:text-orange-600">🔒 Trocar Email</a>
-            </li>
-            <li>
-                <a href="#" data-tab="privacidade" class="menu-link hover:text-orange-600">🛡️ Configurações de Privacidade</a>
-            </li>
-        </ul>
-    </aside>
+<div class="flex min-h-screen p-8 gap-8">
 
-    <!-- Loader, inicialmente escondido -->
-    <div id="loader-main" class="hidden absolute inset-0 bg-white bg-opacity-70 flex items-center justify-center rounded">
-        <svg class="animate-spin h-8 w-8 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+<aside class="w-1/4 bg-[#1a1a1a]/50 rounded-lg shadow-lg p-5 border border-[#2c2c2c]">
+  <div class="text-center mb-6">
+    <div class="w-20 h-20 rounded-full bg-[#0aa174] text-white flex items-center justify-center text-3xl font-bold select-none mx-auto">
+      {{ collect(explode(' ', $usuario->nome_completo))->map(fn($p) => strtoupper(substr($p, 0, 1)))->join('') }}
+    </div>
+    <p class="mt-2 font-semibold text-white">{{ $usuario->nome_completo }}</p>
+  </div>
+
+  <ul class="text-sm space-y-4 text-gray-300">
+    <li class="flex items-center gap-2">
+      <!-- ícone perfil -->
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-white" viewBox="0 0 24 24">
+        <path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z"/>
+      </svg>
+      <a href="#" data-tab="perfil" class="menu-link font-semibold hover:text-orange-300">Perfil</a>
+    </li>
+
+    <li class="relative flex items-center gap-2">
+      <!-- ícone endereço -->
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-white" viewBox="0 0 24 24">
+        <path d="M12 2L2 7v15h20V7L12 2zm0 2.18L18.6 7 12 11.82 5.4 7 12 4.18zM4 9.27l8 5.45 8-5.45V20H4V9.27z"/>
+      </svg>
+      <a href="#" data-tab="enderecos" class="menu-link hover:text-orange-300 block">Endereços</a>
+    </li>
+    <div id="submenu-enderecos" class="hidden flex flex-col ml-7 mt-1 text-sm text-gray-400">
+      <a href="#" id="criar-endereco-link" class="py-1 hover:text-orange-300">+ Create</a>
+    </div>
+
+    <li class="flex items-center gap-2">
+      <!-- ícone senha -->
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-white" viewBox="0 0 24 24">
+        <path d="M12 17a2 2 0 100-4 2 2 0 000 4zm6-6V9a6 6 0 00-12 0v2H4v10h16V11h-2zm-8-2a4 4 0 118 0v2H10V9z"/>
+      </svg>
+      <a href="#" data-tab="senha" class="menu-link hover:text-orange-300">Trocar Senha</a>
+    </li>
+
+    <li class="flex items-center gap-2">
+      <!-- ícone email -->
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-white" viewBox="0 0 24 24">
+        <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+      </svg>
+      <a href="#" data-tab="email" class="menu-link hover:text-orange-300">Trocar Email</a>
+    </li>
+
+    <li class="flex items-center gap-2">
+      <!-- ícone privacidade -->
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-white" viewBox="0 0 24 24">
+        <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 2.18L18.6 7 12 11.82 5.4 7 12 3.18zM12 13l6-4.2V11c0 4.2-2.64 8.16-6 9.75C8.64 19.16 6 15.2 6 11V8.8L12 13z"/>
+      </svg>
+      <a href="#" data-tab="privacidade" class="menu-link hover:text-orange-300">Config. de Privacidade</a>
+    </li>
+  </ul>
+</aside>
+
+
+    <!-- Loader -->
+    <div id="loader-main" class="hidden absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center rounded">
+        <svg class="animate-spin h-8 w-8 text-[#d5891b]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
           <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
           <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
         </svg>
     </div>
 
-    <!-- Conteúdo dinâmico -->
-    <main id="conteudo-principal" class="flex-1 bg-white rounded-lg shadow ml-8 p-6 overflow-auto relative">
+    <!-- Conteúdo -->
+    <main id="conteudo-principal" class="flex-1 bg-[#1a1a1a]/50 rounded-lg shadow-lg p-6 relative border border-[#2c2c2c]">
 
-    <!-- Conteúdo inicial -->
-    <div class="text-center mt-20">
-        <h2 class="text-2xl font-bold text-gray-800 mb-4">👋 Olá! Seja bem-vindo ao seu painel</h2>
-        <p class="text-gray-600">Selecione uma opção no menu à esquerda para começar a gerenciar suas informações.</p>
-        <img src="https://cdn-icons-png.flaticon.com/512/747/747376.png" alt="Bem-vindo" class="w-32 mx-auto mt-6 opacity-70" />
-    </div>
+<div class="max-w-xl mx-auto mt-20 px-6 py-10 rounded-3xl text-center">
+  <h2 class="text-3xl font-semibold text-white mb-3 leading-tight">
+    Olá, seja bem-vindo ao seu painel
+  </h2>
+  <p class="text-gray-400 text-base max-w-md mx-auto mb-8">
+    Use o menu à esquerda para gerenciar suas informações com segurança e eficiência.
+  </p>
+  <img 
+    src="https://cdn-icons-png.flaticon.com/512/747/747376.png" 
+    alt="Bem-vindo" 
+    class="mx-auto w-24 opacity-60"
+    style="filter: grayscale(40%) contrast(90%)"
+  />
+</div>
 
-</main>
+
+    </main>
 
 </div>
 
