@@ -12,6 +12,12 @@ class ProdutoFornecedor extends Model
     public $incrementing = true;
     protected $keyType = 'int';
 
+    protected $casts = [
+    'tamanhos_disponiveis' => 'array',
+    'fotos' => 'array',
+];
+
+
     protected $fillable = [
         'nome',
         'descricao',
@@ -25,5 +31,6 @@ class ProdutoFornecedor extends Model
         'fotos',
         'slug',
         'ativo',
+        'id_fornecedores',
     ];
 }
