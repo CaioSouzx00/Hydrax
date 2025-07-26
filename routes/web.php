@@ -139,6 +139,8 @@ Route::middleware([FornecedorMiddleware::class])->prefix('fornecedores')->name('
     Route::post('/logout', [FornecedorController::class, 'logout'])->name('logout');
 
     Route::get('/produtos', [ProdutoFornecedorController::class, 'index'])->name('produtos.index');
+    Route::get('/fornecedores/produtos/listar', [ProdutoFornecedorController::class, 'listar'])->name('produtos.listar');
+
 
     Route::get('/produtos/create', [ProdutoFornecedorController::class, 'create'])->name('produtos.create');
     Route::post('/produtos/store', [ProdutoFornecedorController::class, 'store'])->name('produtos.store');

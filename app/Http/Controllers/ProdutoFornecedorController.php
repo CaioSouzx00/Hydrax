@@ -11,7 +11,7 @@ class ProdutoFornecedorController extends Controller
 {
     public function create()
     {
-        return view('fornecedores.produtos.create');
+         return view('fornecedores.produtos.partials.create');
     }
 
 public function store(Request $request)
@@ -73,6 +73,16 @@ public function store(Request $request)
     $produtos = ProdutoFornecedor::where('id_fornecedores', $fornecedor->id_fornecedores)->get();
 
     return view('fornecedores.produtos.index', compact('produtos'));
+}
+
+
+public function listar()
+{
+    $fornecedor = Auth::guard('fornecedores')->user();
+
+    $produtos = ProdutoFornecedor::where('id_fornecedores', $fornecedor->id_fornecedores)->get();
+
+    return view('fornecedores.produtos.partials.listar', compact('produtos'));
 }
 
 }

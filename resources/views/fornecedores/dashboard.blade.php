@@ -27,7 +27,7 @@
     <!-- Menu de Funções -->
     <div class="flex-1 p-4 border-b border-indigo-800 overflow-auto">
       <nav class="flex flex-col gap-4">
-      <a class="text-left px-4 py-2 rounded hover:bg-indigo-700 transition" href="{{ route('fornecedores.produtos.create') }}">+ Cadastrar Produto</a>
+      <a class="text-left px-4 py-2 rounded hover:bg-indigo-700 transition" href="{{ route('fornecedores.produtos.index') }}">Gerencia de Produtos</a>
       </nav>
     </div>
 
