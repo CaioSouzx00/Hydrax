@@ -6,6 +6,7 @@ use App\Models\ProdutoFornecedor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class ProdutoFornecedorController extends Controller
 {
@@ -159,14 +160,38 @@ public function listar()
 }
 
 
-
-
 public function edit($id)
 {
     $produto = ProdutoFornecedor::findOrFail($id);
 
     return view('fornecedores.produtos.partials.edit', compact('produto'));
 }
+
+public function destroy($id)
+{
+    $produto = ProdutoFornecedor::findOrFail($id);
+
+    // Se quiser apagar as imagens do storage, faça aqui:
+    // Exemplo para apagar imagens principais:
+    if (!empty($produto->fotos)) {
+        $fotos = json_decode($produto->fotos, true);
+        foreach ($fotos as $foto) {
+            \Storage::disk('public')->delete($foto);
+        }
+    }
+    // Exemplo para apagar imagens de estoque:
+    if (!empty($produto->estoque_imagem)) {
+        $estoqueImgs = json_decode($produto->estoque_imagem, true);
+        foreach ($estoqueImgs as $img) {
+            \Storage::disk('public')->delete($img);
+        }
+    }
+
+    $produto->delete();
+
+    return redirect()->back()->with('success', 'Produto excluído com sucesso!');
+}
+
 
 
 }

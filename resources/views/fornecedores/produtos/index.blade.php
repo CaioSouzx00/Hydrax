@@ -11,7 +11,6 @@
     body {
       font-family: 'Poppins', sans-serif;
     }
-
     #overlay {
       position: fixed;
       inset: 0;
@@ -21,17 +20,32 @@
       transition: opacity 0.3s ease;
       z-index: 40;
     }
-
     #overlay.active {
       opacity: 0.5;
       pointer-events: auto;
+    }
+    /* Estilo modal */
+    #modal-excluir {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      display: flex;
+      padding: 1rem;
+    }
+    #modal-excluir > div {
+      max-width: 700px; /* Aumentei a largura */
+      width: 100%;
     }
   </style>
 </head>
 
 <body class="bg-gradient-to-br from-[#211828] via-[#0b282a] to-[#17110d] text-white flex min-h-screen">
 
-<!-- Overlay -->
+<!-- Overlay para dropdown usuário -->
 <div id="overlay"></div>
 
 <!-- Sidebar -->
@@ -86,7 +100,39 @@
     </div>
   </header>
 
-  <!-- Conteúdo -->
+<!-- Modal Exclusão Produto -->
+<div id="modal-excluir" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:1000; align-items:center; justify-content:center; padding:1rem;">
+  <div class="bg-gray-900 p-8 rounded-xl shadow-xl max-w-3xl w-full text-white z-50">
+    <h2 class="text-red-600 text-3xl font-bold mb-4">Atenção: Exclusão de Produto</h2>
+    <p class="mb-4 text-lg">
+      Você está prestes a excluir um produto do sistema. Esta ação é
+      <span class="text-red-400 font-bold">irreversível</span> e pode causar:
+    </p>
+    <ul class="list-disc pl-6 mb-6 text-md text-gray-300 space-y-2">
+      <li>Perda permanente de todas as imagens associadas.</li>
+      <li>Remoção dos dados de preço, tamanhos e estoque.</li>
+      <li>Impacto financeiro se o produto estiver ativo na loja.</li>
+    </ul>
+    <p class="mb-8 text-lg">Tem certeza que deseja continuar com a exclusão?</p>
+
+    <form id="form-excluir-produto" method="POST" action="">
+      @csrf
+      @method('DELETE')
+
+      <div class="flex justify-end gap-4">
+        <button type="button" id="btn-cancelar-exclusao" class="px-5 py-2 bg-gray-600 rounded hover:bg-gray-700 transition">
+          Cancelar
+        </button>
+        <button type="submit" class="px-5 py-2 bg-red-600 rounded hover:bg-red-700 transition">
+          Confirmar Exclusão
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+  <!-- Conteúdo Dinâmico -->
   <main class="pt-20 px-8 flex-1 overflow-y-auto" id="main-content">
     <div id="conteudo-dinamico">
       <p class="text-gray-300">Bem-vindo! Use o menu ao lado para gerenciar seus produtos.</p>
@@ -134,29 +180,17 @@
     });
   });
 
-// Essa função deve estar em um script que é carregado na página principal
-document.addEventListener('click', function (e) {
-  if (e.target.classList.contains('js-editar-produto')) {
-    e.preventDefault();
+  // Abrir modal exclusão ao clicar no botão
+  $(document).on('click', '.btn-excluir-produto', function() {
+    const id = $(this).data('id');
+    $('#form-excluir-produto').attr('action', '/fornecedores/produtos/' + id);
+    $('#modal-excluir').fadeIn();
+  });
 
-    const id = e.target.getAttribute('data-id');
-
-    fetch(`/fornecedores/produtos/${id}/editar`)
-      .then(response => {
-        if (!response.ok) throw new Error('Erro ao carregar conteúdo');
-        return response.text();
-      })
-      .then(html => {
-        document.querySelector('main').innerHTML = html;
-      })
-      .catch(error => {
-        console.error(error);
-        alert('Erro ao carregar conteúdo.');
-      });
-  }
-});
-
-
+  // Fechar modal ao clicar em cancelar
+  $('#btn-cancelar-exclusao').click(function() {
+    $('#modal-excluir').fadeOut();
+  });
 </script>
 
 </body>
