@@ -40,6 +40,8 @@ Route::get('/', function () {
     return view('usuarios.dashboard'); // Pode trocar por uma página pública
 });
 
+//Route::get('/', [UsuarioController::class, 'dashboard'])->name('home');
+
 // Login e Cadastro - Usuário
 Route::get('/login', [UsuarioController::class, 'showLoginForm'])->name('login.form');
 Route::post('/login', [UsuarioController::class, 'login'])->name('login.process');
@@ -108,6 +110,8 @@ Route::get('/privacidade', function () {
 
 
 Route::post('/excluir-conta', [PrivacidadeController::class, 'excluirConta'])->name('usuarios.excluir-conta');
+
+Route::get('/produtos/{id}/detalhes', [ProdutoController::class, 'detalhes'])->name('produtos.detalhes');
 
 
 });

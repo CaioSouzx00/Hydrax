@@ -27,6 +27,32 @@
       opacity: 0.5;
       pointer-events: auto;
     }
+
+    /* Estilo para dropdown da busca */
+    #resultado_busca {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      max-height: 15rem;
+      overflow-y: auto;
+      z-index: 50;
+      background-color: white;
+      border-radius: 0.375rem; /* rounded */
+      box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+                  0 4px 6px -4px rgb(0 0 0 / 0.1);
+    }
+
+    #resultado_busca li {
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      color: black;
+    }
+
+    #resultado_busca li:hover {
+      background-color: #e5e7eb; /* Tailwind gray-200 */
+    }
   </style>
 </head>
 
@@ -46,20 +72,22 @@
 
         <!-- Busca estilizada com campo funcional -->
         <div
-          class="relative flex items-center bg-gray-200 rounded-xl px-3 py-1.5 text-black focus-within:ring-2 focus-within:ring-[#d5891b]">
+          class="relative flex items-center bg-gray-200 rounded-xl px-3 py-1.5 text-black focus-within:ring-2 focus-within:ring-[#d5891b] w-44">
           <input 
             type="text" 
             id="buscar_produto"
             placeholder="Procurar"
-            class="bg-transparent outline-none text-sm placeholder-gray-600 w-28 focus:w-44 transition-all duration-300"
+            class="bg-transparent outline-none text-sm placeholder-gray-600 w-full"
             autocomplete="off"
+            aria-label="Buscar produto"
           />
           <button id="botao_buscar" type="button" class="ml-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1010.5 18a7.5 7.5 0 006.15-3.35z" />
             </svg>
           </button>
+          <ul id="resultado_busca" role="listbox" aria-label="Resultados da busca"></ul>
         </div>
 
         @if (!Auth::guard('usuarios')->check())
@@ -119,7 +147,6 @@
               <span>Perfil</span>
             </a>
 
-
             <form id="logoutForm" method="POST" action="{{ route('logout') }}">
               @csrf
               <button type="submit"
@@ -150,27 +177,20 @@
     </div>
   </header>
 
-  <!-- LISTA DE RESULTADOS FIXA ABAIXO DA NAVBAR -->
-<ul id="resultado_busca" style="
-    position: fixed;
-    top: 64px; /* altura da navbar */
-    left: 50%;
-    transform: translateX(-50%);
-    width: calc(100% - 48px);
-    max-width: 1120px;
-    max-height: 240px;
-    overflow-y: auto;
-    background-color: white;
-    color: black;
-    border-radius: 0 0 0.5rem 0.5rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    z-index: 60;
-    margin: 0 auto;
-    padding: 0;
-    list-style: none;
-    display: none;
-  ">
-</ul>
+<div id="produtos-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-6 pt-24">
+  @if(isset($produtos) && $produtos->isNotEmpty())
+    @foreach ($produtos as $produto)
+      @include('usuarios.partials.card-produto', ['produto' => $produto])
+    @endforeach
+  @else
+    <p class="text-white">Nenhum produto disponível no momento.</p>
+  @endif
+</div>
+
+<div id="detalhes-produto-container" class="fixed inset-0 bg-black/70 z-50 hidden p-8 overflow-y-auto">
+  <div id="detalhes-produto-conteudo" class="max-w-4xl mx-auto"></div>
+</div>
+
 
 
   <div id="overlay"></div>
@@ -201,28 +221,27 @@
       </p>
     </div>
   </aside>
-
   @endif
 
-
   <script>
-    const overlay = document.getElementById('overlay');
-    const userDropdown = document.getElementById('user-dropdown');
-    const logoutMenu = document.getElementById('logout-menu');
-    const enderecoWrapper = document.getElementById('enderecoWrapper');
-    const enderecoDropdown = document.getElementById('enderecoDropdown');
+  const overlay = document.getElementById('overlay');
+  const userDropdown = document.getElementById('user-dropdown');
+  const logoutMenu = document.getElementById('logout-menu');
+  const enderecoWrapper = document.getElementById('enderecoWrapper');
+  const enderecoDropdown = document.getElementById('enderecoDropdown');
 
-    let userTimeout, enderecoTimeout;
+  let userTimeout, enderecoTimeout;
 
-    function showOverlay() {
-      overlay.classList.add('active');
-    }
+  function showOverlay() {
+    overlay.classList.add('active');
+  }
 
-    function hideOverlay() {
-      overlay.classList.remove('active');
-    }
+  function hideOverlay() {
+    overlay.classList.remove('active');
+  }
 
-    // Dropdown usuário
+  // Dropdown usuário
+  if (userDropdown) {
     userDropdown.addEventListener('mouseenter', () => {
       clearTimeout(userTimeout);
       logoutMenu.classList.remove('hidden');
@@ -235,8 +254,10 @@
         hideOverlay();
       }, 150);
     });
+  }
 
-    // Dropdown endereço
+  // Dropdown endereço
+  if (enderecoWrapper && enderecoDropdown) {
     enderecoWrapper.addEventListener('mouseenter', () => {
       clearTimeout(enderecoTimeout);
       enderecoDropdown.classList.remove('hidden');
@@ -249,59 +270,98 @@
         hideOverlay();
       }, 200);
     });
+  }
 
-    // Fechar dropdowns ao clicar no overlay
-    overlay.addEventListener('click', () => {
-      logoutMenu.classList.add('hidden');
-      enderecoDropdown.classList.add('hidden');
-      hideOverlay();
+  // Fechar dropdowns ao clicar no overlay
+  overlay.addEventListener('click', () => {
+    if (logoutMenu) logoutMenu.classList.add('hidden');
+    if (enderecoDropdown) enderecoDropdown.classList.add('hidden');
+    hideOverlay();
+  });
+
+  /*======================== Busca produtos ==========================*/
+
+  const buscarUrl = "{{ route('produtos.buscar') }}";
+  const inputBuscar = document.getElementById('buscar_produto');
+  const resultado = document.getElementById('resultado_busca');
+  const produtosContainer = document.getElementById('produtos-container');
+
+  function montarCardProduto(produto) {
+    return `
+      <div class="bg-gray-800 rounded-lg p-4 text-white shadow hover:shadow-lg transition">
+        <h3 class="font-semibold text-lg mb-2">${produto.nome}</h3>
+        <p class="text-sm">${produto.descricao ?? ''}</p>
+        <p class="mt-2 font-bold">R$ ${produto.preco?.toFixed(2) ?? '0,00'}</p>
+      </div>
+    `;
+  }
+
+  function realizarBusca() {
+  const termo = inputBuscar.value.trim();
+
+  if (termo.length === 0) {
+  // Campo vazio, buscar todos
+  fetch(`${buscarUrl}`)
+    .then(res => res.json())
+    .then(data => {
+      resultado.style.display = 'none';
+      produtosContainer.innerHTML = data.html;
+    })
+    .catch(() => {
+      produtosContainer.innerHTML = '<p class="text-red-500 p-6 pt-24">Erro ao buscar produtos.</p>';
     });
+  return;
+}
 
-    /*========================doido==========================*/
+if (termo.length < 2) {
+  produtosContainer.innerHTML = '<p class="text-white p-6 pt-24">Digite 2 ou mais caracteres para buscar.</p>';
+  resultado.style.display = 'none';
+  return;
+}
 
-    const buscarUrl = "{{ route('produtos.buscar') }}";
-    const inputBuscar = document.getElementById('buscar_produto');
-    const resultado = document.getElementById('resultado_busca');
 
-    function realizarBusca() {
-      const termo = inputBuscar.value.trim();
+  fetch(`${buscarUrl}?q=${encodeURIComponent(termo)}`)
+    .then(res => res.json())
+    .then(data => {
+      resultado.style.display = 'none';
+      produtosContainer.innerHTML = data.html;
+    })
+    .catch(() => {
+      produtosContainer.innerHTML = '<p class="text-red-500 p-6 pt-24">Erro ao buscar produtos.</p>';
+    });
+}
 
-      if (termo.length < 2) {
-        resultado.style.display = 'none';
-        resultado.innerHTML = '';
-        return;
-      }
 
-      fetch(`${buscarUrl}?q=${encodeURIComponent(termo)}`)
-        .then(res => res.json())
-        .then(data => {
-          resultado.innerHTML = '';
+  inputBuscar.addEventListener('input', realizarBusca);
+  document.getElementById('botao_buscar').addEventListener('click', realizarBusca);
 
-          if (data.length === 0) {
-              resultado.innerHTML = '<li class="p-2 text-gray-500 cursor-default">Nenhum produto encontrado</li>';
-          } else {
-            data.forEach(produto => {
-              const li = document.createElement('li');
-              li.className = 'p-2 hover:bg-gray-200 cursor-pointer text-black';
-              li.textContent = produto.descricao;
 
-              li.addEventListener('click', () => {
-                inputBuscar.value = produto.descricao;
-                resultado.style.display = 'none';
-              });
+function abrirDetalhesProduto(elemento) {
+  const url = elemento.getAttribute('data-url');
+  const container = document.getElementById('detalhes-produto-container');
+  const conteudo = document.getElementById('detalhes-produto-conteudo');
 
-              resultado.appendChild(li);
-            });
-          }
+  fetch(url)
+    .then(res => {
+      if (!res.ok) throw new Error('Erro');
+      return res.text();
+    })
+    .then(html => {
+      conteudo.innerHTML = html;
+      container.classList.remove('hidden');
+    })
+    .catch(() => {
+      alert('Erro ao carregar detalhes do produto.');
+    });
+}
 
-          resultado.style.display = 'block';
-        });
-    }
 
-    inputBuscar.addEventListener('input', realizarBusca);
+function fecharDetalhes() {
+  document.getElementById('detalhes-produto-container').classList.add('hidden');
+}
 
-    document.getElementById('botao_buscar').addEventListener('click', realizarBusca);
-  </script>
+</script>
+
 
 </body>
 
