@@ -1,0 +1,60 @@
+📝 COMANDOS ÚTEIS DO PROJETO LARAVEL - HYDRAX
+
+1️⃣ Criar link da pasta storage para acesso via navegador:
+----------------------------------------------------------
+Comando:
+php artisan storage:link
+
+Explicação:
+Cria um atalho da pasta "storage/app/public" para "public/storage".
+Assim, os arquivos salvos no storage podem ser acessados pela URL:
+/storage/nome-do-arquivo.ext
+
+
+2️⃣ Iniciar o servidor Laravel:
+-------------------------------
+Comando:
+php artisan serve
+
+Explicação:
+Inicia o servidor local do Laravel, geralmente acessível em:
+http://127.0.0.1:8000
+
+
+3️⃣ Criar uma nova migration:
+-----------------------------
+Comando:
+php artisan make:migration nome_da_migration
+
+Explicação:
+Cria um arquivo de migration para criar ou alterar tabelas no banco de dados.
+
+
+4️⃣ Rodar as migrations:
+------------------------
+Comando:
+php artisan migrate
+
+Explicação:
+Executa as migrations e cria as tabelas no banco de dados.
+
+
+5️⃣ Criar um novo model com controller e migration:
+---------------------------------------------------
+Comando:
+php artisan make:model NomeDoModel -mc
+
+Explicação:
+Cria o Model, Controller e Migration juntos. Economiza tempo na estrutura do projeto.
+
+
+6️⃣ Limpar cache de rotas e configurações:
+------------------------------------------
+Comandos:
+php artisan config:clear  
+php artisan route:clear  
+php artisan cache:clear  
+
+Explicação:
+Remove arquivos de cache para garantir que o Laravel use as alterações mais recentes.
+

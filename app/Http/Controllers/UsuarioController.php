@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\EmailChangeConfirmation;
 use App\Mail\CodigoRedefinicaoSenha;
 use Illuminate\Support\Facades\DB;
+use App\Models\ProdutoFornecedor;
 
 
 class UsuarioController extends Controller
@@ -100,10 +101,13 @@ class UsuarioController extends Controller
             return redirect()->route('login.form')->withErrors(['acesso' => 'Faça login para acessar o sistema.']);
         }
 
+        $produtos = ProdutoFornecedor::latest()->take(12)->get();
+        //dd($produtos);
         $usuario = Auth::guard('usuarios')->user();
         $nome    = $usuario->nome_completo;
 
-        return view('usuarios.dashboard', compact('nome'));
+        return view('usuarios.dashboard', compact('nome'), compact('produtos'));
+
     }
 
     public function update(Request $request)
