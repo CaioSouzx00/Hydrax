@@ -1,85 +1,96 @@
-<form id="form-trocar-senha" method="POST" action="{{ route('usuarios.senha.trocar') }}" class="max-w-md mx-auto space-y-6 p-6 rounded-lg bg-[#1a1a1a] text-white">
+<form id="form-trocar-senha" method="POST" action="{{ route('usuarios.senha.trocar') }}" 
+  class="max-w-md mx-auto space-y-6 p-8 rounded-lg text-white pt-24">
+
+  <h1 class="text-3xl font-bold mb-2 border-b-2 border-[#d1a858] pb-2 flex items-center justify-center gap-3">
+    <!-- Ícone cadeado -->
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-[#d1a858]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M12 11c.828 0 1.5.672 1.5 1.5v1.5h-3v-1.5c0-.828.672-1.5 1.5-1.5z" />
+      <path stroke-linecap="round" stroke-linejoin="round" d="M5 11V7a7 7 0 0114 0v4" />
+      <rect width="14" height="9" x="5" y="11" rx="2" ry="2" />
+    </svg>
+    Troca de senha
+  </h1>
+
+  <h2 class="text-center text-lg text-gray-300 mb-8 px-4">
+    Por favor, escolha uma nova senha segura para proteger sua conta.
+  </h2>
+
   @csrf
 
   <!-- Nova senha -->
-  <div class="relative">
+  <div class="flex items-center space-x-3 relative">
+    <img src="/imagens/Post Jif 2025/5.png" alt="Ícone de senha" class="w-5 h-5">
     <input
       type="password"
       name="nova_senha"
       id="nova_senha"
       placeholder="Nova senha"
       required
-      class="w-full px-4 py-3 rounded-lg bg-[#2a2a2a] border border-[#14ba88] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#14ba88]"
+      class="h-11 px-4 pr-10 rounded-lg border border-[#D5891B] bg-[#2a2a2a] text-white placeholder-gray-400 text-sm w-full focus:outline-none focus:ring-2 focus:ring-[#14ba88]"
     >
-    <button type="button"
-      tabindex="-1"
-      class="absolute top-1/2 right-3 -translate-y-1/2 text-gray-400 hover:text-[#14ba88] focus:outline-none"
-      onclick="toggleSenha('nova_senha', this)"
-      aria-label="Mostrar/ocultar senha">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" id="icon-nova_senha">
-        <path stroke-linecap="round" stroke-linejoin="round"
-          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-        <path stroke-linecap="round" stroke-linejoin="round"
-          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-      </svg>
+    <button type="button" onclick="toggleNovaSenha()" class="absolute right-3 top-2 w-6 h-7" aria-label="Mostrar/ocultar senha nova">
+      <img src="/imagens/Post Jif 2025.png" alt="Mostrar senha" id="icon-nova_senha" class="w-6 h-6 opacity-40 hover:opacity-80 transition-opacity" />
     </button>
   </div>
 
   <!-- Confirme a nova senha -->
-  <div class="relative">
+  <div class="flex items-center space-x-3 relative">
+    <img src="/imagens/Post Jif 2025/5.png" alt="Ícone de senha" class="w-5 h-5">
     <input
       type="password"
       name="nova_senha_confirmation"
       id="nova_senha_confirmation"
       placeholder="Confirme a nova senha"
       required
-      class="w-full px-4 py-3 rounded-lg bg-[#2a2a2a] border border-[#14ba88] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#14ba88]"
+      class="h-11 px-4 pr-10 rounded-lg border border-[#D5891B] bg-[#2a2a2a] text-white placeholder-gray-400 text-sm w-full focus:outline-none focus:ring-2 focus:ring-[#14ba88]"
     >
-    <button type="button"
-      tabindex="-1"
-      class="absolute top-1/2 right-3 -translate-y-1/2 text-gray-400 hover:text-[#14ba88] focus:outline-none"
-      onclick="toggleSenha('nova_senha_confirmation', this)"
-      aria-label="Mostrar/ocultar senha">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" id="icon-nova_senha_confirmation">
-        <path stroke-linecap="round" stroke-linejoin="round"
-          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-        <path stroke-linecap="round" stroke-linejoin="round"
-          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-      </svg>
+    <button type="button" onclick="toggleNovaSenhaConfirmation()" class="absolute right-3 top-2 w-6 h-7" aria-label="Mostrar/ocultar senha confirmação">
+      <img src="/imagens/Post Jif 2025.png" alt="Mostrar senha" id="icon-nova_senha_confirmation" class="w-6 h-6 opacity-40 hover:opacity-80 transition-opacity" />
     </button>
   </div>
 
-  <button
-    id="btn-salvar-senha"
-    type="submit"
-    class="w-full py-3 bg-[#0d8c6a] hover:bg-[#14ba88] rounded-xl font-semibold transition-colors duration-300 shadow-md"
-  >
-    Salvar
-  </button>
+  <div class="flex justify-end"> <!-- container para alinhar o botão à direita -->
+    <button
+      id="btn-salvar-senha"
+      type="submit"
+      class="box-border relative z-30 inline-flex items-center justify-center w-auto px-8 py-3 overflow-hidden font-bold text-white transition-all duration-300 bg-[#0d8c6a] rounded-md cursor-pointer group ring-offset-2 ring-1 ring-[#14ba88] ring-offset-[#1a422f] hover:ring-offset-[#2a6e4a] ease focus:outline-none"
+    >
+      <span class="absolute bottom-0 right-0 w-8 h-20 -mb-8 -mr-5 transition-all duration-300 ease-out transform rotate-45 translate-x-1 bg-white opacity-10 group-hover:translate-x-0"></span>
+      <span class="absolute top-0 left-0 w-20 h-8 -mt-1 -ml-12 transition-all duration-300 ease-out transform -rotate-45 -translate-x-1 bg-white opacity-10 group-hover:translate-x-0"></span>
+      <span class="relative z-20 flex items-center text-sm">
+        Salvar
+      </span>
+    </button>
+  </div>
+
 </form>
 
 <script>
-  function toggleSenha(idInput, btn) {
-    const input = document.getElementById(idInput);
-    const iconId = "icon-" + idInput;
-    const icon = document.getElementById(iconId);
-
+  function toggleNovaSenha() {
+    const input = document.getElementById("nova_senha");
+    const icon = document.getElementById("icon-nova_senha");
     if (input.type === "password") {
       input.type = "text";
-      icon.innerHTML = `
-        <path stroke-linecap="round" stroke-linejoin="round"
-          d="M13.875 18.825A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7a9.964 9.964 0 012.223-3.436m3.457-2.59A9.962 9.962 0 0112 5c4.477 0 8.268 2.943 9.542 7a9.968 9.968 0 01-4.727 5.35M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-        <path stroke-linecap="round" stroke-linejoin="round"
-          d="M3 3l18 18" />
-      `;
+      icon.src = "/imagens/Post Jif 2025 (2).png";
+      icon.alt = "Ocultar senha";
     } else {
       input.type = "password";
-      icon.innerHTML = `
-        <path stroke-linecap="round" stroke-linejoin="round"
-          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-        <path stroke-linecap="round" stroke-linejoin="round"
-          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-      `;
+      icon.src = "/imagens/Post Jif 2025.png";
+      icon.alt = "Mostrar senha";
+    }
+  }
+
+  function toggleNovaSenhaConfirmation() {
+    const input = document.getElementById("nova_senha_confirmation");
+    const icon = document.getElementById("icon-nova_senha_confirmation");
+    if (input.type === "password") {
+      input.type = "text";
+      icon.src = "/imagens/Post Jif 2025 (2).png";
+      icon.alt = "Ocultar senha";
+    } else {
+      input.type = "password";
+      icon.src = "/imagens/Post Jif 2025.png";
+      icon.alt = "Mostrar senha";
     }
   }
 </script>

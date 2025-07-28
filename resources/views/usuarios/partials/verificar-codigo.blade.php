@@ -1,6 +1,6 @@
 <div style="height: 500px;" class="flex items-center justify-center px-4">
-  <div class="p-8 max-w-md w-full bg-[#1a1a1a] rounded-2xl shadow-lg text-white">
-    <h2 class="text-2xl font-bold mb-6 border-b-2 border-[#14ba88] pb-2 text-center">Verifique seu código</h2>
+  <div class="p-8 max-w-md w-full  rounded-2xl  text-white">
+    <h2 class="text-2xl font-bold mb-6 border-b-2 border-[#14ba88] pb-2 text-center">Verifique seu código no Email</h2>
 
     <form id="form-verificar-codigo" method="POST" action="{{ route('usuarios.senha.verificarCodigo') }}" class="space-y-6">
       @csrf

@@ -50,11 +50,11 @@
     <!-- Botão -->
     <div class="col-span-1 md:col-span-2 flex justify-end pt-2">
       <button type="submit"
-        class="relative inline-flex items-center justify-start px-6 py-3 overflow-hidden font-medium transition-all bg-[#da6d17] rounded-xl group text-white text-sm shadow-md hover:bg-[#da6d17]">
-        <span class="absolute top-0 right-0 inline-block w-4 h-4 transition-all duration-500 ease-in-out bg-[#7F3A0E] rounded group-hover:-mr-4 group-hover:-mt-4">
+        class="relative inline-flex items-center justify-start px-6 py-3 overflow-hidden font-medium transition-all bg-[#D5891B] rounded-xl group text-white text-sm shadow-md hover:bg-[#D5891B]">
+        <span class="absolute top-0 right-0 inline-block w-4 h-4 transition-all duration-500 ease-in-out bg-[#945025] rounded group-hover:-mr-4 group-hover:-mt-4">
           <span class="absolute top-0 right-0 w-5 h-5 rotate-45 translate-x-1/2 -translate-y-1/2 bg-white"></span>
         </span>
-        <span class="absolute bottom-0 left-0 w-full h-full transition-all duration-500 ease-in-out delay-200 -translate-x-full translate-y-full bg-[#7F3A0E] rounded-2xl group-hover:mb-12 group-hover:translate-x-0"></span>
+        <span class="absolute bottom-0 left-0 w-full h-full transition-all duration-500 ease-in-out delay-200 -translate-x-full translate-y-full bg-[#945025] rounded-2xl group-hover:mb-12 group-hover:translate-x-0"></span>
         <span class="relative w-full text-left transition-colors duration-200 ease-in-out group-hover:text-white">
           Salvar Alterações
         </span>
