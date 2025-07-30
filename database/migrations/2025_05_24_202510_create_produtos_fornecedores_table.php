@@ -12,7 +12,7 @@ return new class extends Migration {
     $table->string('nome');
     $table->text('descricao');
     $table->float('preco', 8, 2);
-    $table->string('estoque_imagem')->nullable();
+    $table->text('estoque_imagem')->nullable();
     $table->text('caracteristicas');
     $table->text('historico_modelos')->nullable();
     $table->json('tamanhos_disponiveis')->nullable();

@@ -22,7 +22,7 @@ public function store(Request $request)
         'nome' => 'required|string|max:255',
         'descricao' => 'required|string',
         'preco' => 'required|numeric|min:0',
-        'estoque_imagem.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // aceita múltiplas imagens
+        'estoque_imagem.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048', 
         'caracteristicas' => 'required|string',
         'historico_modelos' => 'nullable|string',
         'tamanhos_disponiveis' => 'nullable|string',

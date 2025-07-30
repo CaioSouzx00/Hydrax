@@ -72,6 +72,7 @@ Route::post('/senha/redefinir', [PasswordResetController::class, 'redefinirSenha
 | Rotas Protegidas - Usuário (middleware: usuario)
 |--------------------------------------------------------------------------
 */
+
 Route::middleware([UsuarioMiddleware::class])->group(function () {
 
 Route::get('/dashboard', [UsuarioController::class, 'dashboard'])->name('dashboard');

@@ -177,18 +177,31 @@
     </div>
   </header>
 
-<div id="produtos-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-6 pt-24">
-  @if(isset($produtos) && $produtos->isNotEmpty())
-    @foreach ($produtos as $produto)
-      @include('usuarios.partials.card-produto', ['produto' => $produto])
-    @endforeach
-  @else
-    <p class="text-white">Nenhum produto disponível no momento.</p>
-  @endif
+<main id="main-content" class="min-h-screen">
+  
+  <div id="produtos-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-6 pt-24">
+    @if(isset($produtos) && $produtos->isNotEmpty())
+      @foreach ($produtos as $produto)
+        @include('usuarios.partials.card-produto', ['produto' => $produto])
+      @endforeach
+    @else
+      <p class="text-white">Nenhum produto disponível no momento.</p>
+    @endif
+  </div>
+</main>
+
+
+<!-- Container do modal -->
+<div id="detalhes-produto-container"
+     class="fixed inset-0 bg-black/70 z-50 hidden flex items-start justify-center overflow-y-auto pt-20 px-4">
+
+  <!-- Conteúdo do modal -->
+  <div id="detalhes-produto-conteudo" 
+       class="bg-[#0f0b13]/70 backdrop-blur-xl rounded-2xl shadow-xl border border-[#D5891B]/30 max-w-4xl w-full p-6 text-white relative">
+    <!-- Aqui entra o conteúdo do modal (seu div #detalhesProduto) -->
+  </div>
 </div>
 
-<div id="detalhes-produto-container" class="fixed inset-0 bg-black/70 z-50 hidden p-8 overflow-y-auto">
-  <div id="detalhes-produto-conteudo" class="max-w-4xl mx-auto"></div>
 </div>
 
 
@@ -338,26 +351,63 @@ if (termo.length < 2) {
 
 function abrirDetalhesProduto(elemento) {
   const url = elemento.getAttribute('data-url');
-  const container = document.getElementById('detalhes-produto-container');
-  const conteudo = document.getElementById('detalhes-produto-conteudo');
 
   fetch(url)
-    .then(res => {
-      if (!res.ok) throw new Error('Erro');
-      return res.text();
+    .then(response => {
+      if (!response.ok) throw new Error("Erro ao carregar a página de detalhes.");
+      return response.text();
     })
     .then(html => {
-      conteudo.innerHTML = html;
-      container.classList.remove('hidden');
+      const main = document.getElementById('main-content');
+      if (main) {
+        main.innerHTML = html;
+        window.history.pushState({}, '', url); // Atualiza a URL
+      }
     })
-    .catch(() => {
-      alert('Erro ao carregar detalhes do produto.');
+    .catch(erro => {
+      console.error("Erro ao buscar detalhes do produto:", erro);
     });
 }
 
 
+
 function fecharDetalhes() {
   document.getElementById('detalhes-produto-container').classList.add('hidden');
+
+
+document.querySelectorAll('.produto-card, .produto-link').forEach(el => {
+  el.addEventListener('click', function(event) {
+    event.preventDefault();  // previne navegar para a url
+
+    const url = el.getAttribute('data-url');
+    if (!url) return;
+
+    fetch(url)
+      .then(res => {
+        if (!res.ok) throw new Error("Erro ao carregar detalhes");
+        return res.text();
+      })
+      .then(html => {
+        // Coloque o html dentro do modal
+        const modalConteudo = document.getElementById('detalhes-produto-conteudo');
+        modalConteudo.innerHTML = html;
+
+        // Mostra o container do modal
+        const modalContainer = document.getElementById('detalhes-produto-container');
+        modalContainer.classList.remove('hidden');
+      })
+      .catch(err => {
+        console.error(err);
+        alert("Erro ao carregar detalhes do produto.");
+      });
+  });
+});
+
+
+
+
+
+
 }
 
 </script>

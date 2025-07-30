@@ -24,7 +24,7 @@
 
     <input type="text" name="caracteristicas" placeholder="Características" class="input-style" />
     <input type="text" name="historico_modelos" placeholder="Histórico de Modelos" class="input-style" />
-    <input type="text" name="tamanhos_disponiveis" placeholder="Tamanhos Disponíveis (ex: P,M,G)" class="input-style" />
+    <input type="text" name="tamanhos_disponiveis" placeholder="Tamanhos Disponíveis (ex: 38,39,40)" class="input-style" />
 
     <select name="genero" class="input-style" required>
       <option value="" disabled selected>Selecione o Gênero</option>
