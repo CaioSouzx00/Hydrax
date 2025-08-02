@@ -224,9 +224,9 @@
       <hr class="border-[#d5891b]/40 mb-4" />
       <nav class="space-y-3 text-sm">
         <a href="{{ route('admin.login') }}"
-          class="block px-4 py-2 rounded-md bg-[#14ba88] hover:bg-[#0b282a] transition shadow-md">Administrador</a>
+          class="block px-4 py-2 rounded-md bg-[#14ba88] hover:bg-[#2d4e50] transition shadow-md">Administrador</a>
         <a href="{{ route('fornecedores.login') }}"
-          class="block px-4 py-2 rounded-md bg-[#14ba88] hover:bg-[#0b282a] transition shadow-md">Fornecedor</a>
+          class="block px-4 py-2 rounded-md bg-[#14ba88] hover:bg-[#2d4e50] transition shadow-md">Fornecedor</a>
       </nav>
       <hr class="border-[#d5891b]/40 mt-6" />
       <p class="text-xs text-center text-green-200 mt-6">
