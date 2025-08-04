@@ -53,9 +53,35 @@
         d="M3 21h18M9 8h6M9 12h6M9 16h6M4 21V5a1 1 0 011-1h3v4h8V4h3a1 1 0 011 1v16" />
     </svg>
   </div>
-              <span class="mr-4 cursor-pointer font-semibold hover:text-indigo-400 transition-colors">
-                Olá, {{ Auth::guard('fornecedores')->user()->nome_empresa }} ▾
-              </span>
+             @php
+    $fornecedor = Auth::guard('fornecedores')->user();
+@endphp
+
+<div class="relative group inline-block text-left">
+    <button type="button" class="flex items-center space-x-2 focus:outline-none">
+        <img 
+            src="{{ $fornecedor->profile_photo ? asset('storage/' . $fornecedor->profile_photo) : asset('images/default-avatar.png') }}" 
+            alt="Foto de Perfil" 
+            class="w-8 h-8 rounded-full object-cover border border-white"
+        >
+        <span class="text-white font-semibold hover:text-indigo-400 transition-colors">
+            Olá, {{ \Illuminate\Support\Str::limit($fornecedor->nome_empresa, 15, '...') }} ▾
+        </span>
+    </button>
+
+    <!-- Dropdown com formulário para alterar a foto -->
+    <div class="absolute right-0 z-50 mt-2 w-64 bg-white rounded-lg shadow-lg hidden group-hover:block p-4">
+        <form action="{{ route('fornecedores.atualizarFoto') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            <label class="block text-sm font-medium text-gray-700 mb-1">Nova Foto:</label>
+            <input type="file" name="profile_photo" accept="image/*" required class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:border-0 file:rounded-md file:bg-indigo-600 file:text-white hover:file:bg-indigo-700"/>
+
+            <button type="submit" class="mt-2 w-full bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700">
+                Atualizar
+            </button>
+        </form>
+    </div>
+</div>
             </div>
 
             <!-- Menu logout -->
@@ -94,6 +120,19 @@
     <!-- Conteúdo abaixo da navbar -->
     <main class="pt-16 px-8 bg-gray-900 flex-1 overflow-hidden">
 
+  {{-- MENSAGEM DE SUCESSO --}}
+  @if(session('success'))
+      <div class="bg-green-600 text-white p-2 rounded mb-4 w-full max-w-md">
+          {{ session('success') }}
+      </div>
+  @endif
+
+  {{-- FORMULÁRIO DE UPLOAD DE FOTO --}}
+  <form action="{{ route('fornecedores.atualizarFoto') }}" method="POST" enctype="multipart/form-data">
+
+
+</main>
+
     </main>
   </div>
 <script>
@@ -125,6 +164,32 @@
     }, 150);
   });
 
+    // Alterna a visibilidade do dropdown
+    function toggleDropdown() {
+        const dropdown = document.getElementById('dropdown');
+        dropdown.classList.toggle('hidden');
+    }
+
+    // Fecha o dropdown ao clicar fora dele
+    document.addEventListener('click', function(event) {
+        const dropdown = document.getElementById('dropdown');
+        const button = event.target.closest('[onclick="toggleDropdown()"]');
+        const isClickInside = dropdown.contains(event.target);
+
+        if (!isClickInside && !button) {
+            dropdown.classList.add('hidden');
+        }
+    });
+    document.addEventListener("DOMContentLoaded", function () {
+        const successMessage = document.getElementById("success-message");
+
+        if (successMessage) {
+            setTimeout(() => {
+                successMessage.classList.add("opacity-0");
+                setTimeout(() => successMessage.remove(), 500); // Remove depois que sumir
+            }, 3000); // 3 segundos
+        }
+    });
 
 </script>
 </body>

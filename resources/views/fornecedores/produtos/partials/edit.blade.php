@@ -37,7 +37,7 @@
 
     <!-- Tamanhos Disponíveis -->
     <div class="mb-4">
-      <label class="block text-sm font-medium text-indigo-300">Tamanhos Disponíveis (separados por vírgula)</label>
+      <label class="block text-sm font-medium text-indigo-300">Tamanhos Disponíveis</label>
       <input name="tamanhos_disponiveis" value="{{ old('tamanhos_disponiveis', is_array($produto->tamanhos_disponiveis) ? implode(',', $produto->tamanhos_disponiveis) : '') }}" class="w-full bg-gray-800 border border-indigo-600 rounded p-2 text-white">
     </div>
 
@@ -59,7 +59,7 @@
 
     <!-- Fotos -->
     <div class="mb-4">
-      <label class="block text-sm font-medium text-indigo-300">Fotos (upload múltiplo)</label>
+      <label class="block text-sm font-medium text-indigo-300">Fotos do Produto</label>
       <input type="file" name="fotos[]" multiple class="w-full bg-gray-800 border border-indigo-600 rounded p-2 text-white">
       @if (is_array($produto->fotos))
         <div class="text-sm mt-2 text-indigo-400">
@@ -67,22 +67,6 @@
           <ul class="list-disc ml-4">
             @foreach ($produto->fotos as $foto)
               <li><a href="{{ asset('storage/' . $foto) }}" target="_blank" class="underline">{{ $foto }}</a></li>
-            @endforeach
-          </ul>
-        </div>
-      @endif
-    </div>
-
-    <!-- Estoque de Imagem -->
-    <div class="mb-4">
-      <label class="block text-sm font-medium text-indigo-300">Estoque Imagem (upload múltiplo)</label>
-      <input type="file" name="estoque_imagem[]" multiple class="w-full bg-gray-800 border border-indigo-600 rounded p-2 text-white">
-      @if (is_array($produto->estoque_imagem))
-        <div class="text-sm mt-2 text-indigo-400">
-          Imagens atuais de estoque:
-          <ul class="list-disc ml-4">
-            @foreach ($produto->estoque_imagem as $img)
-              <li><a href="{{ asset('storage/' . $img) }}" target="_blank" class="underline">{{ $img }}</a></li>
             @endforeach
           </ul>
         </div>

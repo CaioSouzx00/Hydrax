@@ -7,59 +7,97 @@
     </div>
   @endif
 
-  <form action="{{ route('fornecedores.produtos.store') }}" method="POST" enctype="multipart/form-data"
-        class="grid grid-cols-1 md:grid-cols-2 gap-6">
+  <form action="{{ route('fornecedores.produtos.store') }}" method="POST" enctype="multipart/form-data" class="grid grid-cols-1 md:grid-cols-2 gap-6">
     @csrf
 
-    <input type="text" name="nome" placeholder="Nome do Produto" class="input-style" required />
-    <input type="text" name="descricao" placeholder="Descrição" class="input-style" />
-    <input type="number" name="preco" placeholder="Preço (R$)" step="0.01" class="input-style" required />
-    <div class="md:col-span-2">
-  <label class="block text-sm text-white/70 mb-1">Imagens do Estoque</label>
-  <input type="file" name="estoque_imagem[]" multiple accept="image/*"
-         class="w-full bg-black/40 border border-[#14ba88]/50 rounded-lg px-4 py-2 text-white/70
-                file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold
-                file:bg-[#14ba88] file:text-white hover:file:bg-[#0e9b70] transition"/>
-</div>
-
-    <input type="text" name="caracteristicas" placeholder="Características" class="input-style" />
-    <input type="text" name="historico_modelos" placeholder="Histórico de Modelos" class="input-style" />
-    <input type="text" name="tamanhos_disponiveis" placeholder="Tamanhos Disponíveis (ex: 38,39,40)" class="input-style" />
-
-    <select name="genero" class="input-style" required>
-      <option value="" disabled selected>Selecione o Gênero</option>
-      <option value="MASCULINO">Masculino</option>
-      <option value="FEMININO">Feminino</option>
-      <option value="UNISSEX">Unissex</option>
-    </select>
-
-    <input type="text" name="categoria" placeholder="Categoria" class="input-style" />
-
-    <div class="md:col-span-2">
-      <label class="block text-sm text-white/70 mb-1">Imagens do Produto</label>
-      <input type="file" name="fotos[]" multiple accept="image/*"
-             class="w-full bg-black/40 border border-[#14ba88]/50 rounded-lg px-4 py-2 text-white/70
-                    file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold
-                    file:bg-[#14ba88] file:text-white hover:file:bg-[#0e9b70] transition"/>
+    {{-- Nome --}}
+    <div class="flex flex-col">
+      <label for="nome" class="text-sm text-white/70 mb-1">Nome do Produto</label>
+      <input type="text" id="nome" name="nome"
+        class="px-4 py-3 bg-black/40 text-white placeholder-white/40 border border-[#14ba88]/40 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#14ba88] focus:bg-black/30 transition"
+        required>
     </div>
 
-    <select name="ativo" class="input-style" required>
-      <option value="1">Ativo</option>
-      <option value="0">Inativo</option>
-    </select>
+    {{-- Descrição --}}
+    <div class="flex flex-col">
+      <label for="descricao" class="text-sm text-white/70 mb-1">Descrição</label>
+      <input type="text" id="descricao" name="descricao"
+        class="px-4 py-3 bg-black/40 text-white placeholder-white/40 border border-[#14ba88]/40 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#14ba88] focus:bg-black/30 transition">
+    </div>
 
+    {{-- Preço --}}
+    <div class="flex flex-col">
+      <label for="preco" class="text-sm text-white/70 mb-1">Preço (R$)</label>
+      <input type="number" id="preco" name="preco" step="0.01"
+        class="px-4 py-3 bg-black/40 text-white placeholder-white/40 border border-[#14ba88]/40 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#14ba88] focus:bg-black/30 transition"
+        required>
+    </div>
+
+    {{-- Características --}}
+    <div class="flex flex-col">
+      <label for="caracteristicas" class="text-sm text-white/70 mb-1">Características</label>
+      <input type="text" id="caracteristicas" name="caracteristicas"
+        class="px-4 py-3 bg-black/40 text-white placeholder-white/40 border border-[#14ba88]/40 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#14ba88] focus:bg-black/30 transition">
+    </div>
+
+    {{-- Histórico de Modelos --}}
+    <div class="flex flex-col">
+      <label for="historico_modelos" class="text-sm text-white/70 mb-1">Histórico de Modelos</label>
+      <input type="text" id="historico_modelos" name="historico_modelos"
+        class="px-4 py-3 bg-black/40 text-white placeholder-white/40 border border-[#14ba88]/40 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#14ba88] focus:bg-black/30 transition">
+    </div>
+
+    {{-- Tamanhos Disponíveis --}}
+    <div class="flex flex-col">
+      <label for="tamanhos_disponiveis" class="text-sm text-white/70 mb-1">Tamanhos Disponíveis</label>
+      <input type="text" id="tamanhos_disponiveis" name="tamanhos_disponiveis"
+        class="px-4 py-3 bg-black/40 text-white placeholder-white/40 border border-[#14ba88]/40 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#14ba88] focus:bg-black/30 transition">
+    </div>
+
+    {{-- Gênero --}}
+    <div class="flex flex-col">
+      <label for="genero" class="text-sm text-white/70 mb-1">Gênero</label>
+      <select id="genero" name="genero"
+        class="px-4 py-3 bg-black/40 text-white border border-[#14ba88]/40 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#14ba88] focus:bg-black/30 transition"
+        required>
+        <option value="" disabled selected>Selecione o Gênero</option>
+        <option value="MASCULINO">Masculino</option>
+        <option value="FEMININO">Feminino</option>
+        <option value="UNISSEX">Unissex</option>
+      </select>
+    </div>
+
+    {{-- Categoria --}}
+    <div class="flex flex-col">
+      <label for="categoria" class="text-sm text-white/70 mb-1">Categoria</label>
+      <input type="text" id="categoria" name="categoria"
+        class="px-4 py-3 bg-black/40 text-white placeholder-white/40 border border-[#14ba88]/40 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#14ba88] focus:bg-black/30 transition">
+    </div>
+
+    {{-- Fotos do Produto --}}
+    <div class="md:col-span-2 flex flex-col">
+      <label for="fotos" class="text-sm text-white/70 mb-1">Imagens do Produto</label>
+      <input type="file" id="fotos" name="fotos[]" multiple accept="image/*"
+        class="w-full bg-black/40 text-white/70 border border-[#14ba88]/40 rounded-lg px-4 py-2 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#14ba88] file:text-white hover:file:bg-[#0e9b70] transition">
+    </div>
+
+    {{-- Ativo/Inativo --}}
+    <div class="flex flex-col">
+      <label for="ativo" class="text-sm text-white/70 mb-1">Status</label>
+      <select id="ativo" name="ativo"
+        class="px-4 py-3 bg-black/40 text-white border border-[#14ba88]/40 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#14ba88] focus:bg-black/30 transition"
+        required>
+        <option value="1">Ativo</option>
+        <option value="0">Inativo</option>
+      </select>
+    </div>
+
+    {{-- Botão --}}
     <div class="md:col-span-2 mt-4">
       <button type="submit"
         class="w-full py-3 font-semibold bg-[#14ba88] hover:bg-[#0e9b70] rounded-lg shadow transition">
-        ✅ Cadastrar Produto
+        Cadastrar Produto
       </button>
     </div>
   </form>
 </div>
-
-<style>
-  .input-style {
-    @apply w-full px-4 py-3 bg-black/40 text-white placeholder-white/40 border border-[#14ba88]/40 rounded-lg
-           focus:outline-none focus:ring-2 focus:ring-[#14ba88] focus:bg-black/30 transition;
-  }
-</style>

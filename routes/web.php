@@ -146,7 +146,6 @@ Route::middleware([FornecedorMiddleware::class])->prefix('fornecedores')->name('
     Route::get('/produtos', [ProdutoFornecedorController::class, 'index'])->name('produtos.index');
     Route::get('/produtos/listar', [ProdutoFornecedorController::class, 'listar'])->name('produtos.listar');
 
-
     Route::get('/produtos/create', [ProdutoFornecedorController::class, 'create'])->name('produtos.create');
     Route::post('/produtos/store', [ProdutoFornecedorController::class, 'store'])->name('produtos.store');
 
@@ -156,5 +155,6 @@ Route::middleware([FornecedorMiddleware::class])->prefix('fornecedores')->name('
 
     Route::delete('/produtos/{id}', [ProdutoFornecedorController::class, 'destroy'])->name('produtos.destroy');
 
+    Route::post('/foto', [FornecedorController::class, 'atualizarFoto'])->name('atualizarFoto');
 
 });
