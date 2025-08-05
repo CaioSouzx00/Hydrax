@@ -119,23 +119,5 @@ class FornecedorController extends Controller
         return view('fornecedores.dashboard', compact('fornecedor'));
     }
 
-    public function atualizarFoto(Request $request)
-    {
-        $request->validate([
-            'profile_photo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
 
-        $fornecedor = Auth::guard('fornecedores')->user();
-
-        if ($fornecedor->profile_photo) {
-            Storage::disk('public')->delete($fornecedor->profile_photo);
-        }
-
-        $path = $request->file('profile_photo')->store('fotos_fornecedores', 'public');
-
-        $fornecedor->profile_photo = $path;
-        $fornecedor->save();
-
-        return back()->with('success', 'Foto de perfil atualizada com sucesso!');
-    }
 }
