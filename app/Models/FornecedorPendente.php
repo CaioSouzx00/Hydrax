@@ -22,6 +22,7 @@ class FornecedorPendente extends Model
         'cnpj',
         'email',
         'telefone',
+        'foto',
         'password',
         'status',
     ];

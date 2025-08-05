@@ -22,6 +22,7 @@ class Fornecedor extends Authenticatable
         'cnpj',
         'email',
         'telefone',
+        'foto',
         'password',
         'status',
     ];

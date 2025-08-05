@@ -12,6 +12,7 @@ return new class extends Migration {
             $table->string('nome_empresa')->unique();
             $table->string('cnpj')->unique();
             $table->string('telefone');
+            $table->string('foto')->nullable();
             $table->string('email')->unique();
             $table->enum('status', ['ATIVO', 'INATIVO'])->default('ATIVO');
             $table->string('password');

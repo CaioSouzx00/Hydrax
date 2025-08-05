@@ -41,6 +41,7 @@ class FornecedorController extends Controller
             'telefone' => $validated['telefone'],
             'password' => $validated['password'],
             'status' => 'pendente',
+            'foto' => null,
         ]);
 
         return redirect()->route('fornecedores.login')->with('success', 'Cadastro enviado para análise.');
@@ -89,6 +90,7 @@ class FornecedorController extends Controller
             'email' => $pendente->email,
             'telefone' => $pendente->telefone,
             'password' => Hash::make($pendente->password),
+            'foto' => null,
         ]);
 
     // Enviar e-mail de aprovação
