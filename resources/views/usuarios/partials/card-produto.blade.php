@@ -11,7 +11,6 @@
     $foto = is_array($fotos) && count($fotos) > 0 ? $fotos[0] : null;
   @endphp
 
-  <!-- Imagem -->
   <div class="w-full mb-3">
     <img
       src="{{ $foto ? asset('storage/' . $foto) : 'https://via.placeholder.com/400x400?text=Produto' }}"
@@ -20,7 +19,6 @@
     />
   </div>
 
-  <!-- Informações -->
   <div class="flex flex-col space-y-2">
     <h3 class="text-base font-semibold text-white truncate" title="{{ $produto->nome }}">
       {{ $produto->nome }}
@@ -38,7 +36,6 @@
       {{ $produto->categoria }}
     </p>
 
-    <!-- Estrelas e nota -->
     <div class="flex items-center space-x-2 mt-1" aria-label="Avaliação: 4.5 de 5 estrelas" role="img">
       <div class="flex items-center space-x-[1px]">
         @for ($i = 0; $i < 4; $i++)

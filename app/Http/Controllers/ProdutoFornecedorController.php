@@ -22,6 +22,7 @@ public function store(Request $request)
         'nome' => 'required|string|max:255',
         'descricao' => 'required|string',
         'preco' => 'required|numeric|min:0',
+        'estoque_imagem.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048', 
         'caracteristicas' => 'required|string',
         'historico_modelos' => 'nullable|string',
         'tamanhos_disponiveis' => 'nullable|string',
@@ -30,6 +31,19 @@ public function store(Request $request)
         'fotos.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         'ativo' => 'required|boolean',
     ]);
+       // Salvar imagens estoque
+
+    $imagensEstoque = [];
+
+    if ($request->hasFile('estoque_imagem')) {
+
+        foreach ($request->file('estoque_imagem') as $file) {
+            $imagensEstoque[] = $file->store('produtos/estoque', 'public');
+
+        }
+
+    }
+
 
     // Salvar imagens fotos
     $imagens = [];
@@ -43,6 +57,7 @@ public function store(Request $request)
         'nome' => $request->nome,
         'descricao' => $request->descricao,
         'preco' => $request->preco,
+        'estoque_imagem' => !empty($imagensEstoque) ? json_encode($imagensEstoque) : null,
         'caracteristicas' => $request->caracteristicas,
         'historico_modelos' => $request->historico_modelos,
         'tamanhos_disponiveis' => $request->tamanhos_disponiveis
@@ -69,6 +84,7 @@ public function update(Request $request, $id)
         'nome' => 'required|string|max:255',
         'descricao' => 'required|string',
         'preco' => 'required|numeric|min:0',
+        'estoque_imagem.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         'caracteristicas' => 'required|string',
         'historico_modelos' => 'nullable|string',
         'tamanhos_disponiveis' => 'nullable|string',
@@ -102,6 +118,29 @@ public function update(Request $request, $id)
         }
         $data['fotos'] = json_encode($fotosPaths);
     }
+
+        // Atualiza estoque_imagem se enviar
+
+
+    if ($request->hasFile('estoque_imagem')) {
+
+
+        $estoquePaths = [];
+
+
+        foreach ($request->file('estoque_imagem') as $img) {
+
+
+            $estoquePaths[] = $img->store('produtos/estoque', 'public');
+
+
+        }
+
+
+        $data['estoque_imagem'] = json_encode($estoquePaths);
+
+    }
+
 
     // Atualiza slug
     $data['slug'] = \Str::slug($request->nome);
@@ -159,6 +198,26 @@ public function destroy($id)
             \Storage::disk('public')->delete($foto);
         }
     }
+    // Exemplo para apagar imagens de estoque:
+
+
+    if (!empty($produto->estoque_imagem)) {
+
+
+        $estoqueImgs = json_decode($produto->estoque_imagem, true);
+
+
+        foreach ($estoqueImgs as $img) {
+
+
+            \Storage::disk('public')->delete($img);
+
+
+        }
+
+
+    }
+
 
     $produto->delete();
 

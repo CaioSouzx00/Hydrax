@@ -72,6 +72,42 @@
         </div>
       @endif
     </div>
+        <!-- Estoque de Imagem -->
+
+
+    <div class="mb-4">
+
+
+      <label class="block text-sm font-medium text-indigo-300">Estoque Imagem (upload múltiplo)</label>
+
+
+      <input type="file" name="estoque_imagem[]" multiple class="w-full bg-gray-800 border border-indigo-600 rounded p-2 text-white">
+
+
+      @if (is_array($produto->estoque_imagem))
+
+
+        <div class="text-sm mt-2 text-indigo-400">
+
+
+          Imagens atuais de estoque:
+
+
+          <ul class="list-disc ml-4">
+
+
+            @foreach ($produto->estoque_imagem as $img)
+
+
+              <li><a href="{{ asset('storage/' . $img) }}" target="_blank" class="underline">{{ $img }}</a></li>
+
+     @endforeach
+          </ul>
+        </div>
+      @endif
+    </div>
+
+
 
     <!-- Slug -->
     <div class="mb-4">
