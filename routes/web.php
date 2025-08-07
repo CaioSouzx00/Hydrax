@@ -155,6 +155,4 @@ Route::middleware([FornecedorMiddleware::class])->prefix('fornecedores')->name('
 
     Route::delete('/produtos/{id}', [ProdutoFornecedorController::class, 'destroy'])->name('produtos.destroy');
 
-    Route::post('/foto', [FornecedorController::class, 'atualizarFoto'])->name('atualizarFoto');
-
 });
