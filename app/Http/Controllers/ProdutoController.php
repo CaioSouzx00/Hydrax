@@ -34,9 +34,11 @@ public function buscar(Request $request)
 }
 
 
+
+
 public function detalhes($id)
 {
-    $produto = ProdutoFornecedor::findOrFail($id);
+    $produto = ProdutoFornecedor::with('fornecedor')->findOrFail($id);
     return view('usuarios.detalhes-produto', compact('produto'));
 }
 

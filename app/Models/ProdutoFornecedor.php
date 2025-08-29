@@ -34,4 +34,11 @@ class ProdutoFornecedor extends Model
         'ativo',
         'id_fornecedores',
     ];
+
+
+   public function fornecedor()
+{
+    return $this->belongsTo(Fornecedor::class, 'id_fornecedores', 'id_fornecedores');
+}
+
 }

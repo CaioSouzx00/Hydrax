@@ -79,6 +79,23 @@
             <p class="text-gray-500 mt-2">Nenhum tamanho disponível</p>
             @endif
 
+
+
+<!-- Fornecedor -->
+@if($produto->fornecedor)
+<div class="flex items-center gap-3 mt-6 p-4 border rounded-lg bg-white shadow">
+    <img src="{{ $produto->fornecedor->foto ? asset('storage/' . $produto->fornecedor->foto) : asset('storage/sem-logo.png') }}" 
+         alt="Logo {{ $produto->fornecedor->nome_empresa }}"
+         class="w-14 h-14 rounded-full object-cover border">
+    <div>
+        <h3 class="font-semibold text-lg">{{ $produto->fornecedor->nome_empresa }}</h3>
+        <p class="text-sm text-gray-500">Vendido por esta empresa</p>
+    </div>
+</div>
+@endif
+
+
+
             <!-- Botão Comprar -->
             <button class="mt-6 w-full bg-black text-white py-3 rounded-lg text-lg font-semibold hover:bg-gray-800 transition">
                 Comprar agora
