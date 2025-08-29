@@ -102,8 +102,6 @@ public function dashboard()
     return view('usuarios.dashboard', compact('produtos'));
 }
 
-
-
     public function update(Request $request)
     {
         $usuario = Auth::guard('usuarios')->user();
@@ -187,8 +185,5 @@ public function showEmailForm()
 
     return redirect()->route('dashboard')->with('success', 'Seu e-mail foi atualizado com sucesso!');
 }
-
-
-
 
 }
