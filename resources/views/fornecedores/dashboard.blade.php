@@ -91,7 +91,7 @@
             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 15c2.485 0 4.779.755 6.879 2.041M15 10a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
-            <span>Perfil</span>
+            <span>Perfil</span> 
           </a>
           <form id="logoutForm" method="POST" action="{{ route('fornecedores.logout') }}">
             @csrf
