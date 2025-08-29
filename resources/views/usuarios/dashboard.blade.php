@@ -191,13 +191,70 @@
   </header>
 
 <main id="main-content" class="min-h-screen">
-    <div id="produtos-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-6 pt-24">
-    @forelse($produtos ?? [] as $produto)
-        @include('usuarios.partials.card-produto', ['produto' => $produto])
-    @empty
-        <p class="text-white">Nenhum produto disponível no momento.</p>
-    @endforelse
-</div>
+
+    <!-- Carrossel Full Width -->
+    <div id="carousel" class="relative w-full pt-32 pb-12">
+        <!-- Slides -->
+        <div class="overflow-hidden relative h-80">
+            <div class="flex transition-transform duration-500" id="carousel-slides">
+                <div class="flex-shrink-0 w-full h-80 bg-red-500 flex items-center justify-center text-white text-2xl">
+                    Slide 1
+                </div>
+                <div class="flex-shrink-0 w-full h-80 bg-green-500 flex items-center justify-center text-white text-2xl">
+                    Slide 2
+                </div>
+                <div class="flex-shrink-0 w-full h-80 bg-blue-500 flex items-center justify-center text-white text-2xl">
+                    Slide 3
+                </div>
+            </div>
+
+            <!-- Botões alinhados verticalmente -->
+            <div class="absolute inset-y-0 left-0 flex items-center">
+                <button id="prev" class="bg-black/10 text-white/30 hover:bg-black/30 hover:text-white p-2 rounded-full mx-4">‹</button>
+            </div>
+            <div class="absolute inset-y-0 right-0 flex items-center">
+                <button id="next" class="bg-black/10 text-white/30 hover:bg-black/30 hover:text-white p-2 rounded-full mx-4">›</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grid de produtos -->
+    <div id="produtos-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-6 pl-64 pr-64 ">
+        @forelse($produtos ?? [] as $produto)
+            @include('usuarios.partials.card-produto', ['produto' => $produto])
+        @empty
+            <p class="text-white">Nenhum produto disponível no momento.</p>
+        @endforelse
+    </div>
+
+    <script>
+        const slides = document.getElementById('carousel-slides');
+        const totalSlides = slides.children.length;
+        let index = 0;
+
+        const showSlide = () => {
+            slides.style.transform = `translateX(-${index * 100}%)`;
+        }
+
+        const nextSlide = () => {
+            index = (index + 1) % totalSlides;
+            showSlide();
+        }
+
+        const prevSlide = () => {
+            index = (index - 1 + totalSlides) % totalSlides;
+            showSlide();
+        }
+
+        document.getElementById('next').addEventListener('click', nextSlide);
+        document.getElementById('prev').addEventListener('click', prevSlide);
+
+        // Auto-play: troca de slide a cada 5 segundos
+        setInterval(nextSlide, 5000);
+    </script>
+
+</main>
+
 
 </main>
 
