@@ -165,14 +165,27 @@
         @php $id = Auth::guard('usuarios')->id(); @endphp
         @endif
 
-        <!-- Carrinho -->
-        <a href="#" class="relative hover:text-gray-300 transition">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 inline-block" fill="none" viewBox="0 0 24 24"
-            stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+<!-- Carrinho -->
+<a href="{{ route('carrinho.ver') }}" class="relative hover:text-gray-300 transition">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 inline-block" fill="none" viewBox="0 0 24 24"
+         stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.5 7h13L17 13M7 13H5.4" />
-          </svg>
-        </a>
+    </svg>
+
+    @php
+        $carrinho = auth()->check() ? auth()->user()->carrinhoAtivo()->with('itens')->first() : null;
+        $quantidade = $carrinho ? $carrinho->itens->sum('quantidade') : 0;
+    @endphp
+
+    @if($quantidade > 0)
+        <span class="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center">
+            {{ $quantidade }}
+        </span>
+    @endif
+</a>
+
+
       </nav>
     </div>
   </header>

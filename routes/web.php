@@ -15,6 +15,7 @@ use App\Http\Controllers\ProdutoFornecedorController;
 use App\Http\Controllers\SenhaUsuarioController;
 use App\Http\Controllers\PrivacidadeController;
 use App\Http\Controllers\ProdutoController;
+use App\Http\Controllers\CarrinhoController;
 
 Route::prefix('fornecedores/senha')->group(function () {
     // 1. Formulário para digitar o e-mail
@@ -112,6 +113,22 @@ Route::post('/excluir-conta', [PrivacidadeController::class, 'excluirConta'])->n
 
 Route::get('/produtos/{id}/detalhes', [ProdutoController::class, 'detalhes'])->name('produtos.detalhes');
 
+
+ // Adicionar produto ao carrinho
+    Route::post('/carrinho/adicionar/{id}', [CarrinhoController::class, 'adicionarProduto'])
+        ->name('carrinho.adicionar');
+
+    // Visualizar carrinho
+    Route::get('/carrinho', [CarrinhoController::class, 'verCarrinho'])
+        ->name('carrinho.ver');
+
+    // Remover produto do carrinho
+Route::delete('/carrinho/remover/{produtoId}', [CarrinhoController::class, 'removerProduto'])->name('carrinho.remover');
+
+
+    // Finalizar compra
+    Route::post('/carrinho/finalizar', [CarrinhoController::class, 'finalizarCompra'])
+        ->name('carrinho.finalizar');
 
 });
 

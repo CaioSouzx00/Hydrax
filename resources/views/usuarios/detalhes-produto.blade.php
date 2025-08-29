@@ -67,17 +67,21 @@
             @endif
 
             <!-- Tamanhos -->
-            @if(count($tamanhos))
-            <div class="flex flex-wrap gap-2 mt-4">
-                @foreach($tamanhos as $tamanho)
-                    <button class="px-4 py-2 border rounded-md hover:bg-gray-200">
-                        {{ $tamanho }}
-                    </button>
-                @endforeach
-            </div>
-            @else
-            <p class="text-gray-500 mt-2">Nenhum tamanho disponível</p>
-            @endif
+<!-- Tamanhos -->
+@if(count($tamanhos))
+<div class="flex flex-wrap gap-2 mt-4">
+    @foreach($tamanhos as $tamanho)
+        <button type="button" 
+                class="tamanho-btn px-4 py-2 border rounded-md hover:bg-gray-200"
+                data-tamanho="{{ $tamanho }}">
+            {{ $tamanho }}
+        </button>
+    @endforeach
+</div>
+@else
+<p class="text-gray-500 mt-2">Nenhum tamanho disponível</p>
+@endif
+
 
 
 
@@ -95,6 +99,16 @@
 @endif
 
 
+<form action="{{ route('carrinho.adicionar', $produto->id_produtos) }}" method="POST" class="mt-4" id="form-carrinho">
+    @csrf
+    <input type="hidden" name="tamanho" id="tamanhoSelecionado">
+    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+        Adicionar ao carrinho
+    </button>
+    <p id="erroTamanho" class="text-red-600 mt-2 hidden">Por favor, selecione um tamanho antes de adicionar ao carrinho.</p>
+</form>
+
+
 
             <!-- Botão Comprar -->
             <button class="mt-6 w-full bg-black text-white py-3 rounded-lg text-lg font-semibold hover:bg-gray-800 transition">
@@ -103,6 +117,29 @@
         </div>
     </div>
 </div>
+
+<script>
+    const tamanhoBtns = document.querySelectorAll('.tamanho-btn');
+    const tamanhoInput = document.getElementById('tamanhoSelecionado');
+    const erroTamanho = document.getElementById('erroTamanho');
+
+    tamanhoBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            tamanhoBtns.forEach(b => b.classList.remove('bg-gray-200', 'border-black'));
+            btn.classList.add('bg-gray-200', 'border-black');
+
+            tamanhoInput.value = btn.dataset.tamanho;
+            erroTamanho.classList.add('hidden');
+        });
+    });
+
+    document.getElementById('form-carrinho').addEventListener('submit', function(e){
+        if(!tamanhoInput.value){
+            e.preventDefault();
+            erroTamanho.classList.remove('hidden');
+        }
+    });
+</script>
 
 </body>
 </html>

@@ -43,4 +43,25 @@ class Usuario extends Authenticatable
     {
         return $this->password;
     }
+
+
+// Usuário tem vários carrinhos
+public function carrinhos()
+{
+    return $this->hasMany(Carrinho::class, 'id_usuarios', 'id_usuarios');
+}
+
+// Carrinho ativo como relacionamento
+public function carrinhoAtivo()
+{
+    return $this->hasOne(Carrinho::class, 'id_usuarios', 'id_usuarios')->where('status', 'ativo');
+}
+
+// Para poder acessar como propriedade direto: auth()->user()->carrinhoAtivo
+public function getCarrinhoAtivoAttribute()
+{
+    return $this->carrinhoAtivo()->first();
+}
+
+
 }

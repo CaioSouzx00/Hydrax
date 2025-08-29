@@ -34,6 +34,7 @@
         {{ $produto->categoria }}
       </p>
 
+
       {{-- estrelas fixas de exemplo --}}
       <div class="flex items-center space-x-2 mt-1" aria-label="Avaliação: 4.5 de 5 estrelas" role="img">
         <div class="flex items-center space-x-[1px]">
