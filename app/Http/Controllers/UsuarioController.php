@@ -95,20 +95,14 @@ class UsuarioController extends Controller
         return redirect()->route('login.form')->with('success', 'Você saiu do sistema.');
     }
 
-    public function dashboard()
-    {
-        if (!Auth::guard('usuarios')->check()) {
-            return redirect()->route('login.form')->withErrors(['acesso' => 'Faça login para acessar o sistema.']);
-        }
+public function dashboard()
+{
+    $produtos = ProdutoFornecedor::latest()->take(12)->get();
 
-        $produtos = ProdutoFornecedor::latest()->take(12)->get();
-        //dd($produtos);
-        $usuario = Auth::guard('usuarios')->user();
-        $nome    = $usuario->nome_completo;
+    return view('usuarios.dashboard', compact('produtos'));
+}
 
-        return view('usuarios.dashboard', compact('nome'), compact('produtos'));
 
-    }
 
     public function update(Request $request)
     {

@@ -178,17 +178,16 @@
   </header>
 
 <main id="main-content" class="min-h-screen">
-  
-  <div id="produtos-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-6 pt-24">
-    @if(isset($produtos) && $produtos->isNotEmpty())
-      @foreach ($produtos as $produto)
+    <div id="produtos-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-6 pt-24">
+    @forelse($produtos ?? [] as $produto)
         @include('usuarios.partials.card-produto', ['produto' => $produto])
-      @endforeach
-    @else
-      <p class="text-white">Nenhum produto disponível no momento.</p>
-    @endif
-  </div>
+    @empty
+        <p class="text-white">Nenhum produto disponível no momento.</p>
+    @endforelse
+</div>
+
 </main>
+
 
 
 <!-- Container do modal -->
@@ -203,7 +202,6 @@
 </div>
 
 </div>
-
 
 
   <div id="overlay"></div>
@@ -309,30 +307,24 @@
     `;
   }
 
-  function realizarBusca() {
+function realizarBusca() {
   const termo = inputBuscar.value.trim();
 
   if (termo.length === 0) {
-  // Campo vazio, buscar todos
-  fetch(`${buscarUrl}`)
-    .then(res => res.json())
-    .then(data => {
-      resultado.style.display = 'none';
-      produtosContainer.innerHTML = data.html;
-    })
-    .catch(() => {
-      produtosContainer.innerHTML = '<p class="text-red-500 p-6 pt-24">Erro ao buscar produtos.</p>';
-    });
-  return;
-}
+    // Campo vazio → buscar todos
+    fetch(`${buscarUrl}`)
+      .then(res => res.json())
+      .then(data => {
+        resultado.style.display = 'none';
+        produtosContainer.innerHTML = data.html;
+      })
+      .catch(() => {
+        produtosContainer.innerHTML = '<p class="text-red-500 p-6 pt-24">Erro ao buscar produtos.</p>';
+      });
+    return;
+  }
 
-if (termo.length < 2) {
-  produtosContainer.innerHTML = '<p class="text-white p-6 pt-24">Digite 2 ou mais caracteres para buscar.</p>';
-  resultado.style.display = 'none';
-  return;
-}
-
-
+  // Agora SEM bloqueio de "2 letras"
   fetch(`${buscarUrl}?q=${encodeURIComponent(termo)}`)
     .then(res => res.json())
     .then(data => {
@@ -343,6 +335,7 @@ if (termo.length < 2) {
       produtosContainer.innerHTML = '<p class="text-red-500 p-6 pt-24">Erro ao buscar produtos.</p>';
     });
 }
+
 
 
   inputBuscar.addEventListener('input', realizarBusca);

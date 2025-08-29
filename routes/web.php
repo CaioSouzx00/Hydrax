@@ -36,9 +36,7 @@ Route::prefix('fornecedores/senha')->group(function () {
 | Rotas Públicas
 |--------------------------------------------------------------------------
 */
-Route::get('/', function () {
-    return view('usuarios.dashboard'); // Pode trocar por uma página pública
-});
+Route::get('/', [UsuarioController::class, 'dashboard'])->name('home');
 
 //Route::get('/', [UsuarioController::class, 'dashboard'])->name('home');
 
