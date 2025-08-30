@@ -54,7 +54,7 @@ public function store(Request $request)
     $endereco->save();
 
     return redirect()
-        ->route('usuario.painel')
+        ->route('carrinho.finalizar')
         ->with('success', 'Endereço cadastrado com sucesso!');
 }
 

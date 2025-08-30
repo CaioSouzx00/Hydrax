@@ -123,12 +123,12 @@ Route::get('/produtos/{id}/detalhes', [ProdutoController::class, 'detalhes'])->n
         ->name('carrinho.ver');
 
     // Remover produto do carrinho
-Route::delete('/carrinho/remover/{produtoId}', [CarrinhoController::class, 'removerProduto'])->name('carrinho.remover');
+Route::delete('/carrinho/remover/{produtoId}/{tamanho}', [CarrinhoController::class, 'removerProduto'])->name('carrinho.remover');
 
 
-    // Finalizar compra
-    Route::post('/carrinho/finalizar', [CarrinhoController::class, 'finalizarCompra'])
-        ->name('carrinho.finalizar');
+Route::get('/carrinho/finalizar', [CarrinhoController::class, 'finalizarCompra'])->name('carrinho.finalizar');
+Route::post('/carrinho/finalizar', [CarrinhoController::class, 'processarFinalizacao'])->name('carrinho.processar');
+
 
 });
 

@@ -7,18 +7,25 @@ use App\Models\Carrinho;
 use App\Models\CarrinhoItem;
 use App\Models\ProdutoFornecedor;
 use Illuminate\Support\Facades\Auth;
+use App\Models\EnderecoUsuario;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Mail;
 
 class CarrinhoController extends Controller
 {
     // 1️⃣ Adicionar produto ao carrinho
-   public function adicionarProduto(Request $request, $produtoId)
+  // 1️⃣ Adicionar produto ao carrinho
+public function adicionarProduto(Request $request, $produtoId)
 {
     $usuario = Auth::guard('usuarios')->user();
 
-    // Valida o tamanho selecionado
+    // Valida o tamanho selecionado e quantidade
     $request->validate([
         'tamanho' => 'required|string',
+        'quantidade' => 'nullable|integer|min:1',
     ]);
+
+    $quantidade = $request->input('quantidade', 1);
 
     // Recupera ou cria carrinho ativo
     $carrinho = $usuario->carrinhoAtivo;
@@ -29,54 +36,55 @@ class CarrinhoController extends Controller
         ]);
     }
 
-    // Recupera ou cria item no carrinho com o tamanho selecionado
-    $item = CarrinhoItem::firstOrCreate(
-        [
-            'carrinho_id' => $carrinho->id, 
-            'produto_id' => $produtoId,
-            'tamanho' => $request->tamanho, // Adiciona o tamanho como chave para diferenciar itens
-        ],
-        ['quantidade' => 1]
-    );
+    // Recupera item existente (mesmo produto e mesmo tamanho)
+    $item = CarrinhoItem::where('carrinho_id', $carrinho->id)
+        ->where('produto_id', $produtoId)
+        ->where('tamanho', $request->tamanho)
+        ->first();
 
-    // Se já existia, apenas incrementa a quantidade
-    if (!$item->wasRecentlyCreated) {
-        $item->increment('quantidade');
+    if ($item) {
+        // Se já existe, soma a quantidade
+        $item->quantidade += $quantidade;
+        $item->save();
+    } else {
+        // Se não existe, cria o item
+        CarrinhoItem::create([
+            'carrinho_id' => $carrinho->id,
+            'produto_id' => $produtoId,
+            'tamanho' => $request->tamanho,
+            'quantidade' => $quantidade,
+        ]);
     }
 
-    return redirect()->route('carrinho.ver')->with('success', 'Produto adicionado ao carrinho!');
+    return redirect()->route('carrinho.ver')
+                     ->with('success', 'Produto adicionado ao carrinho!');
 }
+
 
 
     // 2️⃣ Visualizar carrinho
 public function verCarrinho()
 {
     $usuario = Auth::guard('usuarios')->user();
-
-    $carrinho = $usuario->carrinhoAtivo;
-    if (!$carrinho) {
-        $carrinho = Carrinho::create([
-            'id_usuarios' => $usuario->id_usuarios,
-            'status' => 'ativo',
-        ]);
-    }
+    $carrinho = $usuario->carrinhoAtivo ?? Carrinho::create([
+        'id_usuarios' => $usuario->id_usuarios,
+        'status' => 'ativo',
+    ]);
 
     $carrinho->load('itens.produto');
 
-    // Calcula o total
-    $total = $carrinho->itens->sum(function($item) {
-        return $item->produto->preco * $item->quantidade;
-    });
+    $enderecos = EnderecoUsuario::where('id_usuarios', $usuario->id_usuarios)->get(); // ADICIONAR ISSO
 
-    // 🔥 Buscar produtos para recomendação (4 aleatórios)
+    $total = $carrinho->itens->sum(fn($item) => $item->produto->preco * $item->quantidade);
     $produtos = ProdutoFornecedor::inRandomOrder()->take(4)->get();
 
-    return view('usuarios.carrinho', compact('carrinho', 'total', 'produtos'));
+    return view('usuarios.carrinho', compact('carrinho', 'total', 'produtos', 'enderecos')); // INCLUIR $enderecos
 }
 
 
+
     // 3️⃣ Remover produto do carrinho
-public function removerProduto(Request $request, $produtoId)
+public function removerProduto($produtoId, $tamanho)
 {
     $usuario = Auth::guard('usuarios')->user();
 
@@ -84,7 +92,7 @@ public function removerProduto(Request $request, $produtoId)
     if ($carrinho) {
         $carrinho->itens()
             ->where('produto_id', $produtoId)
-            ->where('tamanho', $request->tamanho)
+            ->where('tamanho', $tamanho)
             ->delete();
     }
 
@@ -94,16 +102,81 @@ public function removerProduto(Request $request, $produtoId)
 
 
     // 4️⃣ Finalizar compra (simulada)
-    public function finalizarCompra()
-    {
-        $usuario = Auth::guard('usuarios')->user();
+public function finalizarCompra()
+{
+    $usuario = Auth::guard('usuarios')->user();
 
+    $enderecos = EnderecoUsuario::where('id_usuarios', $usuario->id_usuarios)->get();
+    $carrinho = Carrinho::where('id_usuarios', $usuario->id_usuarios)
+                        ->where('status', 'ativo')
+                        ->with('itens.produto')
+                        ->first();
 
-        $carrinho = $usuario->carrinhoAtivo;
-        if ($carrinho) {
-            $carrinho->update(['status' => 'finalizado']);
-        }
-
-        return redirect()->route('produtos.index')->with('success', 'Compra finalizada com sucesso!');
+    // 🚨 Se não tiver carrinho ou não tiver itens → volta pro carrinho com erro
+    if (!$carrinho || $carrinho->itens->isEmpty()) {
+        return redirect()->route('carrinho.ver')
+                         ->with('error', 'Você precisa ter no mínimo 1 produto no carrinho para finalizar a compra.');
     }
+
+    // Se não tem endereço cadastrado → pede pra cadastrar
+    if ($enderecos->isEmpty()) {
+        return view('usuarios.endereco_form', compact('carrinho'));
+    }
+
+    // Caso ok → vai para selecionar endereço
+    return view('usuarios.selecionar_endereco', compact('enderecos', 'carrinho'));
+}
+
+
+
+public function processarFinalizacao(Request $request)
+{
+    $usuario = Auth::guard('usuarios')->user();
+
+    $request->validate([
+        'id_endereco' => 'required|exists:endereco_usuarios,id_endereco',
+    ], [
+        'id_endereco.required' => 'Você precisa selecionar um endereço para finalizar a compra.',
+    ]);
+
+    $enderecoSelecionado = EnderecoUsuario::find($request->id_endereco);
+
+    $carrinho = Carrinho::where('id_usuarios', $usuario->id_usuarios)
+                        ->where('status', 'ativo')
+                        ->with('itens.produto')
+                        ->first();
+
+    if (!$carrinho || $carrinho->itens->isEmpty()) {
+    return redirect()->route('carrinho.ver')
+                     ->with('error', 'Você precisa ter no mínimo 1 produto no carrinho para finalizar a compra.');
+}
+
+
+    // 🔹 Calcular total
+    $total = $carrinho->itens->sum(fn($item) => $item->produto->preco * $item->quantidade) + 15;
+
+    // 🔹 Gerar chave Pix fake
+    $chavePix = 'hydrax-pix-' . strtoupper(\Illuminate\Support\Str::random(10));
+
+    // 🔹 Enviar chave Pix por e-mail
+    \Illuminate\Support\Facades\Mail::to($usuario->email)
+        ->send(new \App\Mail\ChavePixMail($chavePix, $total));
+
+    // 🔹 Marcar carrinho como finalizado
+    $carrinho->status = 'finalizado';
+    $carrinho->save();
+
+    // 🔹 Criar novo carrinho vazio (se quiser manter o fluxo contínuo)
+    $novoCarrinho = Carrinho::create([
+        'id_usuarios' => $usuario->id_usuarios,
+        'status' => 'ativo',
+    ]);
+
+    // 🔹 Retornar tela com chave Pix
+    return view('usuarios.pix', compact('chavePix', 'total', 'enderecoSelecionado'));
+}
+
+
+
+
 }
