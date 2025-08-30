@@ -129,6 +129,8 @@ Route::delete('/carrinho/remover/{produtoId}/{tamanho}', [CarrinhoController::cl
 Route::get('/carrinho/finalizar', [CarrinhoController::class, 'finalizarCompra'])->name('carrinho.finalizar');
 Route::post('/carrinho/finalizar', [CarrinhoController::class, 'processarFinalizacao'])->name('carrinho.processar');
 
+Route::get('/meus-pedidos', [CarrinhoController::class, 'meusPedidos'])->name('usuarios.pedidos');
+
 
 });
 

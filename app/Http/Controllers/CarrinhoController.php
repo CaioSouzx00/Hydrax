@@ -76,7 +76,10 @@ public function verCarrinho()
     $enderecos = EnderecoUsuario::where('id_usuarios', $usuario->id_usuarios)->get(); // ADICIONAR ISSO
 
     $total = $carrinho->itens->sum(fn($item) => $item->produto->preco * $item->quantidade);
-    $produtos = ProdutoFornecedor::inRandomOrder()->take(4)->get();
+    $produtos = ProdutoFornecedor::inRandomOrder()
+    ->limit(4)
+    ->get();
+
 
     return view('usuarios.carrinho', compact('carrinho', 'total', 'produtos', 'enderecos')); // INCLUIR $enderecos
 }
@@ -164,7 +167,9 @@ public function processarFinalizacao(Request $request)
 
     // 🔹 Marcar carrinho como finalizado
     $carrinho->status = 'finalizado';
+    $carrinho->id_endereco = $enderecoSelecionado->id_endereco;
     $carrinho->save();
+
 
     // 🔹 Criar novo carrinho vazio (se quiser manter o fluxo contínuo)
     $novoCarrinho = Carrinho::create([
@@ -176,7 +181,19 @@ public function processarFinalizacao(Request $request)
     return view('usuarios.pix', compact('chavePix', 'total', 'enderecoSelecionado'));
 }
 
+public function meusPedidos()
+{
+    $usuario = Auth::guard('usuarios')->user();
 
+    // Buscar todos os carrinhos finalizados desse usuário
+    $pedidos = Carrinho::where('id_usuarios', $usuario->id_usuarios)
+        ->where('status', 'finalizado')
+        ->with('itens.produto')
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+    return view('usuarios.pedidos', compact('pedidos'));
+}
 
 
 }

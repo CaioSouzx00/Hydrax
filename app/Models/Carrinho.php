@@ -20,5 +20,11 @@ class Carrinho extends Model
     {
         return $this->hasMany(CarrinhoItem::class, 'carrinho_id');
     }
+
+    public function endereco()
+{
+    return $this->belongsTo(EnderecoUsuario::class, 'id_endereco', 'id_endereco');
+}
+
 }
 

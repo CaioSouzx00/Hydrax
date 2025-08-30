@@ -174,16 +174,67 @@
     </svg>
 
     @php
-        $carrinho = auth()->check() ? auth()->user()->carrinhoAtivo()->with('itens')->first() : null;
-        $quantidade = $carrinho ? $carrinho->itens->sum('quantidade') : 0;
+    $carrinho = Auth::guard('usuarios')->check()
+        ? Auth::guard('usuarios')->user()->carrinhoAtivo()->with('itens')->first()
+        : null;
+
+    $quantidade = $carrinho ? $carrinho->itens->sum('quantidade') : 0;
+@endphp
+
+@if($quantidade > 0)
+    <span 
+        class="absolute -top-2 -right-2 bg-black text-white rounded-full w-5 h-5 text-xs flex items-center justify-center animate-bounce-subtle shadow-lg">
+        {{ $quantidade }}
+    </span>
+@endif
+
+<style>
+@keyframes bounce-subtle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+.animate-bounce-subtle {
+  animation: bounce-subtle 1s infinite;
+}
+</style>
+
+
+</a>
+
+<!-- Minhas Compras -->
+<a href="{{ route('usuarios.pedidos') }}" class="relative hover:text-gray-300 transition ml-4">
+    <svg xmlns="http://www.w3.org/2000/svg" 
+         class="w-5 h-5 inline-block" fill="none" viewBox="0 0 24 24"
+         stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M3 7h18M3 7l1.5 12h15L21 7M16 11a4 4 0 11-8 0" />
+    </svg>
+
+    @php
+        $pedidosCount = Auth::guard('usuarios')->check()
+            ? Auth::guard('usuarios')->user()->carrinhos()->where('status', 'finalizado')->count()
+            : 0;
     @endphp
 
-    @if($quantidade > 0)
-        <span class="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center">
-            {{ $quantidade }}
+    @if($pedidosCount > 0)
+        <span 
+            class="absolute -top-2 -right-2 bg-black text-white rounded-full w-5 h-5 text-xs flex items-center justify-center animate-bounce-subtle shadow-lg">
+            {{ $pedidosCount }}
         </span>
     @endif
 </a>
+
+<style>
+@keyframes bounce-subtle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+.animate-bounce-subtle {
+  animation: bounce-subtle 1s infinite;
+}
+</style>
+
+
 
 
       </nav>
@@ -465,10 +516,6 @@ document.querySelectorAll('.produto-card, .produto-link').forEach(el => {
       });
   });
 });
-
-
-
-
 
 
 }

@@ -8,7 +8,11 @@
 </head>
 <body class="bg-white text-gray-900">
 
-<form action="{{ route('carrinho.finalizar') }}" method="POST">
+@php
+    $enderecos = Auth::guard('usuarios')->user()->enderecos ?? collect();
+@endphp
+
+<form action="{{ $enderecos->isEmpty() ? route('usuarios.enderecos.store') : route('carrinho.finalizar') }}" method="POST">
     @csrf
 
     <div class="container mx-auto max-w-6xl grid grid-cols-1 md:grid-cols-3 gap-12 py-10">
@@ -16,30 +20,64 @@
         <!-- Coluna esquerda -->
         <div class="md:col-span-2 space-y-10">
 
+            <!-- Mensagem de erro -->
             @if(session('error'))
                 <div class="bg-red-600 text-white p-3 rounded mb-6">
                     {{ session('error') }}
                 </div>
             @endif
 
-            <!-- Endereço -->
-            <div>
-                <h2 class="font-extrabold uppercase mb-4">Endereço</h2>
-                <div class="space-y-4">
-                    @foreach($enderecos as $endereco)
-                    <label class="flex items-start border border-gray-300 p-4 cursor-pointer hover:border-black">
-                        <input type="radio" name="id_endereco" value="{{ $endereco->id_endereco }}" class="mt-1">
-                        <div class="ml-3 text-sm leading-6">
-                            <p class="font-medium">{{ $endereco->endereco }}, {{ $endereco->numero }}</p>
-                            <p>{{ $endereco->bairro }} - {{ $endereco->cidade }}/{{ $endereco->estado }}</p>
-                            <p>CEP: {{ $endereco->cep }}</p>
-                        </div>
-                    </label>
+            <!-- Validações -->
+            @if($errors->any())
+                <div class="bg-red-600 text-white p-3 rounded mb-6 space-y-1">
+                    @foreach ($errors->all() as $error)
+                        <p>{{ $error }}</p>
                     @endforeach
                 </div>
-                <a href="{{ route('usuarios.enderecos.store') }}" class="block mt-3 text-sm font-semibold uppercase hover:underline">
-                    + Adicionar novo endereço
-                </a>
+            @endif
+
+            <!-- Endereço -->
+            <div>
+                <h2 class="font-extrabold uppercase mb-4">Endereço de entrega</h2>
+
+                @if($enderecos->isEmpty())
+                    {{-- Formulário de cadastro --}}
+                    <div class="space-y-4">
+                        <input type="text" name="rua" placeholder="Rua *" required class="border p-2 rounded w-full">
+                        <div class="grid grid-cols-2 gap-4">
+                            <input type="text" name="numero" placeholder="Número *" required class="border p-2 rounded">
+                            <input type="text" name="bairro" placeholder="Bairro *" required class="border p-2 rounded">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 mt-2">
+                            <input type="text" name="cidade" placeholder="Cidade *" required class="border p-2 rounded">
+                            <select name="estado" required class="border p-2 rounded">
+                                <option value="">Estado</option>
+                                <option value="SP">SP</option>
+                                <option value="RJ">RJ</option>
+                                <!-- TODO: listar todos os estados -->
+                            </select>
+                        </div>
+                        <input type="text" name="cep" placeholder="CEP *" required class="border p-2 rounded w-full mt-2">
+
+                        <button type="submit" class="w-full bg-black text-white font-bold py-3 rounded-lg mt-4 uppercase hover:bg-gray-800 transition">
+                            Salvar Endereço
+                        </button>
+                    </div>
+                @else
+                    {{-- Lista de endereços --}}
+                    <div class="space-y-4">
+                        @foreach($enderecos as $endereco)
+                        <label class="flex items-start border border-gray-300 p-4 cursor-pointer hover:border-black rounded-lg">
+                            <input type="radio" name="id_endereco" value="{{ $endereco->id_endereco }}" class="mt-1" required>
+                            <div class="ml-3 text-sm leading-6">
+                                <p class="font-medium">{{ $endereco->rua }}, {{ $endereco->numero }}</p>
+                                <p>{{ $endereco->bairro }} - {{ $endereco->cidade }}/{{ $endereco->estado }}</p>
+                                <p>CEP: {{ $endereco->cep }}</p>
+                            </div>
+                        </label>
+                        @endforeach
+                    </div>
+                @endif
             </div>
 
             <!-- Opções de entrega -->
@@ -95,10 +133,12 @@
                 <span>R$ {{ number_format($total + 15, 2, ',', '.') }}</span>
             </div>
 
+            @if(!$enderecos->isEmpty())
             <button type="submit" 
                     class="w-full bg-black text-white font-bold py-4 mt-6 uppercase hover:bg-gray-800 transition">
                 Finalizar Compra
             </button>
+            @endif
         </div>
     </div>
 </form>
