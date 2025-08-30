@@ -1,23 +1,31 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minhas Compras</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Minhas Compras</title>
+<script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-[#111] text-white font-sans">
+<body class="bg-[#111] text-white font-sans min-h-screen">
 
 <div class="container mx-auto p-6 grid grid-cols-1 md:grid-cols-3 gap-8">
 
     <!-- COLUNA ESQUERDA -->
     <div class="md:col-span-2">
 
+        <!-- Voltar -->
+<div class="mb-6">
+    <a href="{{ route('dashboard') }}" class="text-gray-400 hover:text-white inline-block">
+        &larr; Voltar ao Dashboard
+    </a>
+</div>
+
+
         <h1 class="text-3xl font-bold mb-6 tracking-wide">MINHAS COMPRAS</h1>
 
         @foreach($pedidos as $pedido)
-            <div class="bg-[#1a1a1a] border border-gray-800 rounded-2xl shadow-xl p-6 mb-6 hover:shadow-2xl transition duration-300">
-                
+            <a href="{{ route('pedidos.detalhe', $pedido->id) }}" class="block bg-[#1a1a1a] border border-gray-800 rounded-2xl shadow-xl p-6 mb-6 hover:shadow-2xl transition duration-300">
+
                 <!-- Header do pedido -->
                 <div class="flex justify-between items-center mb-4">
                     <div>
@@ -68,7 +76,7 @@
                         </div>
                     </div>
                 @endforeach
-            </div>
+            </a>
         @endforeach
     </div>
 
@@ -90,6 +98,7 @@
 
         <p class="text-gray-400 text-sm mt-6">* Este é o valor total já considerando a taxa de entrega de R$15,00 por pedido.</p>
     </div>
+
 </div>
 
 </body>

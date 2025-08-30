@@ -131,6 +131,9 @@ Route::post('/carrinho/finalizar', [CarrinhoController::class, 'processarFinaliz
 
 Route::get('/meus-pedidos', [CarrinhoController::class, 'meusPedidos'])->name('usuarios.pedidos');
 
+Route::get('/pedidos/{pedido}', [CarrinhoController::class, 'detalhePedido'])->name('pedidos.detalhe');
+
+
 
 });
 

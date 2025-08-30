@@ -195,5 +195,19 @@ public function meusPedidos()
     return view('usuarios.pedidos', compact('pedidos'));
 }
 
+// 7️⃣ Detalhes de um pedido específico
+public function detalhePedido($pedidoId)
+{
+    $usuario = Auth::guard('usuarios')->user();
+
+    // Buscar pedido finalizado do usuário com itens, produtos e endereço
+    $pedido = Carrinho::where('id_usuarios', $usuario->id_usuarios)
+        ->where('status', 'finalizado')
+        ->with('itens.produto', 'endereco')
+        ->findOrFail($pedidoId); // retorna 404 se não existir
+
+    return view('usuarios.pedido_detalhe', compact('pedido'));
+}
+
 
 }

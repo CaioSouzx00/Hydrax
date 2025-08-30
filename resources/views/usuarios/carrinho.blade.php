@@ -20,6 +20,13 @@
     
 <div class="md:col-span-2">
 
+        <!-- Voltar -->
+<div class="mb-6">
+    <a href="{{ route('dashboard') }}" class="text-gray-400 hover:text-white inline-block">
+        &larr; Voltar ao Dashboard
+    </a>
+</div>
+
 
     <h1 class="text-3xl font-bold mb-6">SEU CARRINHO</h1>
 
