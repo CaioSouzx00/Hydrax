@@ -100,16 +100,21 @@
       <div class="flex flex-col space-y-4">
         <a href="{{ route('fornecedores.pendentes') }}" class="w-full relative inline-flex items-center justify-start px-6 py-3 overflow-hidden font-medium transition-all bg-white rounded hover:bg-white group shadow-[0_4px_20px_rgba(33,24,40,0.5)]">
           <span class="w-48 h-48 rounded rotate-[-40deg] bg-[#211828] absolute bottom-0 left-0 -translate-x-full ease-out duration-500 transition-all translate-y-full mb-9 ml-9 group-hover:ml-0 group-hover:mb-32 group-hover:translate-x-0"></span>
-          <span class="relative w-full text-left text-[#211828] transition-colors duration-300 ease-in-out group-hover:text-white">Pendentes</span>
+          <span class="relative w-full text-left text-[#211828] transition-colors duration-300 ease-in-out group-hover:text-white">Fornecedores Pendentes</span>
         </a>
         <a href="{{ route('admin.produtos.listar') }}" class="w-full relative inline-flex items-center justify-start px-6 py-3 overflow-hidden font-medium transition-all bg-white rounded hover:bg-white group shadow-[0_4px_20px_rgba(33,24,40,0.5)]">
         <span class="w-48 h-48 rounded rotate-[-40deg] bg-[#211828] absolute bottom-0 left-0 -translate-x-full ease-out duration-500 transition-all translate-y-full mb-9 ml-9 group-hover:ml-0 group-hover:mb-32 group-hover:translate-x-0"></span>
-        <span class="relative w-full text-left text-[#211828] transition-colors duration-300 ease-in-out group-hover:text-white">Listar</span>
+        <span class="relative w-full text-left text-[#211828] transition-colors duration-300 ease-in-out group-hover:text-white">Listagem de Produtos</span>
         </a>
 
-        <a href="#_" class="w-full relative inline-flex items-center justify-start px-6 py-3 overflow-hidden font-medium transition-all bg-white rounded hover:bg-white group shadow-[0_4px_20px_rgba(33,24,40,0.5)]">
+        <a href="{{ route('admin.clientes') }}" class="w-full relative inline-flex items-center justify-start px-6 py-3 overflow-hidden font-medium transition-all bg-white rounded hover:bg-white group shadow-[0_4px_20px_rgba(33,24,40,0.5)]">
           <span class="w-48 h-48 rounded rotate-[-40deg] bg-[#211828] absolute bottom-0 left-0 -translate-x-full ease-out duration-500 transition-all translate-y-full mb-9 ml-9 group-hover:ml-0 group-hover:mb-32 group-hover:translate-x-0"></span>
-          <span class="relative w-full text-left text-[#211828] transition-colors duration-300 ease-in-out group-hover:text-white">Estoque</span>
+          <span class="relative w-full text-left text-[#211828] transition-colors duration-300 ease-in-out group-hover:text-white">Gestão de Clientes</span>
+        </a>
+
+            <a href="{{ route('admin.fornecedores') }}" class="w-full relative inline-flex items-center justify-start px-6 py-3 overflow-hidden font-medium transition-all bg-white rounded hover:bg-white group shadow-[0_4px_20px_rgba(33,24,40,0.5)]">
+          <span class="w-48 h-48 rounded rotate-[-40deg] bg-[#211828] absolute bottom-0 left-0 -translate-x-full ease-out duration-500 transition-all translate-y-full mb-9 ml-9 group-hover:ml-0 group-hover:mb-32 group-hover:translate-x-0"></span>
+          <span class="relative w-full text-left text-[#211828] transition-colors duration-300 ease-in-out group-hover:text-white">Gestão de Fornecedores</span>
         </a>
       </div>
     </div>

@@ -155,14 +155,12 @@ Route::middleware([AdministradorMiddleware::class])->group(function () {
     Route::get('/dashboard/vendas-semana', [AdminController::class, 'vendasSemana'])->name('dashboard.vendasSemana');
     Route::get('/admin/faturamento-semana', [AdminController::class, 'faturamentoSemana'])->name('admin.faturamentoSemana');
     Route::get('/dashboard/produtos-mais-vendidos', [AdminController::class, 'produtosMaisVendidos'])->name('dashboard.produtosMaisVendidos');
-
- // Listar produtos
-    Route::get('/admin/produtos', [AdminController::class, 'listarProdutos'])
-        ->name('admin.produtos.listar');
-
-    // Ativar / desativar produto
-    Route::patch('/admin/produtos/{id}/toggle', [AdminController::class, 'toggleProduto'])
-        ->name('admin.produtos.toggle');
+    Route::get('clientes', [AdminController::class,'listarClientes'])->name('admin.clientes');
+    Route::get('clientes/{id}/historico', [AdminController::class,'historicoCompras'])->name('admin.cliente.historico');
+    Route::get('/admin/produtos', [AdminController::class, 'listarProdutos'])->name('admin.produtos.listar');
+    Route::patch('/admin/produtos/{id}/toggle', [AdminController::class, 'toggleProduto'])->name('admin.produtos.toggle');
+    Route::get('fornecedores', [AdminController::class, 'listarFornecedores'])->name('admin.fornecedores');
+    Route::get('fornecedores/{id}/produtos', [AdminController::class, 'historicoProdutos'])->name('admin.fornecedor.produtos');
 
 });
 

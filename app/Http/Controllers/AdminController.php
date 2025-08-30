@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use App\Models\Administrador;
 use App\Models\ProdutoFornecedor;
+use App\Models\Usuario;
 
 class AdminController extends Controller
 {
@@ -252,6 +253,35 @@ public function produtosMaisVendidos()
 
         return redirect()->back()->with('success', 'Produto atualizado com sucesso!');
     }
+
+     // Listagem de clientes
+    public function listarClientes() {
+        $usuarios = Usuario::paginate(12); // Paginação de 12 por página
+        return view('admin.listagem-clientes', compact('usuarios'));
+    }
+
+    // Histórico de compras do usuário
+    public function historicoCompras($id) {
+        $usuario = Usuario::findOrFail($id);
+        $pedidos = $usuario->carrinhos()->with('itens.produto')->get();
+        return view('admin.historico-compra', compact('usuario','pedidos'));
+    }
+
+    // Listagem de fornecedores
+public function listarFornecedores()
+{
+    $fornecedores = \App\Models\Fornecedor::paginate(12); // ou ajusta a paginação
+    return view('admin.listagem-fornecedores', compact('fornecedores'));
+}
+
+// Histórico de produtos de um fornecedor
+public function historicoProdutos($id)
+{
+    $fornecedor = \App\Models\Fornecedor::findOrFail($id);
+    $produtos = $fornecedor->produtos()->get(); // assumindo relacionamento no model
+    return view('admin.historico-produtos', compact('fornecedor','produtos'));
+}
+
 
 
 }

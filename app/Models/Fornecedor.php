@@ -33,4 +33,11 @@ class Fornecedor extends Authenticatable
     {
         $this->attributes['password'] = bcrypt($value);
     }
+
+public function produtos()
+{
+    return $this->hasMany(ProdutoFornecedor::class, 'id_fornecedores', 'id_fornecedores');
+}
+
+
 }
