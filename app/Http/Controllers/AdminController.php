@@ -282,6 +282,4 @@ public function historicoProdutos($id)
     return view('admin.historico-produtos', compact('fornecedor','produtos'));
 }
 
-
-
 }

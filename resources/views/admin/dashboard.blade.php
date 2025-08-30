@@ -49,17 +49,17 @@
 <nav class="fixed top-64 right-[calc(100%-12.5rem)] h-[calc(100vh-30rem)] bg-black/25 backdrop-blur-md border border-white/25 shadow-xl text-white z-10 rounded-3xl overflow-hidden group transition-all duration-300 w-14 hover:w-48 flex flex-col justify-between items-start py-4 origin-right">
     
   <div class="flex flex-col space-y-4 w-full px-2">
-    <a href="#" class="flex items-center space-x-3 px-2 py-2 hover:bg-[#211828] rounded-md transition">
+    <a href="{{ route('admin.relatorios.usuarios') }}" class="flex items-center space-x-3 px-2 py-2 hover:bg-[#211828] rounded-md transition">
       <span class="text-lg"></span>
-      <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">Ação Futura</span>
+      <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">Relatorios Usuarios</span>
     </a>
-    <a href="#" class="flex items-center space-x-3 px-2 py-2 hover:bg-[#211828] rounded-md transition">
+    <a href="{{ route('admin.relatorios.fornecedores') }}" class="flex items-center space-x-3 px-2 py-2 hover:bg-[#211828] rounded-md transition">
       <span class="text-lg"></span>
-      <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">Ação Futura</span>
+      <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">Relatorios Fornecedores/span>
     </a> 
-    <a href="#" class="flex items-center space-x-3 px-2 py-2 hover:bg-[#211828] rounded-md transition">
+    <a href="{{ route('admin.relatorios.produtos') }}" class="flex items-center space-x-3 px-2 py-2 hover:bg-[#211828] rounded-md transition">
       <span class="text-lg"></span>
-      <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">Ação Futura</span>
+      <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">Relatorios Pordutos</span>
     </a>
   </div>
 

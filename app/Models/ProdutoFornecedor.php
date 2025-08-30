@@ -46,4 +46,11 @@ class ProdutoFornecedor extends Model
         return $query->where('ativo', 1);
     }
 
+
+public function carrinhoItens()
+{
+    return $this->hasMany(CarrinhoItem::class, 'produto_id', 'id_produtos');
+}
+
+
 }
