@@ -151,6 +151,18 @@ Route::middleware([AdministradorMiddleware::class])->group(function () {
     Route::get('/fornecedores/pendentes', [FornecedorController::class, 'listarPendentes'])->name('fornecedores.pendentes');
     Route::post('/fornecedores/{id}/aprovar', [FornecedorController::class, 'aprovar'])->name('fornecedores.aprovar');
     Route::post('/fornecedores/{id}/rejeitar', [FornecedorController::class, 'rejeitar'])->name('fornecedores.rejeitar');
+    Route::get('/dashboard/dados-produtos', [AdminController::class, 'dadosProdutos'])->name('dashboard.dadosProdutos');
+    Route::get('/dashboard/vendas-semana', [AdminController::class, 'vendasSemana'])->name('dashboard.vendasSemana');
+    Route::get('/admin/faturamento-semana', [AdminController::class, 'faturamentoSemana'])->name('admin.faturamentoSemana');
+    Route::get('/dashboard/produtos-mais-vendidos', [AdminController::class, 'produtosMaisVendidos'])->name('dashboard.produtosMaisVendidos');
+
+ // Listar produtos
+    Route::get('/admin/produtos', [AdminController::class, 'listarProdutos'])
+        ->name('admin.produtos.listar');
+
+    // Ativar / desativar produto
+    Route::patch('/admin/produtos/{id}/toggle', [AdminController::class, 'toggleProduto'])
+        ->name('admin.produtos.toggle');
 
 });
 

@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use App\Models\Administrador;
+use App\Models\ProdutoFornecedor;
 
 class AdminController extends Controller
 {
@@ -114,5 +115,143 @@ public function login(Request $request)
         'fornecedores' => $fornecedores,
     ]);
 }
+
+public function dadosProdutos()
+{
+    $anoAtual = date('Y');
+
+    $produtosPorMes = DB::table('produtos_fornecedores')
+        ->select(DB::raw('MONTH(created_at) as mes'), DB::raw('count(*) as total'))
+        ->whereNotNull('created_at')
+        ->whereYear('created_at', $anoAtual)
+        ->groupBy(DB::raw('MONTH(created_at)'))
+        ->orderBy(DB::raw('MONTH(created_at)'))
+        ->pluck('total', 'mes');
+
+    $labels = range(1, 12);
+
+    $produtos = array_map(function ($mes) use ($produtosPorMes) {
+        return $produtosPorMes->get($mes, 0);
+    }, $labels);
+
+    return response()->json([
+        'labels' => $labels,
+        'produtos' => $produtos,
+    ]);
+}
+
+public function vendasSemana()
+{
+    // Datas: 6 dias atrás até hoje (7 dias no total)
+    $hoje = now()->endOfDay();
+    $seteDiasAtras = now()->subDays(6)->startOfDay();
+
+    // Consulta carrinhos finalizados por dia
+    $vendas = \DB::table('carrinhos')
+        ->select(\DB::raw('DATE(created_at) as dia'), \DB::raw('COUNT(*) as total'))
+        ->where('status', 'finalizado') // só carrinhos finalizados
+        ->whereBetween('created_at', [$seteDiasAtras, $hoje])
+        ->groupBy('dia')
+        ->orderBy('dia')
+        ->get();
+
+    // Arrays para labels e valores
+    $labels = [];
+    $totais = [];
+
+    // Preenche todos os dias, mesmo sem vendas
+    for($i = 0; $i < 7; $i++){
+        $dia = $seteDiasAtras->copy()->addDays($i)->format('Y-m-d');
+        $labels[] = $dia;
+        $totais[] = $vendas->firstWhere('dia', $dia)->total ?? 0;
+    }
+
+    return response()->json([
+        'labels' => $labels,
+        'totais' => $totais,
+    ]);
+}
+
+public function faturamentoSemana()
+{
+    $hoje = now()->endOfDay();
+    $seteDiasAtras = now()->subDays(6)->startOfDay();
+
+    $faturamento = \DB::table('carrinhos')
+        ->join('carrinho_itens', 'carrinhos.id', '=', 'carrinho_itens.carrinho_id')
+        ->join('produtos_fornecedores', 'carrinho_itens.produto_id', '=', 'produtos_fornecedores.id_produtos')
+
+        ->select(
+            \DB::raw('DATE(carrinhos.created_at) as dia'),
+            \DB::raw('SUM(produtos_fornecedores.preco * carrinho_itens.quantidade) as total')
+        )
+        ->where('carrinhos.status', 'finalizado')
+        ->whereBetween('carrinhos.created_at', [$seteDiasAtras, $hoje])
+        ->groupBy('dia')
+        ->orderBy('dia')
+        ->get()
+        ->keyBy('dia');
+
+    $labels = [];
+    $totais = [];
+
+    for ($i = 0; $i < 7; $i++) {
+        $dia = $seteDiasAtras->copy()->addDays($i)->format('Y-m-d');
+        $labels[] = $dia;
+        $totais[] = $faturamento->has($dia) ? $faturamento[$dia]->total : 0;
+    }
+
+    return response()->json([
+        'labels' => $labels,
+        'totais' => $totais,
+    ]);
+}
+
+
+public function produtosMaisVendidos()
+{
+    $seteDiasAtras = now()->subDays(6)->startOfDay();
+    $hoje = now()->endOfDay();
+
+    // Consulta produtos vendidos nos carrinhos finalizados
+    $produtosVendidos = \DB::table('carrinhos')
+        ->join('carrinho_itens', 'carrinhos.id', '=', 'carrinho_itens.carrinho_id')
+        ->join('produtos_fornecedores', 'carrinho_itens.produto_id', '=', 'produtos_fornecedores.id_produtos')
+        ->select('produtos_fornecedores.nome', \DB::raw('SUM(carrinho_itens.quantidade) as total_vendido'))
+        ->where('carrinhos.status', 'finalizado')
+        ->whereBetween('carrinhos.created_at', [$seteDiasAtras, $hoje])
+        ->groupBy('produtos_fornecedores.nome')
+        ->orderByDesc('total_vendido')
+        ->limit(10) // Top 10 produtos
+        ->get();
+
+    $labels = $produtosVendidos->pluck('nome');
+    $totais = $produtosVendidos->pluck('total_vendido');
+
+    return response()->json([
+        'labels' => $labels,
+        'totais' => $totais,
+    ]);
+}
+
+ // Listagem de produtos
+    public function listarProdutos()
+    {
+        // Pega todos os produtos com dados do fornecedor
+        $produtos = ProdutoFornecedor::with('fornecedor')->paginate(10);
+
+        return view('admin.listagem', compact('produtos'));
+    }
+
+    // Ativar / Desativar produto
+    public function toggleProduto($id)
+    {
+        $produto = ProdutoFornecedor::findOrFail($id);
+        $produto->ativo = !$produto->ativo;
+        $produto->save();
+
+        return redirect()->back()->with('success', 'Produto atualizado com sucesso!');
+    }
+
 
 }
