@@ -58,3 +58,6 @@ php artisan cache:clear
 Explicação:
 Remove arquivos de cache para garantir que o Laravel use as alterações mais recentes.
 
+ativar emails automaticos: Caso ele nao seja rodado no terminal os emails automaticos nao disparação(emails automaticos)
+
+php artisan queue:work 

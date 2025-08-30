@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\EnderecoUsuario;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
+use App\Jobs\EnviarCarrinhoAbandonadoJob;
 
 class CarrinhoController extends Controller
 {
@@ -55,6 +56,9 @@ public function adicionarProduto(Request $request, $produtoId)
             'quantidade' => $quantidade,
         ]);
     }
+
+    EnviarCarrinhoAbandonadoJob::dispatch($carrinho->id)->delay(now()->addMinutes(1));
+
 
     return redirect()->route('carrinho.ver')
                      ->with('success', 'Produto adicionado ao carrinho!');
@@ -208,6 +212,8 @@ public function detalhePedido($pedidoId)
 
     return view('usuarios.pedido_detalhe', compact('pedido'));
 }
+
+
 
 
 }

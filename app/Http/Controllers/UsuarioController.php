@@ -97,10 +97,11 @@ class UsuarioController extends Controller
 
 public function dashboard()
 {
-    $produtos = ProdutoFornecedor::latest()->take(12)->get();
+    $produtos = ProdutoFornecedor::inRandomOrder()->take(48)->get();
 
     return view('usuarios.dashboard', compact('produtos'));
 }
+
 
     public function update(Request $request)
     {
