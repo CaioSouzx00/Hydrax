@@ -34,13 +34,27 @@ public function buscar(Request $request)
 }
 
 
-
-
 public function detalhes($id)
 {
+    $usuario = auth()->guard('usuarios')->user(); // pega usuário logado
     $produto = ProdutoFornecedor::with('fornecedor')->findOrFail($id);
-    return view('usuarios.detalhes-produto', compact('produto'));
+
+    // Pegar produtos do carrinho do usuário (exceto o produto atual)
+    $carrinho = $usuario->carrinhoAtivo;
+
+$produtosRecomendados = ProdutoFornecedor::where('id_produtos', '!=', $id)
+    ->latest() // ou algum critério de recomendação
+    ->limit(4)
+    ->get();
+
+
+    return view('usuarios.detalhes-produto', [
+        'produto' => $produto,
+        'produtos' => $produtosRecomendados,
+    ]);
 }
+
+
 
 
 
