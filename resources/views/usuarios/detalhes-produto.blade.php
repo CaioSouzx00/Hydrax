@@ -1,3 +1,6 @@
+
+
+</html>
 @php
     $fotos = json_decode($produto->fotos ?? '[]', true);
     $estoqueImagens = json_decode($produto->estoque_imagem ?? '[]', true);

@@ -41,4 +41,9 @@ class ProdutoFornecedor extends Model
     return $this->belongsTo(Fornecedor::class, 'id_fornecedores', 'id_fornecedores');
 }
 
+    public function scopeAtivos($query)
+    {
+        return $query->where('ativo', 1);
+    }
+
 }
