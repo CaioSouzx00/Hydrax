@@ -13,12 +13,16 @@ public function buscar(Request $request)
 {
     $query = trim($request->input('q'));
 
-    // Se não digitar nada, retorna todos
     if ($query === '') {
-        $produtos = ProdutoFornecedor::limit(20)->get();
+        // Retorna apenas produtos ativos
+        $produtos = ProdutoFornecedor::ativos()
+            ->limit(48)
+            ->get();
     } else {
-        $produtos = ProdutoFornecedor::where('nome', 'LIKE', "%{$query}%")
-            ->limit(20)
+        // Retorna apenas produtos ativos que batem com a busca
+        $produtos = ProdutoFornecedor::ativos()
+            ->where('nome', 'LIKE', "%{$query}%")
+            ->limit(48)
             ->get();
     }
 

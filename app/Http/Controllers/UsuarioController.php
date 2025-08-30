@@ -97,7 +97,11 @@ class UsuarioController extends Controller
 
 public function dashboard()
 {
-    $produtos = ProdutoFornecedor::inRandomOrder()->take(48)->get();
+    $produtos = ProdutoFornecedor::ativos() // só produtos ativos
+        ->inRandomOrder()
+        ->limit(48)
+        ->get();
+
 
     return view('usuarios.dashboard', compact('produtos'));
 }
