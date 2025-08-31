@@ -6,82 +6,80 @@
 <title>Pedido #{{ $pedido->id }} - Rastreamento</title>
 <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-[#111] text-white font-sans min-h-screen">
+<body class="bg-gradient-to-br from-[#211828] via-[#0b282a] to-[#17110d] text-gray-100 font-sans min-h-screen">
 
-<div class="container mx-auto p-6">
+<div class="container mx-auto p-6 space-y-6">
 
     <!-- Voltar -->
-    <a href="{{ route('usuarios.pedidos') }}" class="text-gray-400 hover:text-white mb-6 inline-block">&larr; Voltar para meus pedidos</a>
+    <a href="{{ route('usuarios.pedidos') }}" class="text-gray-400 hover:text-[#14ba88] transition inline-block mb-2">
+        &larr; Voltar para meus pedidos
+    </a>
 
     <!-- Header do pedido -->
-    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
-        <h1 class="text-3xl font-bold tracking-wide">Pedido #{{ $pedido->id }}</h1>
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
+        <h1 class="text-3xl font-bold tracking-wide text-[#14ba88]">Pedido #{{ $pedido->id }}</h1>
         <span class="mt-2 md:mt-0 px-4 py-2 rounded-full text-sm font-semibold 
-            {{ $pedido->status == 'finalizado' ? 'bg-green-600 text-white' : 'bg-yellow-500 text-black' }}">
+            {{ $pedido->status == 'finalizado' ? 'bg-[#14ba88] text-black' : 'bg-[#e29b37] text-black' }}">
             {{ strtoupper($pedido->status) }}
         </span>
     </div>
 
-    <p class="text-gray-400 text-sm mb-4">Data do pedido: {{ $pedido->created_at->format('d/m/Y H:i') }}</p>
+    <p class="text-gray-400 text-sm">Data do pedido: {{ $pedido->created_at->format('d/m/Y H:i') }}</p>
 
     <!-- Endereço -->
     @if($pedido->endereco)
-        <div class="mt-4 text-sm text-gray-300 bg-[#222] rounded-2xl p-4 shadow-inner mb-8">
-            <p class="font-semibold text-white mb-2">Endereço de entrega:</p>
+        <div class="mt-4 text-sm text-gray-300 bg-[#0b282a] rounded-2xl p-4 border border-[#14ba88]/20 shadow-inner">
+            <p class="font-semibold text-[#14ba88] mb-2">Endereço de entrega:</p>
             <p>{{ $pedido->endereco->rua }}, {{ $pedido->endereco->numero ?? '' }}</p>
             <p>{{ $pedido->endereco->bairro }} - {{ $pedido->endereco->cidade }}/{{ $pedido->endereco->estado }}</p>
             <p>CEP: {{ $pedido->endereco->cep }}</p>
         </div>
     @endif
 
-    <!-- Rastreamento do pedido -->
-    <h2 class="text-2xl font-bold mb-6">Rastreamento da entrega</h2>
+   <!-- Rastreamento do pedido -->
+<h2 class="text-2xl font-bold mb-6 text-[#14ba88]">Rastreamento da entrega</h2>
 
-    @php
-        // Etapas da entrega
-        $etapas = [
-            ['nome' => 'Pedido recebido', 'icone' => '🛒'],
-            ['nome' => 'Separação', 'icone' => '📦'],
-            ['nome' => 'A caminho', 'icone' => '🚚'],
-            ['nome' => 'Entregue', 'icone' => '🏠'],
-        ];
+@php
+    $etapas = [
+        ['nome' => 'Pedido recebido', 'icone' => '🛒'],
+        ['nome' => 'Separação', 'icone' => '📦'],
+        ['nome' => 'A caminho', 'icone' => '🚚'],
+        ['nome' => 'Entregue', 'icone' => '🏠'],
+    ];
+    $statusMap = [
+        'finalizado' => 3,
+        'a_caminho' => 2,
+        'separando' => 1,
+        'pendente' => 0
+    ];
+    $etapaAtual = $statusMap[$pedido->status] ?? 0;
+@endphp
 
-        // Determina etapa atual baseada no status
-        $statusMap = [
-            'finalizado' => 3,
-            'a_caminho' => 2,
-            'separando' => 1,
-            'pendente' => 0
-        ];
-        $etapaAtual = $statusMap[$pedido->status] ?? 0;
-    @endphp
+<div class="relative mb-12">
+    <!-- Linha horizontal -->
+    <div class="absolute top-5 left-0 w-full h-1 bg-gray-700 rounded-full z-0"></div>
+    <div class="absolute top-5 left-0 h-1 z-0 rounded-full" style="width: {{ ($etapaAtual/(count($etapas)-1))*100 }}%; background-color:#14ba88;"></div>
 
-    <div class="relative mb-12">
-        <div class="flex justify-between items-center">
-            @foreach($etapas as $index => $etapa)
-                <div class="flex flex-col items-center relative flex-1">
-                    <!-- Círculo -->
-                    <div class="w-10 h-10 rounded-full flex items-center justify-center 
-                        @if($index < $etapaAtual) bg-green-600 text-black
-                        @elseif($index == $etapaAtual) bg-yellow-500 text-black animate-pulse
-                        @else bg-gray-700 text-black @endif z-10 relative font-bold text-lg">
-                        {{ $etapa['icone'] }}
-                    </div>
-                    <!-- Nome da etapa -->
-                    <p class="text-center text-sm mt-2">{{ $etapa['nome'] }}</p>
-
-                    <!-- Linha conectando etapas -->
-                    @if($index < count($etapas) - 1)
-                        <div class="absolute top-5 left-1/2 w-full h-1 bg-gray-700 z-0" style="transform: translateX(50%);"></div>
-                        <div class="absolute top-5 left-1/2 h-1 z-0" style="transform: translateX(50%); width: {{ ($etapaAtual > $index ? 100 : 0) }}%; background-color:#16a34a;"></div>
-                    @endif
+    <!-- Círculos e nomes -->
+    <div class="flex justify-between relative z-10">
+        @foreach($etapas as $index => $etapa)
+            <div class="flex flex-col items-center w-1/4">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center
+                    @if($index < $etapaAtual) bg-[#14ba88] text-black
+                    @elseif($index == $etapaAtual) bg-[#e29b37] text-black animate-pulse
+                    @else bg-gray-700 text-black @endif
+                    font-bold text-lg border-2 border-[#14ba88]/40">
+                    {{ $etapa['icone'] }}
                 </div>
-            @endforeach
-        </div>
+                <p class="text-center text-sm mt-2 text-gray-300">{{ $etapa['nome'] }}</p>
+            </div>
+        @endforeach
     </div>
+</div>
+
 
     <!-- Itens do pedido -->
-    <h2 class="text-2xl font-bold mb-4">Itens do pedido</h2>
+    <h2 class="text-2xl font-bold mb-4 text-[#14ba88]">Itens do pedido</h2>
 
     @foreach($pedido->itens as $item)
         @php
@@ -90,32 +88,32 @@
             $foto = $fotos[0] ?? null;
         @endphp
 
-        <div class="flex flex-col md:flex-row items-center justify-between border-b border-gray-700 py-4 last:border-b-0">
+        <div class="flex flex-col md:flex-row items-center justify-between border-b border-[#14ba88]/20 py-4 last:border-b-0 gap-4">
             
             <!-- Imagem do produto -->
             <img src="{{ $foto ? asset('storage/' . $foto) : 'https://via.placeholder.com/100' }}" 
-                 alt="{{ $item->produto->nome }}" class="w-28 h-28 object-cover rounded-xl shadow-lg mr-4 mb-2 md:mb-0">
+                 alt="{{ $item->produto->nome }}" class="w-24 h-24 object-cover rounded-xl border border-[#14ba88]/30">
 
             <!-- Informações do produto -->
-            <div class="flex-1">
-                <p class="font-semibold text-lg">{{ $item->produto->nome }}</p>
+            <div class="flex-1 space-y-1">
+                <p class="font-semibold text-white">{{ $item->produto->nome }}</p>
                 <p class="text-gray-400 text-sm">Tamanho: {{ $item->tamanho ?? 'Único' }}</p>
                 <p class="text-gray-400 text-sm">Qtd: {{ $item->quantidade }}</p>
-                <p class="mt-1 text-gray-200">Preço unitário: 
-                    <span class="font-semibold">R$ {{ number_format($item->produto->preco, 2, ',', '.') }}</span>
+                <p class="text-gray-200 text-sm">Preço unitário: 
+                    <span class="font-semibold text-[#14ba88]">R$ {{ number_format($item->produto->preco, 2, ',', '.') }}</span>
                 </p>
-                <p class="text-gray-200">Subtotal: 
-                    <span class="font-semibold text-white">R$ {{ number_format($subtotal, 2, ',', '.') }}</span>
+                <p class="text-gray-200 text-sm">Subtotal: 
+                    <span class="font-semibold text-[#e29b37]">R$ {{ number_format($subtotal, 2, ',', '.') }}</span>
                 </p>
                 @if($item->produto->descricao)
-                    <p class="text-gray-400 text-sm mt-2">{{ $item->produto->descricao }}</p>
+                    <p class="text-gray-400 text-sm mt-1">{{ $item->produto->descricao }}</p>
                 @endif
             </div>
         </div>
     @endforeach
 
     <!-- Total do pedido -->
-    <div class="mt-6 p-6 bg-[#1a1a1a] rounded-2xl shadow-xl text-right">
+    <div class="mt-6 p-6 bg-[#1e1e2a] rounded-2xl shadow-lg text-right border border-[#14ba88]/20">
         <p class="text-gray-300 font-semibold text-lg">Total do pedido: 
             <span class="text-white text-xl">
                 R$ {{ number_format($pedido->itens->sum(fn($i) => $i->quantidade * $i->produto->preco) + 15, 2, ',', '.') }}
