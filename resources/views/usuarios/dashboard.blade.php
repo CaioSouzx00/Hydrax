@@ -269,16 +269,16 @@
         </div>
     </div>
 
-    <div class="flex">
-    <!-- SIDEBAR DE FILTROS -->
+    <!-- <div class="flex">
+    <!-- SIDEBAR DE FILTROS --
     <form method="GET" action="{{ route('dashboard') }}" class="w-64 p-4 bg-gray-900 text-white border-r border-gray-700">
-        <!-- Gênero -->
+        <!-- Gênero --
         <h3 class="font-bold mb-2">Gênero</h3>
         <label><input type="radio" name="genero" value="MASCULINO"> Masculino</label><br>
         <label><input type="radio" name="genero" value="FEMININO"> Feminino</label><br>
         <label><input type="radio" name="genero" value="UNISSEX"> Unissex</label>
 
-        <!-- Categoria -->
+        <!-- Categoria --
         <h3 class="font-bold mt-4 mb-2">Categoria</h3>
         <select name="categoria" class="border p-1 w-full">
             <option value="">Todas</option>
@@ -287,7 +287,7 @@
             <option value="Lifestyle">Lifestyle</option>
         </select>
 
-        <!-- Tamanho -->
+        <!-- Tamanho --
         <h3 class="font-bold mt-4 mb-2">Tamanho</h3>
         @foreach([37,38,39,40,41,42,43,44,45,46] as $t)
             <label class="inline-block mr-2 mb-2">
@@ -295,7 +295,7 @@
             </label>
         @endforeach
 
-        <!-- Preço -->
+        <!-- Preço --
         <h3 class="font-bold mt-4 mb-2">Preço</h3>
         <input type="number" name="preco_min" placeholder="Mín" class="border p-1 w-20"> -
         <input type="number" name="preco_max" placeholder="Máx" class="border p-1 w-20">
@@ -304,6 +304,7 @@
             Filtrar
         </button>
     </form>
+-->
 
     <!-- Grid de produtos -->
 <div id="produtos-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-6 pl-64 pr-64">
@@ -314,9 +315,14 @@
   @endforelse
 </div>
 
-<div class="mt-6 px-6">
-  {{ $produtos->links() }}
+<!-- Paginação e texto -->
+<div class="mt-6 text-center">
+    <!-- Botões da paginação -->
+    <div class="flex justify-center mb-2">
+        {{ $produtos->links() }}
+    </div>
 </div>
+
 
 
     <script>
