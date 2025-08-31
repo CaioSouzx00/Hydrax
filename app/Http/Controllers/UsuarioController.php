@@ -157,7 +157,7 @@ $produtos = $produtos->values(); // garante índices corretos
 $page = $request->get('page', 1);
 
 // Itens por página
-$perPage = 20;
+$perPage = 21;
 
 // Total de itens
 $total = $produtos->count();

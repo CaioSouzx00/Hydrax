@@ -120,8 +120,7 @@ Route::get('/produtos/{id}/detalhes', [ProdutoController::class, 'detalhes'])->n
         ->name('carrinho.adicionar');
 
     // Visualizar carrinho
-    Route::get('/carrinho', [CarrinhoController::class, 'verCarrinho'])
-        ->name('carrinho.ver');
+    Route::get('/carrinho', [CarrinhoController::class, 'verCarrinho'])->name('carrinho.ver');
 
     // Remover produto do carrinho
 Route::delete('/carrinho/remover/{produtoId}/{tamanho}', [CarrinhoController::class, 'removerProduto'])->name('carrinho.remover');
@@ -133,8 +132,6 @@ Route::post('/carrinho/finalizar', [CarrinhoController::class, 'processarFinaliz
 Route::get('/meus-pedidos', [CarrinhoController::class, 'meusPedidos'])->name('usuarios.pedidos');
 
 Route::get('/pedidos/{pedido}', [CarrinhoController::class, 'detalhePedido'])->name('pedidos.detalhe');
-
-
 
 });
 

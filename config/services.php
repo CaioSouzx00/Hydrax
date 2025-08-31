@@ -14,6 +14,10 @@ return [
     |
     */
 
+    'mercadopago' => [
+    'access_token' => env('TEST-1455190868723831-083114-6e8f3c1bcb13f6c79d6f92f55b9f86f8-1250240338'),
+],
+
     'postmark' => [
         'token' => env('POSTMARK_TOKEN'),
     ],

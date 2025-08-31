@@ -135,10 +135,6 @@ class CarrinhoController extends Controller
         return view('usuarios.selecionar_endereco', compact('enderecos', 'carrinho'));
     }
 
-
-
-
-
 public function processarFinalizacao(Request $request)
 {
     $usuario = Auth::guard('usuarios')->user();
@@ -149,74 +145,71 @@ public function processarFinalizacao(Request $request)
         'id_endereco.required' => 'Você precisa selecionar um endereço para finalizar a compra.',
     ]);
 
-
     $enderecoSelecionado = EnderecoUsuario::find($request->id_endereco);
 
-    $carrinho = Carrinho::where('id_usuarios', $usuario->id_usuarios)->where('status', 'ativo')->with('itens.produto') ->first();
+    $carrinho = Carrinho::where('id_usuarios', $usuario->id_usuarios)
+                        ->where('status', 'ativo')
+                        ->with('itens.produto')
+                        ->first();
 
     if (!$carrinho || $carrinho->itens->isEmpty()) {
-
-    return redirect()->route('carrinho.ver')->with('error', 'Você precisa ter no mínimo 1 produto no carrinho para finalizar a compra.');
-
-}
+        return redirect()->route('carrinho.ver')->with('error', 'Você precisa ter no mínimo 1 produto no carrinho para finalizar a compra.');
+    }
 
     $total = $carrinho->itens->sum(fn($item) => $item->produto->preco * $item->quantidade) + 15;
 
-    // 🔹 Gerar chave Pix fake
-    $chavePix = 'hydrax-pix-' . strtoupper(\Illuminate\Support\Str::random(10));
-
-    // 🔹 Enviar chave Pix por e-mail
-
-    \Illuminate\Support\Facades\Mail::to($usuario->email)->send(new \App\Mail\ChavePixMail($chavePix, $total));
-
-    // 🔹 Marcar carrinho como finalizado
+    // Salvar o endereço selecionado no carrinho
+    $carrinho->id_endereco = $enderecoSelecionado->id_endereco; // 🔹 isso estava faltando
     $carrinho->status = 'finalizado';
     $carrinho->save();
 
+    // Gerar chave Pix fake
+    $chavePix = 'hydrax-pix-' . strtoupper(\Illuminate\Support\Str::random(10));
+    \Illuminate\Support\Facades\Mail::to($usuario->email)->send(new \App\Mail\ChavePixMail($chavePix, $total));
 
-    // 🔹 Criar novo carrinho vazio (se quiser manter o fluxo contínuo)
-    $novoCarrinho = Carrinho::create([
+    // Criar novo carrinho vazio
+    Carrinho::create([
         'id_usuarios' => $usuario->id_usuarios,
         'status' => 'ativo',
     ]);
 
-    // 🔹 Retornar tela com chave Pix
-
     return view('usuarios.pix', compact('chavePix', 'total', 'enderecoSelecionado'));
-
 }
 
 
-    // 5️⃣ Meus pedidos
-    public function meusPedidos()
-    {
-        $usuario = Auth::guard('usuarios')->user();
 
-        $pedidos = Carrinho::where('id_usuarios', $usuario->id_usuarios)
-            ->where('status', 'finalizado')
-            ->with(['itens' => function($q) {
+// 5️⃣ Meus pedidos
+public function meusPedidos()
+{
+    $usuario = Auth::guard('usuarios')->user();
+
+    $pedidos = Carrinho::where('id_usuarios', $usuario->id_usuarios)
+        ->where('status', 'finalizado')
+        ->with([
+            'itens' => function($q) {
                 $q->whereHas('produto', fn($q2) => $q2->ativos());
                 $q->with('produto');
-            }])
-            ->orderBy('created_at', 'desc')
-            ->get();
+            },
+            'endereco' // ✅ Carrega o endereço
+        ])
+        ->orderBy('created_at', 'desc')
+        ->get();
 
-        return view('usuarios.pedidos', compact('pedidos'));
-    }
+    return view('usuarios.pedidos', compact('pedidos'));
+}
 
-    // 6️⃣ Detalhes de um pedido específico
-    public function detalhePedido($pedidoId)
-    {
-        $usuario = Auth::guard('usuarios')->user();
 
-        $pedido = Carrinho::where('id_usuarios', $usuario->id_usuarios)
-            ->where('status', 'finalizado')
-            ->with(['itens' => function($q) {
-                $q->whereHas('produto', fn($q2) => $q2->ativos());
-                $q->with('produto');
-            }, 'endereco'])
-            ->findOrFail($pedidoId);
+public function detalhePedido($pedidoId)
+{
+    $usuario = Auth::guard('usuarios')->user();
+    // Buscar pedido finalizado do usuário com itens, produtos e endereço
+    $pedido = Carrinho::where('id_usuarios', $usuario->id_usuarios)
+        ->where('status', 'finalizado')
+        ->with('itens.produto', 'endereco')
+        ->findOrFail($pedidoId); // retorna 404 se não existir
 
-        return view('usuarios.pedido_detalhe', compact('pedido'));
-    }
+    return view('usuarios.pedido_detalhe', compact('pedido'));
+
+
+}
 }
