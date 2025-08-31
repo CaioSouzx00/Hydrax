@@ -321,6 +321,8 @@
     <div class="flex justify-center mb-2">
         {{ $produtos->links('vendor.pagination.custom') }}
     </div>
+    <!-- Texto centralizado abaixo --> 
+     <div class="text-gray-400 text-sm mb-10"> Mostrando {{ $produtos->firstItem() }} a {{ $produtos->lastItem() }} de {{ $produtos->total() }} resultados </div>
 </div>
 
 
