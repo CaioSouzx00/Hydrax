@@ -12,20 +12,47 @@ class ProdutoController extends Controller
 public function buscar(Request $request)
 {
     $query = trim($request->input('q'));
+    $genero = $request->input('genero');
+    $categoria = $request->input('categoria');
+    $tamanho = $request->input('tamanho');
+    $preco_min = $request->input('preco_min');
+    $preco_max = $request->input('preco_max');
 
-    if ($query === '') {
-        // Retorna apenas produtos ativos
-        $produtos = ProdutoFornecedor::ativos()
-            ->limit(48)
-            ->get();
-    } else {
-        // Retorna apenas produtos ativos que batem com a busca
-        $produtos = ProdutoFornecedor::ativos()
-            ->where('nome', 'LIKE', "%{$query}%")
-            ->limit(48)
-            ->get();
+    $produtos = ProdutoFornecedor::ativos();
+
+    // Aplica busca por termo no nome ou descrição
+    if ($query !== '') {
+        $produtos->where(function ($q) use ($query) {
+            $q->where('nome', 'LIKE', "%{$query}%")
+              ->orWhere('descricao', 'LIKE', "%{$query}%");
+        });
     }
 
+    // Aplica filtros apenas se informados
+    if (!empty($genero)) {
+        $produtos->where('genero', $genero);
+    }
+
+    if (!empty($categoria)) {
+        $produtos->where('categoria', $categoria);
+    }
+
+    if (!empty($tamanho)) {
+        $produtos->whereJsonContains('tamanhos_disponiveis', (int)$tamanho);
+    }
+
+    if (!empty($preco_min)) {
+        $produtos->where('preco', '>=', $preco_min);
+    }
+
+    if (!empty($preco_max)) {
+        $produtos->where('preco', '<=', $preco_max);
+    }
+
+    // Limita a 48 produtos
+    $produtos = $produtos->limit(48)->get();
+
+    // Renderiza os cards dos produtos
     $html = $produtos->map(function ($produto) {
         return view('usuarios.partials.card-produto', compact('produto'))->render();
     })->implode('');
@@ -36,6 +63,10 @@ public function buscar(Request $request)
 
     return response()->json(['html' => $html]);
 }
+
+
+
+
 
 
 public function detalhes($id)

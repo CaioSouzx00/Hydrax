@@ -13,6 +13,8 @@ use App\Mail\EmailChangeConfirmation;
 use App\Mail\CodigoRedefinicaoSenha;
 use Illuminate\Support\Facades\DB;
 use App\Models\ProdutoFornecedor;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 
 class UsuarioController extends Controller
@@ -95,7 +97,7 @@ class UsuarioController extends Controller
         return redirect()->route('login.form')->with('success', 'Você saiu do sistema.');
     }
 
-public function dashboard()
+/*public function dashboard()
 {
     $produtos = ProdutoFornecedor::ativos() // só produtos ativos
         ->inRandomOrder()
@@ -104,7 +106,81 @@ public function dashboard()
 
 
     return view('usuarios.dashboard', compact('produtos'));
+}*/
+
+public function dashboard(Request $request)
+{
+    $query = ProdutoFornecedor::query()->where('ativo', true);
+
+    $precoMin = $request->preco_min !== null ? floatval(str_replace(',', '.', $request->preco_min)) : null;
+    $precoMax = $request->preco_max !== null ? floatval(str_replace(',', '.', $request->preco_max)) : null;
+
+
+    //dd($precoMin, $precoMax); // agora sempre existe
+
+    // Filtros simples direto no DB
+    if ($request->filled('genero')) {
+        $query->where('genero', $request->genero);
+    }
+
+    if ($request->filled('categoria')) {
+        $query->where('categoria', $request->categoria);
+    }
+
+
+if ($precoMin !== null && $precoMin >= 0) {
+    $query->where('preco', '>=', $precoMin);
 }
+
+if ($precoMax !== null && $precoMax >= 0) {
+    $query->where('preco', '<=', $precoMax);
+}
+
+
+    // Busca inicial no DB
+    $produtos = $query->get();
+
+    // Filtro por tamanho no PHP
+    if ($request->filled('tamanho')) {
+        $tamanhoFiltro = (string) $request->tamanho;
+
+        $produtos = $produtos->filter(function($produto) use ($tamanhoFiltro) {
+            $tamanhos = json_decode($produto->tamanhos_disponiveis ?? '[]', true);
+            return in_array($tamanhoFiltro, $tamanhos);
+        });
+    }
+
+// Valores da coleção
+$produtos = $produtos->values(); // garante índices corretos
+
+// Página atual
+$page = $request->get('page', 1);
+
+// Itens por página
+$perPage = 20;
+
+// Total de itens
+$total = $produtos->count();
+
+// Cria o paginator manualmente
+$produtosPaginados = new LengthAwarePaginator(
+    $produtos->forPage($page, $perPage), // itens da página atual
+    $total,                               // total de itens
+    $perPage,                             // itens por página
+    $page,                                // página atual
+    [
+        'path'  => $request->url(),       // mantém a URL
+        'query' => $request->query()      // mantém os filtros
+    ]
+);
+
+// Retorna a view
+return view('usuarios.dashboard', ['produtos' => $produtosPaginados]);
+}
+
+
+
+
 
 
     public function update(Request $request)
@@ -190,5 +266,6 @@ public function showEmailForm()
 
     return redirect()->route('dashboard')->with('success', 'Seu e-mail foi atualizado com sucesso!');
 }
+
 
 }
