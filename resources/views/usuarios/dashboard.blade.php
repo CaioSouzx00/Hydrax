@@ -319,7 +319,7 @@
 <div class="mt-6 text-center">
     <!-- Botões da paginação -->
     <div class="flex justify-center mb-2">
-        {{ $produtos->links() }}
+        {{ $produtos->links('vendor.pagination.custom') }}
     </div>
 </div>
 
