@@ -235,8 +235,6 @@
 </style>
 
 
-
-
       </nav>
     </div>
   </header>
@@ -314,12 +312,8 @@
 
 <!-- Paginação e texto -->
 <div class="mt-6 text-center">
-    <!-- Botões da paginação -->
-    <div class="flex justify-center mb-2">
-        {{ $produtos->links('vendor.pagination.custom') }}
-    </div>
-    <!-- Texto centralizado abaixo --> 
-     <div class="text-gray-400 text-sm mb-10"> Mostrando {{ $produtos->firstItem() }} a {{ $produtos->lastItem() }} de {{ $produtos->total() }} resultados </div>
+    <div id="paginacao-container" class="flex justify-center mb-2"></div>
+    <div id="texto-container" class="text-gray-400 text-sm mb-10"></div>
 </div>
 
 
@@ -451,77 +445,76 @@
   }
 
   // Fechar dropdowns ao clicar no overlay
-  overlay.addEventListener('click', () => {
-    if (logoutMenu) logoutMenu.classList.add('hidden');
-    if (enderecoDropdown) enderecoDropdown.classList.add('hidden');
-    hideOverlay();
-  });
+  if (overlay) {
+    overlay.addEventListener('click', () => {
+      if (logoutMenu) logoutMenu.classList.add('hidden');
+      if (enderecoDropdown) enderecoDropdown.classList.add('hidden');
+      hideOverlay();
+    });
+  }
 
   /*======================== Busca produtos ==========================*/
 
-  const buscarUrl = "{{ route('produtos.buscar') }}";
-const inputBuscar = document.getElementById('buscar_produto');
-const resultado = document.getElementById('resultado_busca');
-const produtosContainer = document.getElementById('produtos-container');
+  const buscarUrl = @json(route('produtos.buscar'));
+  const inputBuscar = document.getElementById('buscar_produto');
+  const produtosContainer = document.getElementById('produtos-container');
+  const paginacaoContainer = document.getElementById('paginacao-container');
+  const textoContainer = document.getElementById('texto-container');
 
-let debounceTimeout;
+  let debounceTimeout;
 
-// Função principal de busca + paginação
-function carregarProdutos(params = {}) {
-    // Pega os filtros atuais
+  function carregarProdutos(params = {}) {
     const termo = inputBuscar.value.trim();
     const genero = document.querySelector('input[name="genero"]:checked')?.value || '';
     const categoria = document.querySelector('select[name="categoria"]')?.value || '';
     const tamanho = document.querySelector('input[name="tamanho"]:checked')?.value || '';
     const preco_min = document.querySelector('input[name="preco_min"]')?.value || '';
     const preco_max = document.querySelector('input[name="preco_max"]')?.value || '';
-    
+
     const queryParams = new URLSearchParams({
-        q: termo,
-        genero,
-        categoria,
-        tamanho,
-        preco_min,
-        preco_max,
-        ...params
+      q: termo,
+      genero,
+      categoria,
+      tamanho,
+      preco_min,
+      preco_max,
+      page: params.page || 1
     });
 
     fetch(`${buscarUrl}?${queryParams.toString()}`)
-        .then(res => res.json())
-        .then(data => {
-            resultado.style.display = 'none';
-            produtosContainer.innerHTML = data.html;
+      .then(res => res.json())
+      .then(data => {
+        produtosContainer.innerHTML = data.html;
+        paginacaoContainer.innerHTML = data.pagination;
+        textoContainer.innerHTML = data.texto;
+      });
+  }
 
-            // Intercepta links de paginação
-            document.querySelectorAll('#produtos-container .pagination a').forEach(link => {
-                link.addEventListener('click', e => {
-                    e.preventDefault();
-                    const url = new URL(link.href);
-                    const page = url.searchParams.get('page') || 1;
-                    carregarProdutos({ page });
-                });
-            });
-        })
-        .catch(() => {
-            produtosContainer.innerHTML = '<p class="text-red-500 p-6 pt-24">Nenhum produto encontrado.</p>';
-        });
-}
+  // Paginação AJAX com event delegation
+  paginacaoContainer.addEventListener('click', function(e) {
+    if(e.target.tagName === 'A') {
+      e.preventDefault();
+      const page = new URL(e.target.href).searchParams.get('page');
+      carregarProdutos({ page });
+    }
+  });
 
-// Busca com debounce
-function realizarBusca() {
+  // Busca com debounce
+  function realizarBusca() {
     clearTimeout(debounceTimeout);
     debounceTimeout = setTimeout(() => {
-        carregarProdutos({ page: 1 }); // reset da página ao buscar
+      carregarProdutos({ page: 1 }); // reset da página ao buscar
     }, 300);
-}
+  }
 
-inputBuscar.addEventListener('input', realizarBusca);
-document.getElementById('botao_buscar').addEventListener('click', () => carregarProdutos({ page: 1 }));
+  if(inputBuscar) inputBuscar.addEventListener('input', realizarBusca);
+  const botaoBuscar = document.getElementById('botao_buscar');
+  if(botaoBuscar) botaoBuscar.addEventListener('click', () => carregarProdutos({ page: 1 }));
 
-// Opcional: carregar página inicial
-carregarProdutos();
-
+  // Carrega página inicial
+  carregarProdutos();
 </script>
+
 
 
 </body>
