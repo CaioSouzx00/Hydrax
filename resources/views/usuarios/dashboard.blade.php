@@ -308,12 +308,9 @@
 
     <!-- Grid de produtos -->
 <div id="produtos-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-6 pl-64 pr-64">
-  @forelse($produtos as $produto)
-    @include('usuarios.partials.card-produto', ['produto' => $produto])
-  @empty
-    <p class="text-white">Nenhum produto disponível no momento.</p>
-  @endforelse
+  <!-- Produtos serão carregados aqui via AJAX -->
 </div>
+
 
 <!-- Paginação e texto -->
 <div class="mt-6 text-center">
@@ -463,118 +460,66 @@
   /*======================== Busca produtos ==========================*/
 
   const buscarUrl = "{{ route('produtos.buscar') }}";
-  const inputBuscar = document.getElementById('buscar_produto');
-  const resultado = document.getElementById('resultado_busca');
-  const produtosContainer = document.getElementById('produtos-container');
-
-  function montarCardProduto(produto) {
-    return `
-      <div class="bg-gray-800 rounded-lg p-4 text-white shadow hover:shadow-lg transition">
-        <h3 class="font-semibold text-lg mb-2">${produto.nome}</h3>
-        <p class="text-sm">${produto.descricao ?? ''}</p>
-        <p class="mt-2 font-bold">R$ ${produto.preco?.toFixed(2) ?? '0,00'}</p>
-      </div>
-    `;
-  }
+const inputBuscar = document.getElementById('buscar_produto');
+const resultado = document.getElementById('resultado_busca');
+const produtosContainer = document.getElementById('produtos-container');
 
 let debounceTimeout;
 
+// Função principal de busca + paginação
+function carregarProdutos(params = {}) {
+    // Pega os filtros atuais
+    const termo = inputBuscar.value.trim();
+    const genero = document.querySelector('input[name="genero"]:checked')?.value || '';
+    const categoria = document.querySelector('select[name="categoria"]')?.value || '';
+    const tamanho = document.querySelector('input[name="tamanho"]:checked')?.value || '';
+    const preco_min = document.querySelector('input[name="preco_min"]')?.value || '';
+    const preco_max = document.querySelector('input[name="preco_max"]')?.value || '';
+    
+    const queryParams = new URLSearchParams({
+        q: termo,
+        genero,
+        categoria,
+        tamanho,
+        preco_min,
+        preco_max,
+        ...params
+    });
+
+    fetch(`${buscarUrl}?${queryParams.toString()}`)
+        .then(res => res.json())
+        .then(data => {
+            resultado.style.display = 'none';
+            produtosContainer.innerHTML = data.html;
+
+            // Intercepta links de paginação
+            document.querySelectorAll('#produtos-container .pagination a').forEach(link => {
+                link.addEventListener('click', e => {
+                    e.preventDefault();
+                    const url = new URL(link.href);
+                    const page = url.searchParams.get('page') || 1;
+                    carregarProdutos({ page });
+                });
+            });
+        })
+        .catch(() => {
+            produtosContainer.innerHTML = '<p class="text-red-500 p-6 pt-24">Nenhum produto encontrado.</p>';
+        });
+}
+
+// Busca com debounce
 function realizarBusca() {
     clearTimeout(debounceTimeout);
-
     debounceTimeout = setTimeout(() => {
-        const termo = inputBuscar.value.trim();
-        const genero = document.querySelector('input[name="genero"]:checked')?.value || '';
-        const categoria = document.querySelector('select[name="categoria"]')?.value || '';
-        const tamanho = document.querySelector('input[name="tamanho"]:checked')?.value || '';
-        const preco_min = document.querySelector('input[name="preco_min"]')?.value || '';
-        const preco_max = document.querySelector('input[name="preco_max"]')?.value || '';
-
-        const params = new URLSearchParams({
-            q: termo,
-            genero,
-            categoria,
-            tamanho,
-            preco_min,
-            preco_max
-        });
-
-        fetch(`${buscarUrl}?${params.toString()}`)
-            .then(res => res.json())
-            .then(data => {
-                resultado.style.display = 'none';
-                produtosContainer.innerHTML = data.html;
-            })
-            .catch(() => {
-                produtosContainer.innerHTML = '<p class="text-red-500 p-6 pt-24">Erro ao buscar produtos.</p>';
-            });
-    }, 300); // espera 300ms após o último digito
+        carregarProdutos({ page: 1 }); // reset da página ao buscar
+    }, 300);
 }
 
+inputBuscar.addEventListener('input', realizarBusca);
+document.getElementById('botao_buscar').addEventListener('click', () => carregarProdutos({ page: 1 }));
 
-
-
-
-  inputBuscar.addEventListener('input', realizarBusca);
-  document.getElementById('botao_buscar').addEventListener('click', realizarBusca);
-
-
-function abrirDetalhesProduto(elemento) {
-  const url = elemento.getAttribute('data-url');
-
-  fetch(url)
-    .then(response => {
-      if (!response.ok) throw new Error("Erro ao carregar a página de detalhes.");
-      return response.text();
-    })
-    .then(html => {
-      const main = document.getElementById('main-content');
-      if (main) {
-        main.innerHTML = html;
-        window.history.pushState({}, '', url); // Atualiza a URL
-      }
-    })
-    .catch(erro => {
-      console.error("Erro ao buscar detalhes do produto:", erro);
-    });
-}
-
-
-
-function fecharDetalhes() {
-  document.getElementById('detalhes-produto-container').classList.add('hidden');
-
-
-document.querySelectorAll('.produto-card, .produto-link').forEach(el => {
-  el.addEventListener('click', function(event) {
-    event.preventDefault();  // previne navegar para a url
-
-    const url = el.getAttribute('data-url');
-    if (!url) return;
-
-    fetch(url)
-      .then(res => {
-        if (!res.ok) throw new Error("Erro ao carregar detalhes");
-        return res.text();
-      })
-      .then(html => {
-        // Coloque o html dentro do modal
-        const modalConteudo = document.getElementById('detalhes-produto-conteudo');
-        modalConteudo.innerHTML = html;
-
-        // Mostra o container do modal
-        const modalContainer = document.getElementById('detalhes-produto-container');
-        modalContainer.classList.remove('hidden');
-      })
-      .catch(err => {
-        console.error(err);
-        alert("Erro ao carregar detalhes do produto.");
-      });
-  });
-});
-
-
-}
+// Opcional: carregar página inicial
+carregarProdutos();
 
 </script>
 

@@ -97,16 +97,6 @@ class UsuarioController extends Controller
         return redirect()->route('login.form')->with('success', 'Você saiu do sistema.');
     }
 
-/*public function dashboard()
-{
-    $produtos = ProdutoFornecedor::ativos() // só produtos ativos
-        ->inRandomOrder()
-        ->limit(48)
-        ->get();
-
-
-    return view('usuarios.dashboard', compact('produtos'));
-}*/
 
 public function dashboard(Request $request)
 {
@@ -177,11 +167,6 @@ $produtosPaginados = new LengthAwarePaginator(
 // Retorna a view
 return view('usuarios.dashboard', ['produtos' => $produtosPaginados]);
 }
-
-
-
-
-
 
     public function update(Request $request)
     {

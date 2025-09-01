@@ -52,36 +52,42 @@
                 @endphp
 
                 <div class="flex flex-col md:flex-row items-center justify-between border-t border-gray-700 py-4 px-4 hover:bg-[#14ba88]/10">
-                    <!-- Imagem -->
-                    <img src="{{ $foto ? asset('storage/' . $foto) : 'https://via.placeholder.com/100' }}" 
-                         alt="{{ $item->produto->nome }}" 
-                         class="w-36 h-36 object-cover rounded-lg mr-4 mb-3 md:mb-0">
 
-                    <!-- Informações -->
-                    <div class="flex-1">
-                        <p class="font-semibold text-lg">{{ $item->produto->nome }}</p>
-                        <p class="text-gray-400">Tamanho: {{ $item->tamanho ?? 'Único' }}</p>
-                        <p class="text-gray-400">Quantidade: {{ $item->quantidade }}</p>
-                        @if($item->quantidade <= 2)
-                            <p class="text-red-500 font-medium">Baixo estoque</p>
-                        @endif
-                        <p class="mt-1">Preço unitário: 
-                            <span class="font-semibold">R$ {{ number_format($item->produto->preco, 2, ',', '.') }}</span>
-                        </p>
-                        <p class="text-[#D5891B]">Subtotal: 
-                            <span class="font-semibold">R$ {{ number_format($subtotal, 2, ',', '.') }}</span>
-                        </p>
-                    </div>
+    <!-- Link para o detalhe do produto -->
+        <a href="{{ route('produtos.detalhes', $item->produto->id_produtos) }}" class="flex items-center flex-1">
 
-                    <!-- Botão remover -->
-                    <form action="{{ route('carrinho.remover', [$item->produto_id, $item->tamanho]) }}" method="POST" class="mt-3 md:mt-0">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="bg-red-600/50 text-white px-4 py-2 rounded-lg hover:bg-red-700/80 transition">
-                            Remover
-                        </button>
-                    </form>
-                </div>
+        <!-- Imagem -->
+        <img src="{{ $foto ? asset('storage/' . $foto) : 'https://via.placeholder.com/100' }}" 
+             alt="{{ $item->produto->nome }}" 
+             class="w-36 h-36 object-cover rounded-lg mr-4 mb-3 md:mb-0">
+
+        <!-- Informações -->
+        <div>
+            <p class="font-semibold text-lg">{{ $item->produto->nome }}</p>
+            <p class="text-gray-400">Tamanho: {{ $item->tamanho ?? 'Único' }}</p>
+            <p class="text-gray-400">Quantidade: {{ $item->quantidade }}</p>
+            @if($item->quantidade <= 2)
+                <p class="text-red-500 font-medium">Baixo estoque</p>
+            @endif
+            <p class="mt-1">Preço unitário: 
+                <span class="font-semibold">R$ {{ number_format($item->produto->preco, 2, ',', '.') }}</span>
+            </p>
+            <p class="text-[#D5891B]">Subtotal: 
+                <span class="font-semibold">R$ {{ number_format($subtotal, 2, ',', '.') }}</span>
+            </p>
+        </div>
+    </a>
+
+    <!-- Botão remover -->
+    <form action="{{ route('carrinho.remover', [$item->produto_id, $item->tamanho]) }}" method="POST" class="mt-3 md:mt-0">
+        @csrf
+        @method('DELETE')
+        <button type="submit" class="bg-red-600/50 text-white px-4 py-2 rounded-lg hover:bg-red-700/80 transition">
+            Remover
+        </button>
+    </form>
+</div>
+
             @endforeach
         @else
             <p class="text-gray-400">Seu carrinho está vazio.</p>

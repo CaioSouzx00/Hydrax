@@ -58,18 +58,21 @@
 
 <body class="h-screen overflow-hidden m-0 p-0 text-white font-sans bg-gradient-to-br from-[#1a1a1a] via-[#101010] to-[#0a0a0a] animate-[moveBackground_20s_linear_infinite]">
 
-<a href="http://127.0.0.1:8080"
+<a href="{{ route('home') }}"
    class="group fixed top-4 left-4 z-50 flex h-10 w-10 items-center rounded-full bg-gray-700 text-white overflow-hidden transition-all duration-300 ease-in-out hover:w-28 hover:bg-gray-500"
    title="Voltar para Início" aria-label="Botão Voltar">
+  
   <div class="flex items-center justify-center w-10 h-10 shrink-0">
     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
       <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
     </svg>
   </div>
+
   <span class="ml-2 w-0 group-hover:w-auto opacity-0 group-hover:opacity-100 overflow-hidden whitespace-nowrap transition-all duration-300 ease-in-out">
     Voltar
   </span>
 </a>
+
 
 <div class="flex items-center justify-center w-full h-full">
   <main class="flex w-full max-w-7xl h-[90%] bg-black/30 rounded-md border border-gray-700 p-8 relative backdrop-blur-md shadow-[0_4px_20px_rgba(255,255,255,0.05)]">

@@ -20,7 +20,6 @@ public function buscar(Request $request)
 
     $produtos = ProdutoFornecedor::ativos();
 
-    // Aplica busca por termo no nome ou descrição
     if ($query !== '') {
         $produtos->where(function ($q) use ($query) {
             $q->where('nome', 'LIKE', "%{$query}%")
@@ -28,7 +27,6 @@ public function buscar(Request $request)
         });
     }
 
-    // Aplica filtros apenas se informados
     if (!empty($genero)) {
         $produtos->where('genero', $genero);
     }
@@ -49,10 +47,8 @@ public function buscar(Request $request)
         $produtos->where('preco', '<=', $preco_max);
     }
 
-    // Limita a 48 produtos
-    $produtos = $produtos->limit(48)->get();
+    $produtos = $produtos->paginate(21)->withQueryString();
 
-    // Renderiza os cards dos produtos
     $html = $produtos->map(function ($produto) {
         return view('usuarios.partials.card-produto', compact('produto'))->render();
     })->implode('');
@@ -63,6 +59,8 @@ public function buscar(Request $request)
 
     return response()->json(['html' => $html]);
 }
+
+
 
 
 

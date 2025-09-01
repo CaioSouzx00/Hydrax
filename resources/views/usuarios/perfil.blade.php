@@ -8,13 +8,17 @@
 </head>
 <body class="bg-gradient-to-br from-[#211828] via-[#0b282a] to-[#17110d] font-sans text-white">
 
-<!-- Botão flutuante voltar - só o círculo -->
-<a href="http://127.0.0.1:8080/dashboard"
-   class="fixed top-4 left-4 z-50 flex h-10 w-10 items-center justify-center rounded-full bg-[#0aa174] text-white shadow-md hover:bg-[#0d8c6a] transition-colors duration-300 ease-in-out"
-   title="Voltar para Início" aria-label="Botão Voltar">
-  <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M15 19l-7-7 7-7" />
-  </svg>
+<a href="{{ url()->previous() }}"
+   class="group fixed top-4 left-4 z-50 flex h-10 w-10 items-center rounded-full bg-[#14ba88] text-white overflow-hidden transition-all duration-300 ease-in-out hover:w-28 hover:bg-[#117c66]"
+   title="Voltar" aria-label="Botão Voltar">
+    <div class="flex items-center justify-center w-10 h-10 shrink-0">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+        </svg>
+    </div>
+    <span class="ml-2 w-0 group-hover:w-auto opacity-0 group-hover:opacity-100 overflow-hidden whitespace-nowrap transition-all duration-300 ease-in-out">
+        Voltar
+    </span>
 </a>
 
 
