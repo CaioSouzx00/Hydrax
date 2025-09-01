@@ -4,17 +4,19 @@
     role="button"
     tabindex="0"
   >
+
     @php
-      $fotos = json_decode($produto->fotos, true);
-      $foto = is_array($fotos) && count($fotos) > 0 ? $fotos[0] : null;
+    $fotos = is_array($produto->fotos) ? $produto->fotos : json_decode($produto->fotos, true);
+    $foto = is_array($fotos) && count($fotos) > 0 ? $fotos[0] : null;
     @endphp
 
+
     <div class="w-full mb-3">
-      <img
+    <img
         src="{{ $foto ? asset('storage/' . $foto) : 'https://via.placeholder.com/400x400?text=Produto' }}"
         alt="Imagem do Produto"
         class="w-full h-56 object-cover rounded-lg border border-[#D5891B]/20 shadow-sm"
-      />
+    />
     </div>
 
     <div class="flex flex-col space-y-2">
@@ -23,7 +25,8 @@
       </h3>
 
       <p class="text-xs text-gray-400 line-clamp-3" title="{{ $produto->caracteristica_produto }}">
-        {{ $produto->caracteristica_produto }}
+        {{ $produto->caracteristicas ?? '' }}
+
       </p>
 
       <p class="text-white font-bold text-lg mt-1">

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\ProdutoFornecedor;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class ProdutoController extends Controller
 {
@@ -18,51 +19,48 @@ public function buscar(Request $request)
     $preco_min = $request->input('preco_min');
     $preco_max = $request->input('preco_max');
 
-    $produtos = ProdutoFornecedor::ativos();
+    $produtosQuery = ProdutoFornecedor::ativos();
 
     if ($query !== '') {
-        $produtos->where(function ($q) use ($query) {
+        $produtosQuery->where(function ($q) use ($query) {
             $q->where('nome', 'LIKE', "%{$query}%")
               ->orWhere('descricao', 'LIKE', "%{$query}%");
         });
     }
 
-    if (!empty($genero)) {
-        $produtos->where('genero', $genero);
-    }
-
-    if (!empty($categoria)) {
-        $produtos->where('categoria', $categoria);
-    }
-
+    if (!empty($genero)) $produtosQuery->where('genero', $genero);
+    if (!empty($categoria)) $produtosQuery->where('categoria', $categoria);
     if (!empty($tamanho)) {
-        $produtos->whereJsonContains('tamanhos_disponiveis', (int)$tamanho);
-    }
-
-    if (!empty($preco_min)) {
-        $produtos->where('preco', '>=', $preco_min);
-    }
-
-    if (!empty($preco_max)) {
-        $produtos->where('preco', '<=', $preco_max);
-    }
-
-    $produtos = $produtos->paginate(21)->withQueryString();
-
-    $html = $produtos->map(function ($produto) {
-        return view('usuarios.partials.card-produto', compact('produto'))->render();
-    })->implode('');
-
-    if ($produtos->isEmpty()) {
-        $html = '<p class="text-white p-6 pt-24">Nenhum produto encontrado.</p>';
-    }
-
-    return response()->json(['html' => $html]);
+    $produtosQuery->whereJsonContains('tamanhos_disponiveis', (string)$tamanho);
 }
 
+    if (!empty($preco_min)) $produtosQuery->where('preco', '>=', $preco_min);
+    if (!empty($preco_max)) $produtosQuery->where('preco', '<=', $preco_max);
 
+    $produtos = $produtosQuery->paginate(21)->withQueryString();
 
+    // Renderiza cada produto corretamente
+    if ($produtos->isEmpty()) {
+        $html = '<p class="text-white p-6 pt-24">Nenhum produto encontrado.</p>';
+    } else {
+        $html = $produtos->map(function($produto) {
+            // Normaliza JSON das fotos
+            $produto->fotos = json_decode($produto->fotos, true) ?: [];
 
+            return view('usuarios.partials.card-produto', compact('produto'))->render();
+        })->implode('');
+    }
+
+    $pagination = view('vendor.pagination.custom', ['paginator' => $produtos])->render();
+    
+    $texto = "Mostrando {$produtos->firstItem()} a {$produtos->lastItem()} de {$produtos->total()} resultados";
+
+    return response()->json([
+        'html' => $html,
+        'pagination' => $pagination,
+        'texto' => $texto
+    ]);
+}
 
 
 
