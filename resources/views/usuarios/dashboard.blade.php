@@ -267,51 +267,92 @@
         </div>
     </div>
 
-    <!-- <div class="flex">
-    <!-- SIDEBAR DE FILTROS --
-    <form method="GET" action="{{ route('dashboard') }}" class="w-64 p-4 bg-gray-900 text-white border-r border-gray-700">
-        <!-- Gênero --
-        <h3 class="font-bold mb-2">Gênero</h3>
-        <label><input type="radio" name="genero" value="MASCULINO"> Masculino</label><br>
-        <label><input type="radio" name="genero" value="FEMININO"> Feminino</label><br>
-        <label><input type="radio" name="genero" value="UNISSEX"> Unissex</label>
+    <style>
+  body {
+    overflow-x: hidden; /* impede scroll horizontal */
+  }
+</style>
+<div class="flex relative">
+<!-- Botão de abrir/fechar filtros -->
+<button id="toggle-filtros" 
+    class="absolute top-0 right-12 text-white hover:text-[#14BA88] px-4 py-2 rounded-md z-50 flex items-center gap-2">
+    
+    <!-- Ícone de filtro (Heroicons) -->
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L15 14.414V19a1 1 0 01-1.447.894l-4-2A1 1 0 019 17v-2.586L3.293 6.707A1 1 0 013 6V4z" />
+    </svg>
 
-        <!-- Categoria --
-        <h3 class="font-bold mt-4 mb-2">Categoria</h3>
-        <select name="categoria" class="border p-1 w-full">
-            <option value="">Todas</option>
-            <option value="Corrida">Corrida</option>
-            <option value="Basquete">Basquete</option>
-            <option value="Lifestyle">Lifestyle</option>
-        </select>
+    Filtros
+</button>
 
-        <!-- Tamanho --
-        <h3 class="font-bold mt-4 mb-2">Tamanho</h3>
-        @foreach([37,38,39,40,41,42,43,44,45,46] as $t)
-            <label class="inline-block mr-2 mb-2">
-                <input type="radio" name="tamanho" value="{{ $t }}"> {{ $t }}
-            </label>
-        @endforeach
+<!-- SIDEBAR DE FILTROS estilo vidro -->
+<form id="sidebar-filtros" method="GET" action="{{ route('dashboard') }}" 
+    class="w-64 p-4 bg-black/30 backdrop-blur-md text-white border-r border-[#D5891B]/30 mt-10 absolute h-full z-40 hidden">
 
-        <!-- Preço --
-        <h3 class="font-bold mt-4 mb-2">Preço</h3>
-        <input type="number" name="preco_min" placeholder="Mín" class="border p-1 w-20"> -
-        <input type="number" name="preco_max" placeholder="Máx" class="border p-1 w-20">
+    <!-- Gênero -->
+    <h3 class="font-bold mb-2 text-[#B69F8F]">Gênero</h3>
+    <label class="inline-block mb-1"><input type="radio" name="genero" value="MASCULINO"> Masculino</label><br>
+    <label class="inline-block mb-1"><input type="radio" name="genero" value="FEMININO"> Feminino</label><br>
+    <label class="inline-block mb-1"><input type="radio" name="genero" value="UNISSEX"> Unissex</label>
 
-        <button type="submit" class="mt-4 bg-black text-white px-4 py-2 w-full">
-            Filtrar
-        </button>
-    </form>
--->
+    <!-- Categoria -->
+    <h3 class="font-bold mt-4 mb-2 text-[#B69F8F]">Categoria</h3>
+    <select name="categoria" class="border border-[#D5891B]/50 p-1 w-full bg-black/30 text-white rounded backdrop-blur-sm">
+        <option value="">Todas</option>
+        <option value="Corrida">Corrida</option>
+        <option value="Basquete">Basquete</option>
+        <option value="Lifestyle">Lifestyle</option>
+    </select>
+
+    <!-- Tamanho -->
+    <h3 class="font-bold mt-4 mb-2 text-[#B69F8F]">Tamanho</h3>
+    @foreach([37,38,39,40,41,42,43,44,45,46] as $t)
+        <label class="inline-block mr-2 mb-2">
+            <input type="radio" name="tamanho" value="{{ $t }}"> {{ $t }}
+        </label>
+    @endforeach
+
+    <!-- Preço -->
+    <h3 class="font-bold mt-4 mb-2 text-[#B69F8F]">Preço</h3>
+    <input type="number" name="preco_min" placeholder="Mín" class="border border-[#D5891B]/50 p-1 w-20 bg-black/30 text-white rounded backdrop-blur-sm"> -
+    <input type="number" name="preco_max" placeholder="Máx" class="border border-[#D5891B]/50 p-1 w-20 bg-black/30 text-white rounded backdrop-blur-sm">
+
+    <button type="submit" class="mt-4 bg-[#D5891B]/50 hover:bg-[#e29b37] text-black font-bold px-4 py-2 w-full rounded transition-colors">
+        Filtrar
+    </button>
+</form>
+
 
     <!-- Grid de produtos -->
-<div id="produtos-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-6 pl-64 pr-64">
-  <!-- Produtos serão carregados aqui via AJAX -->
+    <div id="produtos-container" 
+        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 pl-36 pr-36 pt-6 mt-32 w-full scale-125 max-w-full">
+        <!-- Produtos serão carregados aqui via AJAX -->
+    </div>
 </div>
 
+<script>
+    const toggleBtn = document.getElementById('toggle-filtros');
+    const sidebar = document.getElementById('sidebar-filtros');
+    const produtos = document.getElementById('produtos-container');
+
+    let aberto = false;
+toggleBtn.addEventListener('click', () => {
+    aberto = !aberto;
+    if (aberto) {
+        sidebar.classList.remove('hidden');
+        produtos.classList.remove("w-full", "scale-125", "pl-36");
+        produtos.classList.add("scale-110", "pl-96"); // shift para a direita sem quebrar o grid
+    } else {
+        sidebar.classList.add('hidden');
+        produtos.classList.remove("scale-110", "pl-96");
+        produtos.classList.add("w-full", "scale-125", "pl-36"); // cards grandes, centralizados
+    }
+});
+
+</script>
 
 <!-- Paginação e texto -->
-<div class="mt-6 text-center">
+<div class="mt-36 text-center">
     <div id="paginacao-container" class="flex justify-center mb-2"></div>
     <div id="texto-container" class="text-gray-400 text-sm mb-10"></div>
 </div>
