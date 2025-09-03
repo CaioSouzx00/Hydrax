@@ -172,6 +172,7 @@ Route::middleware([AdministradorMiddleware::class])->group(function () {
 */
 Route::middleware([FornecedorMiddleware::class])->prefix('fornecedores')->name('fornecedores.')->group(function () {
     Route::get('/dashboard', [FornecedorController::class, 'dashboard'])->name('dashboard');
+    Route::get('/perfil', [FornecedorController::class, 'perfil'])->name('perfil');
     Route::post('/logout', [FornecedorController::class, 'logout'])->name('logout');
 
     Route::get('/produtos', [ProdutoFornecedorController::class, 'index'])->name('produtos.index');
@@ -185,5 +186,4 @@ Route::middleware([FornecedorMiddleware::class])->prefix('fornecedores')->name('
     Route::put('/produtos/{id}', [ProdutoFornecedorController::class, 'update'])->name('produtos.update');
 
     Route::delete('/produtos/{id}', [ProdutoFornecedorController::class, 'destroy'])->name('produtos.destroy');
-
 });
