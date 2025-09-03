@@ -32,16 +32,22 @@ class FornecedorController extends Controller
             'email' => 'required|email|unique:fornecedores_pendentes,email',
             'telefone' => 'required|string|max:20',
             'password' => 'required|string|min:6|confirmed',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
+
+        $path = null;
+        if ($request->hasFile('foto')) {
+            $path = $request->file('foto')->store('fornecedores', 'public');
+        }
 
         FornecedorPendente::create([
             'nome_empresa' => $validated['nome_empresa'], 
             'cnpj' => $validated['cnpj'],
             'email' => $validated['email'],
             'telefone' => $validated['telefone'],
-            'password' => $validated['password'],
+            'password' => $validated['password'], // ainda não usa Hash
             'status' => 'pendente',
-            'foto' => null,
+            'foto' => $path,
         ]);
 
         return redirect()->route('fornecedores.login')->with('success', 'Cadastro enviado para análise.');
@@ -90,11 +96,11 @@ class FornecedorController extends Controller
             'email' => $pendente->email,
             'telefone' => $pendente->telefone,
             'password' => Hash::make($pendente->password),
-            'foto' => null,
+            'foto' => $pendente->foto, // mantém a foto enviada
         ]);
 
     // Enviar e-mail de aprovação
-    Mail::to($pendente->email)->send(new FornecedorAprovadoMail($pendente));
+        Mail::to($pendente->email)->send(new FornecedorAprovadoMail($pendente));
 
         $pendente->delete();
 
@@ -107,6 +113,11 @@ class FornecedorController extends Controller
 
     // Enviar e-mail de rejeição
         Mail::to($pendente->email)->send(new FornecedorRejeitadoMail($pendente));
+
+        // Se tiver foto, pode até remover do storage
+        if ($pendente->foto) {
+            Storage::disk('public')->delete($pendente->foto);
+        }
 
         $pendente->delete();
 

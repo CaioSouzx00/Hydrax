@@ -221,7 +221,7 @@
           <div class="card-glass p-6 text-center">
             <h3 class="text-lg font-semibold text-[#d5891b] mb-4">Foto da Empresa</h3>
             <img src="{{ $fornecedor->foto ? asset('storage/' . $fornecedor->foto) : asset('images/default-avatar.png') }}" alt="Foto da Empresa" class="w-32 h-32 mx-auto rounded-lg border-2 border-[#d5891b] shadow-lg">
-            <p class="field-value mt-2 text-sm">{{ $fornecedor->foto ? 'Foto carregada' : 'Nenhuma foto cadastrada' }}</p>
+            <p class="field-value mt-2 text-sm">{{ $fornecedor->foto ? 'Foto da Empresa' : 'Nenhuma foto cadastrada' }}</p>
           </div>
 
           <!-- Segurança -->
@@ -234,7 +234,6 @@
                 <p class="text-xs text-gray-400 mt-1">Última alteração: {{ $fornecedor->updated_at?->format('d/m/Y') ?? 'Não informado' }}</p>
               </div>
               <div class="flex items-end">
-                <button class="bg-gray-600 hover:bg-gray-500 px-4 py-2 rounded-lg font-semibold transition-colors text-sm">Alterar Senha</button>
               </div>
             </div>
           </div>

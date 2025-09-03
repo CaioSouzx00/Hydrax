@@ -86,7 +86,7 @@
       @endif
 
 <!-- Formulário -->
-<form method="POST" action="{{ route('fornecedores.store') }}" class="space-y-4">
+<form method="POST" action="{{ route('fornecedores.store') }}" enctype="multipart/form-data" class="space-y-4">
   @csrf
 
   <div class="relative">
@@ -97,6 +97,17 @@
       required
       maxlength="50"
       class="w-full mt-1 px-4 py-2 bg-gray-900/80 text-white/30 hover:text-white focus:text-white border border-[#D5891B] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D5891B] focus:bg-[#2a2a2a]"
+    />
+  </div>
+
+  <!-- Campo Foto -->
+  <div class="relative">
+    <label class="block text-sm font-medium text-gray-300 drop-shadow-[0_0_2px_rgba(139,92,246,0.4)]">Foto do Fornecedor</label>
+    <input
+      type="file"
+      name="foto"
+      accept="image/*"
+      class="w-full mt-1 px-4 py-2 bg-gray-900/80 text-white focus:text-white border border-[#D5891B] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D5891B] file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#14ba88] file:text-white hover:file:bg-[#0f8a66]"
     />
   </div>
 
@@ -211,7 +222,6 @@
     <span class="relative">Cadastrar</span>
   </button>
 </form>
-
 
       <p class="text-xs text-center text-gray-400 mt-6">
         Após o cadastro, você receberá um e-mail com a aprovação para vender na plataforma.
