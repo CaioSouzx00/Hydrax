@@ -1,32 +1,29 @@
-<a href="{{ route('produtos.detalhes', $produto->id_produtos) }}" class="block w-72 mx-auto">
+<a href="{{ route('produtos.detalhes', $produto->id_produtos) }}" class="block w-96 mx-auto">
   <div
-    class="bg-[#111]/50 border border-[#222] rounded-xl shadow-lg p-5 min-h-[420px] cursor-pointer hover:border-[#D5891B]/20 transition-all duration-200"
+    class="bg-[#111]/50 border border-[#222] rounded-xl shadow-lg p-8 min-h-[580px] cursor-pointer hover:border-[#D5891B]/20 transition-all duration-200"
     role="button"
     tabindex="0"
   >
-
     @php
     $fotos = is_array($produto->fotos) ? $produto->fotos : json_decode($produto->fotos, true);
     $foto = is_array($fotos) && count($fotos) > 0 ? $fotos[0] : null;
     @endphp
 
-
-    <div class="w-full mb-3">
-    <img
+    <div class="w-full mb-4">
+      <img
         src="{{ $foto ? asset('storage/' . $foto) : 'https://via.placeholder.com/400x400?text=Produto' }}"
         alt="Imagem do Produto"
-        class="w-full h-56 object-cover rounded-lg border border-[#D5891B]/20 shadow-sm"
-    />
+        class="w-full h-72 object-cover rounded-lg border border-[#D5891B]/20 shadow-sm"
+      />
     </div>
 
-    <div class="flex flex-col space-y-2">
+    <div class="flex flex-col space-y-3">
       <h3 class="text-base font-semibold text-white truncate" title="{{ $produto->nome }}">
         {{ $produto->nome }}
       </h3>
 
       <p class="text-xs text-gray-400 line-clamp-3" title="{{ $produto->caracteristica_produto }}">
         {{ $produto->caracteristicas ?? '' }}
-
       </p>
 
       <p class="text-white font-bold text-lg mt-1">
@@ -37,8 +34,7 @@
         {{ $produto->categoria }}
       </p>
 
-
-      {{-- estrelas fixas de exemplo --}}
+      {{-- estrelas --}}
       <div class="flex items-center space-x-2 mt-1" aria-label="Avaliação: 4.5 de 5 estrelas" role="img">
         <div class="flex items-center space-x-[1px]">
           @for ($i = 0; $i < 4; $i++)
