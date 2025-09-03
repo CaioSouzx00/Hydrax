@@ -120,27 +120,16 @@ public function update(Request $request, $id)
     }
 
         // Atualiza estoque_imagem se enviar
-
-
     if ($request->hasFile('estoque_imagem')) {
-
 
         $estoquePaths = [];
 
-
         foreach ($request->file('estoque_imagem') as $img) {
-
-
             $estoquePaths[] = $img->store('produtos/estoque', 'public');
-
-
         }
 
-
         $data['estoque_imagem'] = json_encode($estoquePaths);
-
     }
-
 
     // Atualiza slug
     $data['slug'] = \Str::slug($request->nome);
@@ -202,28 +191,16 @@ public function destroy($id)
 
 
     if (!empty($produto->estoque_imagem)) {
-
-
         $estoqueImgs = json_decode($produto->estoque_imagem, true);
 
-
         foreach ($estoqueImgs as $img) {
-
-
             \Storage::disk('public')->delete($img);
-
-
         }
-
-
     }
-
 
     $produto->delete();
 
     return redirect()->back()->with('success', 'Produto excluído com sucesso!');
 }
-
-
 
 }

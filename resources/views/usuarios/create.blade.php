@@ -51,17 +51,20 @@
 </head>
 
 <body class="min-h-screen overflow-hidden">
-  
-<a href="http://127.0.0.1:8080"
-   class="group fixed top-4 left-4 z-50 flex h-10 w-10 items-center rounded-full bg-[#14ba88] text-white overflow-hidden transition-all duration-300 ease-in-out hover:w-28 hover:bg-[#4a8978]"
-   title="Voltar para Início" aria-label="Botão Voltar">
 
-  <!-- Ícone sempre visível e centralizado -->
-  <div class="flex items-center justify-center w-10 h-10 shrink-0">
-    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-    </svg>
-  </div>
+<!-- Botão voltar -->
+<a href="{{ url()->previous() }}"
+   class="group fixed top-4 left-4 z-50 flex h-10 w-10 items-center rounded-full bg-[#14ba88] text-white overflow-hidden transition-all duration-300 ease-in-out hover:w-28 hover:bg-[#117c66]"
+   title="Voltar" aria-label="Botão Voltar">
+    <div class="flex items-center justify-center w-10 h-10 shrink-0">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+        </svg>
+    </div>
+    <span class="ml-2 w-0 group-hover:w-auto opacity-0 group-hover:opacity-100 overflow-hidden whitespace-nowrap transition-all duration-300 ease-in-out">
+        Voltar
+    </span>
+</a>
 
   <!-- Texto invisível até o hover, mas com espaço reservado -->
   <span class="ml-2 w-0 group-hover:w-auto opacity-0 group-hover:opacity-100 overflow-hidden whitespace-nowrap transition-all duration-300 ease-in-out">

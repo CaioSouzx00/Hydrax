@@ -98,75 +98,76 @@ class UsuarioController extends Controller
     }
 
 
+
+
 public function dashboard(Request $request)
 {
-    $query = ProdutoFornecedor::query()->where('ativo', true);
+    $query = ProdutoFornecedor::where('ativo', true);
 
-    $precoMin = $request->preco_min !== null ? floatval(str_replace(',', '.', $request->preco_min)) : null;
-    $precoMax = $request->preco_max !== null ? floatval(str_replace(',', '.', $request->preco_max)) : null;
-
-
-    //dd($precoMin, $precoMax); // agora sempre existe
-
-    // Filtros simples direto no DB
+    // Gênero
     if ($request->filled('genero')) {
         $query->where('genero', $request->genero);
     }
 
+    // Categoria
     if ($request->filled('categoria')) {
         $query->where('categoria', $request->categoria);
     }
 
-
-if ($precoMin !== null && $precoMin >= 0) {
-    $query->where('preco', '>=', $precoMin);
-}
-
-if ($precoMax !== null && $precoMax >= 0) {
-    $query->where('preco', '<=', $precoMax);
-}
-
-
-    // Busca inicial no DB
-    $produtos = $query->get();
-
-    // Filtro por tamanho no PHP
-    if ($request->filled('tamanho')) {
-        $tamanhoFiltro = (string) $request->tamanho;
-
-        $produtos = $produtos->filter(function($produto) use ($tamanhoFiltro) {
-            $tamanhos = json_decode($produto->tamanhos_disponiveis ?? '[]', true);
-            return in_array($tamanhoFiltro, $tamanhos);
-        });
+    // Preço mínimo e máximo
+    if ($request->filled('preco_min')) {
+        $query->where('preco', '>=', floatval(str_replace(',', '.', $request->preco_min)));
     }
 
-// Valores da coleção
-$produtos = $produtos->values(); // garante índices corretos
+    if ($request->filled('preco_max')) {
+        $query->where('preco', '<=', floatval(str_replace(',', '.', $request->preco_max)));
+    }
 
-// Página atual
-$page = $request->get('page', 1);
+    $produtos = $query->orderBy('id_produtos', 'desc')->get();
 
-// Itens por página
-$perPage = 21;
+    // **Filtro de tamanho**
+    $tamanho = $request->input('tamanho');
+    if ($tamanho) {
+        $produtos = $produtos->filter(function ($produto) use ($tamanho) {
+            $tamanhos = json_decode($produto->tamanhos_disponiveis, true) ?? [];
+            $tamanhos = array_map('strval', $tamanhos);
+            return in_array((string)$tamanho, $tamanhos, true);
+        })->values();
+    }
 
-// Total de itens
-$total = $produtos->count();
+    $perPage = 21;
+    $page = $request->input('page', 1);
 
-// Cria o paginator manualmente
-$produtosPaginados = new LengthAwarePaginator(
-    $produtos->forPage($page, $perPage), // itens da página atual
-    $total,                               // total de itens
-    $perPage,                             // itens por página
-    $page,                                // página atual
-    [
-        'path'  => $request->url(),       // mantém a URL
-        'query' => $request->query()      // mantém os filtros
-    ]
-);
+    $produtosPaginados = new \Illuminate\Pagination\LengthAwarePaginator(
+        $produtos->forPage($page, $perPage),
+        $produtos->count(),
+        $perPage,
+        $page,
+        ['path' => $request->url(), 'query' => $request->query()]
+    );
 
-// Retorna a view
-return view('usuarios.dashboard', ['produtos' => $produtosPaginados]);
+    if ($request->ajax()) {
+        $html = view('usuarios.partials.produtos_cards', ['produtos' => $produtosPaginados])->render();
+        $pagination = view('usuarios.partials.produtos_paginacao', ['produtos' => $produtosPaginados])->render();
+
+        return response()->json([
+            'html' => $html,
+            'pagination' => $pagination,
+            'texto' => $produtosPaginados->count()
+                ? "Exibindo {$produtosPaginados->firstItem()} a {$produtosPaginados->lastItem()} de {$produtosPaginados->total()} produtos"
+                : "Nenhum produto encontrado"
+        ]);
+    }
+
+    return view('usuarios.dashboard', ['produtos' => $produtosPaginados]);
 }
+
+
+
+
+
+
+
 
     public function update(Request $request)
     {
