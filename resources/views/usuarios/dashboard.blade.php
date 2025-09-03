@@ -311,6 +311,11 @@
             <button type="submit" class="mt-4 bg-[#D5891B]/50 hover:bg-[#e29b37] text-black font-bold px-4 py-2 w-full rounded transition-colors">
                 Filtrar
             </button>
+            <button type="button" id="limpar-filtros" class="mt-2 bg-gray-700 hover:bg-gray-600 text-white font-bold px-4 py-2 w-full rounded transition-colors">
+                Limpar filtros
+            </button>
+
+            
         </form>
 
         <!-- Grid de produtos (3 colunas centralizadas) -->
@@ -444,6 +449,16 @@
 
   let userTimeout, enderecoTimeout;
 
+  const formFiltros = document.getElementById('sidebar-filtros');
+
+  if (formFiltros) {
+    formFiltros.addEventListener('submit', function(e) {
+        e.preventDefault(); // impede o reload da página
+        carregarProdutos({ page: 1 }); // chama sua função AJAX
+    });
+}
+
+
   function showOverlay() {
     overlay.classList.add('active');
   }
@@ -537,6 +552,9 @@
       const page = new URL(e.target.href).searchParams.get('page');
       carregarProdutos({ page });
     }
+
+    const formFiltros = document.getElementById('sidebar-filtros');
+
   });
 
   // Busca com debounce
@@ -550,6 +568,19 @@
   if(inputBuscar) inputBuscar.addEventListener('input', realizarBusca);
   const botaoBuscar = document.getElementById('botao_buscar');
   if(botaoBuscar) botaoBuscar.addEventListener('click', () => carregarProdutos({ page: 1 }));
+
+  const botaoLimpar = document.getElementById('limpar-filtros');
+
+if (botaoLimpar) {
+    botaoLimpar.addEventListener('click', () => {
+        // Limpa todos os campos do form
+        formFiltros.reset();
+
+        // Recarrega os produtos sem filtros
+        carregarProdutos({ page: 1 });
+    });
+}
+
 
   // Carrega página inicial
   carregarProdutos();

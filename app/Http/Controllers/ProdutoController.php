@@ -62,9 +62,6 @@ public function buscar(Request $request)
     ]);
 }
 
-
-
-
 public function detalhes($id)
 {
     $usuario = auth()->guard('usuarios')->user(); // pega usuário logado
