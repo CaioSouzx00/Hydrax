@@ -75,20 +75,39 @@
   <!-- Navbar -->
   <header class="bg-black/50 backdrop-blur-md border-b border-[#d5891b] fixed top-0 left-64 right-0 z-40 h-16 flex items-center justify-between px-6">
     <h2 class="text-xl font-semibold">Produtos <span class="text-[#d5891b]">| Fornecedor</span></h2>
-    <a href="{{ url()->previous() }}"
-   class="group fixed top-4 right-4 z-50 flex h-10 w-10 items-center rounded-full bg-[#d5891b] text-white overflow-hidden transition-all duration-300 ease-in-out hover:w-28 hover:bg-[#b17016]"
-   title="Voltar" aria-label="Botão Voltar">
-    <div class="flex items-center justify-center w-10 h-10 shrink-0">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-        </svg>
-    </div>
-    <span class="ml-2 w-0 group-hover:w-auto opacity-0 group-hover:opacity-100 overflow-hidden whitespace-nowrap transition-all duration-300 ease-in-out">
-        Voltar
-    </span>
-</a>
     
-   
+    <div id="user-dropdown" class="relative group flex items-center space-x-2 cursor-pointer">
+      <div class="w-10 h-10 bg-[#d5891b] rounded-full flex items-center justify-center hover:bg-[#b3731a] transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21h18M9 8h6M9 12h6M9 16h6M4 21V5a1 1 0 011-1h3v4h8V4h3a1 1 0 011 1v16" />
+        </svg>
+      </div>
+      <span class="font-semibold hover:text-[#d5891b]">
+        Olá, {{ Auth::guard('fornecedores')->user()->nome_empresa }} ▾
+      </span>
+
+      <!-- Dropdown -->
+      <div id="logout-menu" class="absolute right-0 hidden mt-14 bg-[#211828]/90 border border-[#d5891b] rounded shadow-lg py-2 min-w-[140px] z-50">
+        <form method="POST" action="{{ route('fornecedores.logout') }}">
+          @csrf
+                      <a href="#"
+              class="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-white hover:bg-[#d5891b]/30  transition-colors">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24"
+      stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M5.121 17.804A13.937 13.937 0 0112 15c2.485 0 4.779.755 6.879 2.041M15 10a3 3 0 11-6 0 3 3 0 016 0z" />
+    </svg>
+              <span>Perfil</span>
+            </a>
+          <button type="submit" class="flex items-center gap-2 w-full text-left px-4 py-2 text-sm hover:bg-[#d5891b]/30 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7" />
+            </svg>
+            <span>Sair</span>
+          </button>
+        </form>
+      </div>
+    </div>
   </header>
 
 <!-- Modal Exclusão Produto -->
