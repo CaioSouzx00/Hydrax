@@ -98,62 +98,47 @@ class UsuarioController extends Controller
     }
 
 
-
-
 public function dashboard(Request $request)
 {
-    $query = ProdutoFornecedor::where('ativo', true);
+    // usa o scope ativos() se existir (mantém a lógica de "apenas produtos ativos")
+    $query = ProdutoFornecedor::ativos();
 
-    // Gênero
+    // filtros simples
     if ($request->filled('genero')) {
         $query->where('genero', $request->genero);
     }
 
-    // Categoria
     if ($request->filled('categoria')) {
         $query->where('categoria', $request->categoria);
     }
 
-    // Preço mínimo e máximo
     if ($request->filled('preco_min')) {
-        $query->where('preco', '>=', floatval(str_replace(',', '.', $request->preco_min)));
+        $precoMin = floatval(str_replace(',', '.', $request->preco_min));
+        $query->where('preco', '>=', $precoMin);
     }
 
     if ($request->filled('preco_max')) {
-        $query->where('preco', '<=', floatval(str_replace(',', '.', $request->preco_max)));
+        $precoMax = floatval(str_replace(',', '.', $request->preco_max));
+        $query->where('preco', '<=', $precoMax);
     }
 
-    $produtos = $query->orderBy('id_produtos', 'desc')->get();
+if ($request->filled('tamanho')) {
+    $t = (string) $request->tamanho;
+    $query->whereRaw('JSON_CONTAINS(tamanhos_disponiveis, ?)', ['"'.$t.'"']);
+}
 
-    // **Filtro de tamanho**
-    $tamanho = $request->input('tamanho');
-    if ($tamanho) {
-        $produtos = $produtos->filter(function ($produto) use ($tamanho) {
-            $tamanhos = json_decode($produto->tamanhos_disponiveis, true) ?? [];
-            $tamanhos = array_map('strval', $tamanhos);
-            return in_array((string)$tamanho, $tamanhos, true);
-        })->values();
-    }
 
+    // ordena e pagina
     $perPage = 21;
-    $page = $request->input('page', 1);
-
-    $produtosPaginados = new \Illuminate\Pagination\LengthAwarePaginator(
-        $produtos->forPage($page, $perPage),
-        $produtos->count(),
-        $perPage,
-        $page,
-        ['path' => $request->url(), 'query' => $request->query()]
-    );
+    $produtosPaginados = $query->orderBy('id_produtos', 'desc')
+                             ->paginate($perPage)
+                             ->withQueryString();
 
     if ($request->ajax()) {
-        $html = view('usuarios.partials.produtos_cards', ['produtos' => $produtosPaginados])->render();
-        $pagination = view('usuarios.partials.produtos_paginacao', ['produtos' => $produtosPaginados])->render();
-
         return response()->json([
-            'html' => $html,
-            'pagination' => $pagination,
-            'texto' => $produtosPaginados->count()
+            'html'       => view('usuarios.partials.produtos_cards', ['produtos' => $produtosPaginados])->render(),
+            'pagination' => view('usuarios.partials.produtos_paginacao', ['produtos' => $produtosPaginados])->render(),
+            'texto'      => $produtosPaginados->total() > 0
                 ? "Exibindo {$produtosPaginados->firstItem()} a {$produtosPaginados->lastItem()} de {$produtosPaginados->total()} produtos"
                 : "Nenhum produto encontrado"
         ]);
@@ -161,12 +146,6 @@ public function dashboard(Request $request)
 
     return view('usuarios.dashboard', ['produtos' => $produtosPaginados]);
 }
-
-
-
-
-
-
 
 
     public function update(Request $request)

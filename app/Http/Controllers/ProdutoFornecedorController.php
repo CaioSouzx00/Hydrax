@@ -61,8 +61,8 @@ public function store(Request $request)
         'caracteristicas' => $request->caracteristicas,
         'historico_modelos' => $request->historico_modelos,
         'tamanhos_disponiveis' => $request->tamanhos_disponiveis
-            ? json_encode(array_map('trim', explode(',', $request->tamanhos_disponiveis)))
-            : null,
+        ? array_map('trim', explode(',', $request->tamanhos_disponiveis))
+        : null,
         'genero' => $request->genero,
         'categoria' => $request->categoria,
         'fotos' => !empty($imagens) ? json_encode($imagens) : null,
@@ -107,8 +107,9 @@ public function update(Request $request, $id)
 
     // Atualiza tamanhos disponíveis
     $data['tamanhos_disponiveis'] = $request->tamanhos_disponiveis
-        ? json_encode(array_map('trim', explode(',', $request->tamanhos_disponiveis)))
-        : null;
+    ? array_map('trim', explode(',', $request->tamanhos_disponiveis))
+    : null;
+
 
     // Atualiza fotos se enviar
     if ($request->hasFile('fotos')) {
@@ -158,14 +159,24 @@ public function listar()
 
     $produtos = ProdutoFornecedor::where('id_fornecedores', $fornecedor->id_fornecedores)->get();
 
-    // Decodifica tamanhos_disponiveis e fotos
     foreach ($produtos as $produto) {
-        $produto->tamanhos_disponiveis = json_decode($produto->tamanhos_disponiveis ?? '[]');
-        $produto->fotos = json_decode($produto->fotos ?? '[]');
+        $produto->tamanhos_disponiveis = is_array($produto->tamanhos_disponiveis)
+            ? $produto->tamanhos_disponiveis
+            : json_decode($produto->tamanhos_disponiveis ?? '[]', true);
+
+        $produto->fotos = is_array($produto->fotos)
+            ? $produto->fotos
+            : json_decode($produto->fotos ?? '[]', true);
+
+        $produto->estoque_imagem = is_array($produto->estoque_imagem)
+            ? $produto->estoque_imagem
+            : json_decode($produto->estoque_imagem ?? '[]', true);
     }
 
     return view('fornecedores.produtos.partials.listar', compact('produtos'));
 }
+
+
 
 
 public function edit($id)
