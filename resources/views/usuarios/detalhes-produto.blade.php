@@ -2,10 +2,11 @@
 
 </html>
 @php
-    $fotos = json_decode($produto->fotos ?? '[]', true);
-    $estoqueImagens = json_decode($produto->estoque_imagem ?? '[]', true);
-    $tamanhos = json_decode($produto->tamanhos_disponiveis ?? '[]', true);
+    $fotos = is_string($produto->fotos) ? json_decode($produto->fotos, true) : ($produto->fotos ?? []);
+    $estoqueImagens = is_string($produto->estoque_imagem) ? json_decode($produto->estoque_imagem, true) : ($produto->estoque_imagem ?? []);
+    $tamanhos = is_string($produto->tamanhos_disponiveis) ? json_decode($produto->tamanhos_disponiveis, true) : ($produto->tamanhos_disponiveis ?? []);
 @endphp
+
 
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -164,10 +165,11 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
             @foreach($produtos as $prod)
                 @php
-                    $fotosRec = json_decode($prod->fotos ?? '[]', true);
-                    $estoqueRec = json_decode($prod->estoque_imagem ?? '[]', true);
-                    $tamanhosRec = json_decode($prod->tamanhos_disponiveis ?? '[]', true);
+                $fotosRec = is_string($prod->fotos) ? json_decode($prod->fotos, true) : ($prod->fotos ?? []);
+                $estoqueRec = is_string($prod->estoque_imagem) ? json_decode($prod->estoque_imagem, true) : ($prod->estoque_imagem ?? []);
+                $tamanhosRec = is_string($prod->tamanhos_disponiveis) ? json_decode($prod->tamanhos_disponiveis, true) : ($prod->tamanhos_disponiveis ?? []);
                 @endphp
+
 
                 <div class="bg-[#1a1a1a]/50 rounded-md border border-[#222] hover:border-[#D5891B]/20 shadow hover:shadow-lg transition p-4 flex flex-col">
                     
