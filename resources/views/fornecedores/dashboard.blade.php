@@ -94,7 +94,7 @@
     <div class="flex-1 p-4 border-b border-[#d5891b]/40 overflow-auto">
       <nav class="flex flex-col gap-4 text-sm">
         <a id="btn-perfil" href="#" class="block px-4 py-2 rounded-md bg-[#14ba88] hover:bg-[#2d4e50] transition shadow-md text-center">
-          <span>Ver seu Perfil</span>
+          <span>Visualizar seu Perfil</span>
         </a>
         <a class="block px-4 py-2 rounded-md bg-[#14ba88] hover:bg-[#2d4e50] transition shadow-md text-center" href="{{ route('fornecedores.produtos.index') }}">
           Gerencia de Produtos
@@ -124,7 +124,7 @@
         @php $fornecedor = Auth::guard('fornecedores')->user(); @endphp
 
         <button type="button" class="flex items-center space-x-2 focus:outline-none text-white font-semibold hover:text-[#d5891b] transition-colors">
-          <span>Olá, {{ \Illuminate\Support\Str::limit($fornecedor->nome_empresa, 15, '...') }} ▾</span>        </button>
+          <span>{{ \Illuminate\Support\Str::limit($fornecedor->nome_empresa, 15, '...') }} ▾</span>        </button>
         <!-- Logout menu -->
         <div id="logout-menu" class="absolute right-0 hidden mt-14 bg-[#211828]/90 border border-[#d5891b] rounded shadow-lg py-2 min-w-[140px] z-50">
           <form method="POST" action="{{ route('fornecedores.logout') }}">
@@ -149,11 +149,43 @@
         </div>
       @endif
 
-      <!-- Dashboard content -->
-      <div id="dashboard-content">
-        <h1 class="text-2xl font-bold mb-6">Bem-vindo ao Dashboard</h1>
-        <p class="text-gray-300">Clique em "Perfil" no menu acima para ver suas informações.</p>
+<div id="dashboard-content" class="space-y-6">
+  <h1 class="text-3xl font-bold mb-4">Bem-vindo, {{ $fornecedor->nome_empresa }}!</h1>
+  <p class="text-gray-300">Aqui está um resumo rápido das suas informações no sistema:</p>
+
+  <!-- Resumo rápido -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="card-glass p-4 text-center">
+      <h3 class="text-lg font-semibold text-[#d5891b] mb-2">Status da Conta</h3>
+      <span class="status-badge {{ $fornecedor->status === 'ATIVO' ? 'status-ativo' : 'status-inativo' }}">
+        {{ $fornecedor->status }}
+      </span>
+    </div>
+
+    <div class="card-glass p-4 text-center">
+      <h3 class="text-lg font-semibold text-[#d5891b] mb-2">Última Atualização</h3>
+      <p class="field-value">{{ $fornecedor->updated_at?->format('d/m/Y H:i:s') ?? 'Nunca atualizado' }}</p>
+    </div>
+
+    <div class="card-glass p-4 text-center">
+      <h3 class="text-lg font-semibold text-[#d5891b] mb-2">Ações Rápidas</h3>
+      <div class="flex flex-col gap-2">
+        <a href="{{ route('fornecedores.produtos.index') }}" class="px-2 py-1 bg-[#14ba88] rounded hover:bg-[#2d4e50] transition">Meus Produtos</a>
       </div>
+    </div>
+  </div>
+
+  <!-- Informação complementar -->
+  <div class="card-glass p-6">
+    <h2 class="text-xl font-bold text-[#d5891b] mb-2">Dicas e Atalhos</h2>
+    <ul class="list-disc list-inside text-gray-300">
+      <li>Clique em "Gerenciar Produtos" para atualizar ou adicionar novos produtos.</li>
+      <li>Verifique seu perfil regularmente para manter seus dados atualizados.</li>
+      <li>Use a seção de segurança para atualizar sua senha sempre que necessário.</li>
+    </ul>
+  </div>
+</div>
+
 
       <!-- Perfil Section -->
       <div id="perfil-section" class="max-w-4xl mx-auto">
