@@ -282,7 +282,8 @@
 
         <!-- SIDEBAR DE FILTROS -->
         <form id="sidebar-filtros" method="GET" action="{{ route('dashboard') }}" 
-            class="w-64 p-4 bg-black/30 backdrop-blur-md text-white border-r border-[#D5891B]/30 absolute h-full z-40 hidden">
+            class="w-64 p-4 bg-black/30 backdrop-blur-md text-white border-r border-[#D5891B]/30 
+                   absolute h-full z-40 transform -translate-x-full opacity-0 transition-all duration-500 ease-in-out">
             
             <h3 class="font-bold mb-2 text-[#B69F8F]">Gênero</h3>
             <label class="inline-block mb-1"><input type="radio" name="genero" value="MASCULINO"> Masculino</label><br>
@@ -314,18 +315,11 @@
             <button type="button" id="limpar-filtros" class="mt-2 bg-gray-700 hover:bg-gray-600 text-white font-bold px-4 py-2 w-full rounded transition-colors">
                 Limpar filtros
             </button>
-
-            
         </form>
 
         <!-- Grid de produtos (3 colunas centralizadas) -->
         <div id="produtos-container"
-             class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 justify-items-center gap-8 mt-12 pl-32 transition-all duration-300">
-            @for($i=1; $i<=12; $i++)
-                <div class="w-60 h-60 bg-gray-800 text-white flex items-center justify-center text-xl rounded-lg transition-all duration-300">
-                    Produto {{ $i }}
-                </div>
-            @endfor
+             class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 justify-items-center gap-8 mt-12 pl-36 transition-all duration-300">
         </div>
     </div>
 
@@ -345,13 +339,13 @@
             aberto = !aberto;
 
             if (aberto) {
-                sidebar.classList.remove('hidden');
-                produtos.querySelectorAll('div').forEach(card => card.classList.add("scale-90"));
-                produtos.classList.add("ml-36"); // cards afastam para abrir espaço
+                sidebar.classList.remove('-translate-x-full', 'opacity-0');
+                sidebar.classList.add('translate-x-0', 'opacity-100');
+                produtos.classList.add("ml-32", "mr-10");
             } else {
-                sidebar.classList.add('hidden');
-                produtos.querySelectorAll('div').forEach(card => card.classList.remove("scale-90"));
-                produtos.classList.remove("ml-36"); // cards centralizam novamente
+                sidebar.classList.remove('translate-x-0', 'opacity-100');
+                sidebar.classList.add('-translate-x-full', 'opacity-0');
+                produtos.classList.remove("ml-32", "mr-10");
             }
         });
 
@@ -383,11 +377,12 @@
     <style>
         /* Transição suave para os cards */
         #produtos-container div {
-            transition: all 0.3s ease;
+            transition: all 9s ease;
         }
     </style>
 
 </main>
+
 
 
 
