@@ -264,6 +264,52 @@
                 <button id="next" class="bg-black/10 text-white/30 hover:bg-black/30 hover:text-white p-2 rounded-full mx-4">›</button>
             </div>
         </div>
+
+            <!-- Últimos Produtos -->
+    <div class="container mx-auto px-6 mt-16 mb-10">
+        <hr class="border-t border-[#d5891b]/20 my-12">
+        <h2 class="text-2xl font-bold mb-6">ÚLTIMOS PRODUTOS</h2>
+        <div id="ultimos-produtos-container" 
+             class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6
+                    [&>div]:bg-white [&>div]:rounded-xl [&>div]:shadow 
+                    [&>div]:hover:shadow-lg [&>div]:transition 
+                    [&>div]:overflow-hidden [&>div]:relative
+                    [&>div]:flex [&>div]:flex-col">
+            @forelse($ultimosProdutos ?? [] as $produto)
+                @include('usuarios.partials.card-produto', ['produto' => $produto])
+            @empty
+                <p class="text-gray-400">Nenhum produto adicionado recentemente.</p>
+            @endforelse
+        </div>
+    </div>
+
+    <!-- Segundo Carrossel -->
+    <div id="carousel-2" class="relative w-full pt-12 pb-12">
+        <div class="overflow-hidden relative h-80">
+            <div class="flex transition-transform duration-500" id="carousel-slides-2">
+                <div class="flex-shrink-0 w-full h-80 bg-purple-500 flex items-center justify-center text-white text-2xl">
+                    Slide A
+                </div>
+                <div class="flex-shrink-0 w-full h-80 bg-yellow-500 flex items-center justify-center text-white text-2xl">
+                    Slide B
+                </div>
+                <div class="flex-shrink-0 w-full h-80 bg-pink-500 flex items-center justify-center text-white text-2xl">
+                    Slide C
+                </div>
+            </div>
+
+            <!-- Botões -->
+            <div class="absolute inset-y-0 left-0 flex items-center">
+                <button id="prev-2" class="bg-black/10 text-white/30 hover:bg-black/30 hover:text-white p-2 rounded-full mx-4">‹</button>
+            </div>
+            <div class="absolute inset-y-0 right-0 flex items-center">
+                <button id="next-2" class="bg-black/10 text-white/30 hover:bg-black/30 hover:text-white p-2 rounded-full mx-4">›</button>
+            </div>
+        </div>
+    </div>
+
+
+        
     </div>
 
     <style>
@@ -462,6 +508,7 @@
     <div>
       <h3 class="font-semibold mb-3">Sobre Hydrax</h3>
       <ul class="space-y-3">
+        <li><a href="{{ url('/quem-somos') }}" class="hover:underline">Quem Somos?</a></li>
         <li><a href="#" class="hover:underline">Propósito</a></li>
         <li><a href="#" class="hover:underline">Sustentabilidade</a></li>
         <li><a href="#" class="hover:underline">Sobre o SURA, Inc.</a></li>
@@ -653,6 +700,34 @@ if (botaoLimpar) {
         carregarProdutos({ page: 1 });
     });
 }
+
+
+
+
+    // CARROSSEL 2
+    const slides2 = document.getElementById('carousel-slides-2');
+    const totalSlides2 = slides2.children.length;
+    let index2 = 0;
+
+    const showSlide2 = () => {
+        slides2.style.transform = `translateX(-${index2 * 100}%)`;
+    }
+
+    const nextSlide2 = () => {
+        index2 = (index2 + 1) % totalSlides2;
+        showSlide2();
+    }
+
+    const prevSlide2 = () => {
+        index2 = (index2 - 1 + totalSlides2) % totalSlides2;
+        showSlide2();
+    }
+
+    document.getElementById('next-2').addEventListener('click', nextSlide2);
+    document.getElementById('prev-2').addEventListener('click', prevSlide2);
+
+    setInterval(nextSlide2, 5000);
+
 
 
   // Carrega página inicial
