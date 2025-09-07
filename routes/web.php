@@ -78,60 +78,38 @@ Route::middleware([UsuarioMiddleware::class])->group(function () {
 Route::get('/dashboard', [UsuarioController::class, 'dashboard'])->name('dashboard');
 Route::post('/logout', [UsuarioController::class, 'logout'])->name('logout'); 
 Route::get('/painel', [UsuarioController::class, 'painel'])->name('usuario.painel');
-
 Route::get('/usuarios/perfil', [UsuarioController::class, 'edit'])->name('usuario.perfil');
 Route::put('/usuarios/perfil', [UsuarioController::class, 'update'])->name('usuario.update');
-
 Route::get('/usuarios/enderecos/create', [EnderecoUsuarioController::class, 'create'])->name('usuarios.enderecos.create');
 Route::post('/usuarios/enderecos', [EnderecoUsuarioController::class, 'store'])->name('usuarios.enderecos.store');
-
 Route::get('/usuarios/enderecos', [EnderecoUsuarioController::class, 'index'])->name('usuarios.enderecos.index');
 Route::get('/usuarios/enderecos/{endereco}/edit', [EnderecoUsuarioController::class, 'edit'])->name('usuarios.enderecos.edit');
 Route::put('/usuarios/enderecos/{endereco}', [EnderecoUsuarioController::class, 'update'])->name('usuarios.enderecos.update');
 Route::delete('/usuarios/enderecos/{endereco}', [EnderecoUsuarioController::class, 'destroy'])->name('usuarios.enderecos.destroy');
-
 Route::get('/usuarios/email', [UsuarioController::class, 'showEmailForm'])->name('usuarios.email.form');
 Route::post('/usuarios/email/update', [UsuarioController::class, 'updateEmailRequest'])->name('usuarios.email.update');
 Route::get('/usuarios/email/confirmar/{token}', [UsuarioController::class, 'confirmarNovoEmail'])->name('usuarios.email.confirmar');
-
-
 Route::get('/verificar', [SenhaUsuarioController::class, 'verificarForm'])->name('usuarios.senha.verificar.form');
 Route::post('/verificar', [SenhaUsuarioController::class, 'verificar'])->name('usuarios.senha.verificar');
 Route::get('/trocar', [SenhaUsuarioController::class, 'trocarForm'])->name('usuarios.senha.trocar.form');
 Route::post('/trocar', [SenhaUsuarioController::class, 'trocar'])->name('usuarios.senha.trocar');
-
-
 Route::post('/usuarios/senha/verificar-codigo', [SenhaUsuarioController::class, 'verificarCodigo'])->name('usuarios.senha.verificarCodigo');
 Route::get('/usuarios/senha/verificar-codigo', [SenhaUsuarioController::class, 'mostrarFormularioVerificarCodigo'])->name('usuarios.senha.verificarCodigo.form');
-
-
-Route::get('/privacidade', function () {
-    return view('usuarios.partials.privacidade');
-})->name('usuarios.privacidade');
-
-
+Route::get('/privacidade', function () { return view('usuarios.partials.privacidade'); })->name('usuarios.privacidade');
 Route::post('/excluir-conta', [PrivacidadeController::class, 'excluirConta'])->name('usuarios.excluir-conta');
-
 Route::get('/produtos/{id}/detalhes', [ProdutoController::class, 'detalhes'])->name('produtos.detalhes');
-
-
- // Adicionar produto ao carrinho
-    Route::post('/carrinho/adicionar/{id}', [CarrinhoController::class, 'adicionarProduto'])
-        ->name('carrinho.adicionar');
-
-    // Visualizar carrinho
-    Route::get('/carrinho', [CarrinhoController::class, 'verCarrinho'])->name('carrinho.ver');
-
-    // Remover produto do carrinho
+Route::post('/carrinho/adicionar/{id}', [CarrinhoController::class, 'adicionarProduto'])->name('carrinho.adicionar');
+Route::get('/carrinho', [CarrinhoController::class, 'verCarrinho'])->name('carrinho.ver');
 Route::delete('/carrinho/remover/{produtoId}/{tamanho}', [CarrinhoController::class, 'removerProduto'])->name('carrinho.remover');
-
-
 Route::get('/carrinho/finalizar', [CarrinhoController::class, 'finalizarCompra'])->name('carrinho.finalizar');
 Route::post('/carrinho/finalizar', [CarrinhoController::class, 'processarFinalizacao'])->name('carrinho.processar');
-
 Route::get('/meus-pedidos', [CarrinhoController::class, 'meusPedidos'])->name('usuarios.pedidos');
-
 Route::get('/pedidos/{pedido}', [CarrinhoController::class, 'detalhePedido'])->name('pedidos.detalhe');
+
+////////////////////////Rotas de views do FOOTER/////////////////////////////
+
+Route::view('/quem-somos', 'usuarios.quem_somos');
+
 
 });
 

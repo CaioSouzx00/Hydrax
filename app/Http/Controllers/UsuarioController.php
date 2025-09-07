@@ -98,54 +98,65 @@ class UsuarioController extends Controller
     }
 
 
-public function dashboard(Request $request)
-{
-    // usa o scope ativos() se existir (mantém a lógica de "apenas produtos ativos")
-    $query = ProdutoFornecedor::ativos();
+    public function dashboard(Request $request)
+    {
+        // usa o scope ativos() se existir (mantém a lógica de "apenas produtos ativos")
+        $query = ProdutoFornecedor::ativos();
 
-    // filtros simples
-    if ($request->filled('genero')) {
-        $query->where('genero', $request->genero);
-    }
+        // filtros simples
+        if ($request->filled('genero')) {
+            $query->where('genero', $request->genero);
+        }
 
-    if ($request->filled('categoria')) {
-        $query->where('categoria', $request->categoria);
-    }
+        if ($request->filled('categoria')) {
+            $query->where('categoria', $request->categoria);
+        }
 
-    if ($request->filled('preco_min')) {
-        $precoMin = floatval(str_replace(',', '.', $request->preco_min));
-        $query->where('preco', '>=', $precoMin);
-    }
+        if ($request->filled('preco_min')) {
+            $precoMin = floatval(str_replace(',', '.', $request->preco_min));
+            $query->where('preco', '>=', $precoMin);
+        }
 
-    if ($request->filled('preco_max')) {
-        $precoMax = floatval(str_replace(',', '.', $request->preco_max));
-        $query->where('preco', '<=', $precoMax);
-    }
+        if ($request->filled('preco_max')) {
+            $precoMax = floatval(str_replace(',', '.', $request->preco_max));
+            $query->where('preco', '<=', $precoMax);
+        }
 
-if ($request->filled('tamanho')) {
-    $t = (string) $request->tamanho;
-    $query->whereRaw('JSON_CONTAINS(tamanhos_disponiveis, ?)', ['"'.$t.'"']);
-}
+        if ($request->filled('tamanho')) {
+            $t = (string) $request->tamanho;
+            $query->whereRaw('JSON_CONTAINS(tamanhos_disponiveis, ?)', ['"'.$t.'"']);
+        }
 
+        // ordena e pagina
+        $perPage = 21;
+        $produtosPaginados = $query->orderBy('id_produtos', 'desc')
+                                   ->paginate($perPage)
+                                   ->withQueryString();
 
-    // ordena e pagina
-    $perPage = 21;
-    $produtosPaginados = $query->orderBy('id_produtos', 'desc')
-                             ->paginate($perPage)
-                             ->withQueryString();
+        // Últimos produtos (ex: últimos 8 adicionados, independente de filtro)
+        $ultimosProdutos = ProdutoFornecedor::ativos()
+                            ->orderBy('id_produtos', 'desc')
+                            ->take(4)
+                            ->get();
 
-    if ($request->ajax()) {
-        return response()->json([
-            'html'       => view('usuarios.partials.produtos_cards', ['produtos' => $produtosPaginados])->render(),
-            'pagination' => view('usuarios.partials.produtos_paginacao', ['produtos' => $produtosPaginados])->render(),
-            'texto'      => $produtosPaginados->total() > 0
-                ? "Exibindo {$produtosPaginados->firstItem()} a {$produtosPaginados->lastItem()} de {$produtosPaginados->total()} produtos"
-                : "Nenhum produto encontrado"
+        // Resposta AJAX
+        if ($request->ajax()) {
+            return response()->json([
+                'html'       => view('usuarios.partials.produtos_cards', ['produtos' => $produtosPaginados])->render(),
+                'pagination' => view('usuarios.partials.produtos_paginacao', ['produtos' => $produtosPaginados])->render(),
+                'texto'      => $produtosPaginados->total() > 0
+                    ? "Exibindo {$produtosPaginados->firstItem()} a {$produtosPaginados->lastItem()} de {$produtosPaginados->total()} produtos"
+                    : "Nenhum produto encontrado"
+            ]);
+        }
+
+        // Retorno normal
+        return view('usuarios.dashboard', [
+            'produtos'        => $produtosPaginados,
+            'ultimosProdutos' => $ultimosProdutos
         ]);
     }
 
-    return view('usuarios.dashboard', ['produtos' => $produtosPaginados]);
-}
 
 
     public function update(Request $request)
