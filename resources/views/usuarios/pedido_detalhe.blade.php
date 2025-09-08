@@ -78,134 +78,81 @@
 </div>
 
 
-    <!-- Itens do pedido -->
-    <h2 class="text-2xl font-bold mb-4 text-[#14ba88]">Itens do pedido</h2>
+<!-- Itens do pedido -->
+<h2 class="text-2xl font-bold mb-4 text-[#14ba88]">Itens do pedido</h2>
 
-    @foreach($pedido->itens as $item)
-        @php
-            $subtotal = $item->quantidade * $item->produto->preco;
-            $fotos = json_decode($item->produto->fotos ?? '[]', true);
-            $foto = $fotos[0] ?? null;
-        @endphp
+@php
+    $totalItens = 0;
+    $descontoTotal = 0;
+@endphp
 
-        <div class="flex flex-col md:flex-row items-center justify-between border-b border-[#14ba88]/20 py-4 last:border-b-0 gap-4">
-            
-            <!-- Imagem do produto -->
-            <img src="{{ $foto ? asset('storage/' . $foto) : 'https://via.placeholder.com/100' }}" 
-                 alt="{{ $item->produto->nome }}" class="w-24 h-24 object-cover rounded-xl border border-[#14ba88]/30">
+@foreach($pedido->itens as $item)
+    @php
+        $subtotal = $item->quantidade * $item->produto->preco;
+        $foto = json_decode($item->produto->fotos ?? '[]', true)[0] ?? null;
 
-            <!-- Informações do produto -->
-            <div class="flex-1 space-y-1">
-                <p class="font-semibold text-white">{{ $item->produto->nome }}</p>
-                <p class="text-gray-400 text-sm">Tamanho: {{ $item->tamanho ?? 'Único' }}</p>
-                <p class="text-gray-400 text-sm">Qtd: {{ $item->quantidade }}</p>
-                <p class="text-gray-200 text-sm">Preço unitário: 
-                    <span class="font-semibold text-[#14ba88]">R$ {{ number_format($item->produto->preco, 2, ',', '.') }}</span>
+        // Verifica se o cupom foi aplicado neste item
+        $descontoItem = 0;
+        if(isset($cupomAplicado)) {
+            if($cupomAplicado['tipo'] === 'percentual'){
+                $descontoItem = $subtotal * ($cupomAplicado['valor']/100);
+            } else {
+                // Cupom fixo distribuído proporcionalmente
+                $totalProdutos = $pedido->itens->sum(fn($i)=> $i->quantidade * $i->produto->preco);
+                $descontoItem = ($subtotal / $totalProdutos) * $cupomAplicado['valor'];
+            }
+        }
+
+        $subtotalComDesconto = $subtotal - $descontoItem;
+        $totalItens += $subtotalComDesconto;
+        $descontoTotal += $descontoItem;
+    @endphp
+
+    <div class="flex flex-col md:flex-row items-center justify-between border-b border-[#14ba88]/20 py-4 last:border-b-0 gap-4">
+        
+        <!-- Imagem do produto -->
+        <img src="{{ $foto ? asset('storage/' . $foto) : 'https://via.placeholder.com/100' }}" 
+             alt="{{ $item->produto->nome }}" class="w-24 h-24 object-cover rounded-xl border border-[#14ba88]/30">
+
+        <!-- Informações do produto -->
+        <div class="flex-1 space-y-1">
+            <p class="font-semibold text-white">{{ $item->produto->nome }}</p>
+            <p class="text-gray-400 text-sm">Tamanho: {{ $item->tamanho ?? 'Único' }}</p>
+            <p class="text-gray-400 text-sm">Qtd: {{ $item->quantidade }}</p>
+            <p class="text-gray-200 text-sm">Preço unitário: 
+                <span class="font-semibold text-[#14ba88]">R$ {{ number_format($item->produto->preco, 2, ',', '.') }}</span>
+            </p>
+            <p class="text-gray-200 text-sm">Subtotal: 
+                <span class="font-semibold text-[#e29b37]">R$ {{ number_format($subtotal, 2, ',', '.') }}</span>
+            </p>
+            @if($descontoItem > 0)
+                <p class="text-green-400 text-sm">Cupom "{{ $cupomAplicado['codigo'] }}" aplicado: -R$ {{ number_format($descontoItem, 2, ',', '.') }}</p>
+                <p class="text-gray-200 text-sm">Subtotal com desconto: 
+                    <span class="font-semibold text-[#14ba88]">R$ {{ number_format($subtotalComDesconto, 2, ',', '.') }}</span>
                 </p>
-                <p class="text-gray-200 text-sm">Subtotal: 
-                    <span class="font-semibold text-[#e29b37]">R$ {{ number_format($subtotal, 2, ',', '.') }}</span>
-                </p>
-                @if($item->produto->descricao)
-                    <p class="text-gray-400 text-sm mt-1">{{ $item->produto->descricao }}</p>
-                @endif
-            </div>
+            @endif
+            @if($item->produto->descricao)
+                <p class="text-gray-400 text-sm mt-1">{{ $item->produto->descricao }}</p>
+            @endif
         </div>
-    @endforeach
-
-    <!-- Total do pedido -->
-    <div class="mt-6 p-6 bg-[#1e1e2a] rounded-2xl shadow-lg text-right border border-[#14ba88]/20">
-        <p class="text-gray-300 font-semibold text-lg">Total do pedido: 
-            <span class="text-white text-xl">
-                R$ {{ number_format($pedido->itens->sum(fn($i) => $i->quantidade * $i->produto->preco) + 15, 2, ',', '.') }}
-            </span>
-        </p>
-        <p class="text-gray-400 text-sm mt-1">* Incluindo taxa de entrega de R$15,00</p>
     </div>
+@endforeach
+
+<!-- Total do pedido -->
+<div class="mt-6 p-6 bg-[#1e1e2a] rounded-2xl shadow-lg text-right border border-[#14ba88]/20">
+    <p class="text-gray-300 font-semibold text-lg">Total dos itens: 
+        <span class="text-white text-xl">R$ {{ number_format($totalItens, 2, ',', '.') }}</span>
+    </p>
+    <p class="text-gray-400 text-sm mt-1">* Incluindo taxa de entrega de R$15,00</p>
+    @php $totalComEntrega = $totalItens + 15; @endphp
+    @if($descontoTotal > 0)
+        <p class="text-green-400 text-sm mt-1">Total de desconto aplicado: -R$ {{ number_format($descontoTotal, 2, ',', '.') }}</p>
+    @endif
+    <p class="text-white font-bold text-xl mt-2">Total final: R$ {{ number_format($totalComEntrega, 2, ',', '.') }}</p>
+</div>
 
 </div>
-<footer class="bg-black text-white w-full mt-16">
-  <div class="max-w-7xl mx-auto px-6 py-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 text-sm">
-    
-    <!-- Coluna 1 -->
-    <div>
-      <ul class="space-y-3">
-        <li><a href="#" class="hover:underline">Cadastre-se para receber novidades</a></li>
-        <li><a href="#" class="hover:underline">Cartão presente</a></li>
-        <li><a href="#" class="hover:underline">Guia de produtos</a></li>
-        <li><a href="#" class="hover:underline">Black Friday</a></li>
-        <li><a href="#" class="hover:underline">Acompanhe seu pedido</a></li>
-      </ul>
-    </div>
 
-    <!-- Coluna 2 -->
-    <div>
-      <h3 class="font-semibold mb-3">Ajuda</h3>
-      <ul class="space-y-3">
-        <li><a href="#" class="hover:underline">Dúvidas gerais</a></li>
-        <li><a href="#" class="hover:underline">Encontre seu tamanho</a></li>
-        <li><a href="#" class="hover:underline">Entregas</a></li>
-        <li><a href="#" class="hover:underline">Pedidos</a></li>
-        <li><a href="#" class="hover:underline">Devoluções</a></li>
-        <li><a href="#" class="hover:underline">Pagamentos</a></li>
-        <li><a href="#" class="hover:underline">Produtos</a></li>
-        <li><a href="#" class="hover:underline">Corporativo</a></li>
-        <li><a href="#" class="hover:underline">Fale conosco</a></li>
-        <li><a href="#" class="hover:underline">Relatar problema</a></li>
-      </ul>
-    </div>
-
-    <!-- Coluna 3 -->
-    <div>
-      <h3 class="font-semibold mb-3">Sobre Hydrax</h3>
-      <ul class="space-y-3">
-        <li><a href="#" class="hover:underline">Propósito</a></li>
-        <li><a href="#" class="hover:underline">Sustentabilidade</a></li>
-        <li><a href="#" class="hover:underline">Sobre o SURA, Inc.</a></li>
-      </ul>
-    </div>
-
-    <!-- Coluna 4 -->
-    <div class="space-y-6">
-      <div>
-        <h3 class="font-semibold mb-3">Redes sociais</h3>
-        <div class="flex space-x-4 text-2xl">
-          <a href="#" class="hover:text-[#1877F2]"><i class="fab fa-facebook"></i></a>
-          <a href="#" class="hover:text-[#E4405F]"><i class="fab fa-instagram"></i></a>
-          <a href="#" class="hover:text-[#FF0000]"><i class="fab fa-youtube"></i></a>
-        </div>
-      </div>
-      <div>
-        <h3 class="font-semibold mb-3">Formas de pagamento</h3>
-        <div class="flex flex-wrap gap-3 items-center">
-          <!-- Mastercard -->
-          <img src="https://img.icons8.com/color/48/mastercard-logo.png" class="h-8" alt="Mastercard">
-
-          <!-- Pix (SVG inline, sem depender de link externo) -->
-          <svg viewBox="0 0 64 64" class="h-8 w-8" role="img" aria-label="Pix" title="Pix">
-            <!-- losango com cantos suavizados -->
-            <rect x="14" y="14" width="36" height="36" rx="10" ry="10"
-                  transform="rotate(45 32 32)" fill="#32BCAD"/>
-            <!-- detalhes leves para lembrar o traço interno (opcional) -->
-            <path d="M22 32h20" stroke="white" stroke-width="3" stroke-linecap="round" opacity="0.9"/>
-            <path d="M32 22v20" stroke="white" stroke-width="3" stroke-linecap="round" opacity="0.9"/>
-          </svg>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Linha de baixo -->
-  <div class="border-t border-gray-700 mt-6 py-4 text-center text-xs text-gray-400 flex flex-wrap justify-center gap-4">
-    <a href="#" class="hover:underline">Brasil</a>
-    <a href="#" class="hover:underline">Política de privacidade</a>
-    <a href="#" class="hover:underline">Política de cookies</a>
-    <a href="#" class="hover:underline">Termos de uso</a>
-  </div>
-
-  <!-- Créditos -->
-  <div class="text-center text-xs text-gray-500 px-6 pb-6">
-    © 2025 Hydrax. Todos os direitos reservados. 
-  </div>
-</footer>
+@include('usuarios.partials.footer')
 </body>
 </html>

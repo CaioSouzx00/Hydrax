@@ -61,7 +61,7 @@
                     <div class="space-y-4">
                         @foreach($enderecos as $endereco)
                         <label class="flex items-start border border-gray-300 p-4 cursor-pointer hover:border-black rounded-lg">
-                            <input type="radio" name="endereco_id" value="{{ $endereco->id_usuarios }}" class="mt-1" required>
+                            <input type="radio" name="id_endereco" value="{{ $endereco->id_endereco }}" class="mt-1" required>
                             <div class="ml-3 text-sm leading-6">
                                 <p class="font-medium">{{ $endereco->rua }}, {{ $endereco->numero }}</p>
                                 <p>{{ $endereco->bairro }} - {{ $endereco->cidade }}/{{ $endereco->estado }}</p>
@@ -92,6 +92,33 @@
                 <h2 class="font-extrabold uppercase mb-4">Pagamento</h2>
                 <p class="text-sm text-gray-600">Será gerada uma chave PIX após finalizar.</p>
             </div>
+
+            <!-- Cupons disponíveis -->
+           @if($cupons->isNotEmpty())
+    <div class="mt-6">
+        <h2 class="font-extrabold uppercase mb-2 text-sm">Cupons disponíveis</h2>
+        <ul class="space-y-1 text-sm text-gray-700">
+            @foreach($cupons as $cupom)
+                <li class="border p-2 rounded flex justify-between items-center">
+                    <span>{{ $cupom->codigo }} - 
+                        @if($cupom->tipo === 'percentual')
+                            {{ $cupom->valor }}% off
+                        @else
+                            R$ {{ number_format($cupom->valor, 2, ',', '.') }} off
+                        @endif
+                    </span>
+                    <form action="{{ route('carrinho.aplicarCupom') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="codigo_cupom" value="{{ $cupom->codigo }}">
+                        <button type="submit" class="bg-black text-white px-3 py-1 rounded uppercase hover:bg-gray-800">Aplicar</button>
+                    </form>
+                </li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
+
         </div>
 
         <!-- Coluna direita: resumo pedido -->

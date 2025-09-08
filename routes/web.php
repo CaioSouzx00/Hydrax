@@ -18,6 +18,7 @@ use App\Http\Controllers\ProdutoController;
 use App\Http\Controllers\CarrinhoController;
 use App\Http\Controllers\RelatorioController;
 
+
 Route::prefix('fornecedores/senha')->group(function () {
     // 1. Formulário para digitar o e-mail
     Route::get('/esqueci', [FornecedorPasswordResetController::class, 'mostrarFormulario'])->name('fornecedores.senha.form');
@@ -105,6 +106,7 @@ Route::get('/carrinho/finalizar', [CarrinhoController::class, 'finalizarCompra']
 Route::post('/carrinho/finalizar', [CarrinhoController::class, 'processarFinalizacao'])->name('carrinho.processar');
 Route::get('/meus-pedidos', [CarrinhoController::class, 'meusPedidos'])->name('usuarios.pedidos');
 Route::get('/pedidos/{pedido}', [CarrinhoController::class, 'detalhePedido'])->name('pedidos.detalhe');
+Route::post('/carrinho/aplicar-cupom', [\App\Http\Controllers\CarrinhoController::class, 'aplicarCupom'])->name('carrinho.aplicarCupom');
 
 ////////////////////////Rotas de views do FOOTER/////////////////////////////
 
@@ -140,6 +142,14 @@ Route::middleware([AdministradorMiddleware::class])->group(function () {
     Route::get('relatorios/usuarios', [RelatorioController::class, 'comprasPorUsuario'])->name('admin.relatorios.usuarios');
     Route::get('relatorios/fornecedores', [RelatorioController::class, 'vendasPorFornecedor'])->name('admin.relatorios.fornecedores');
     Route::get('relatorios/produtos', [RelatorioController::class, 'produtosMaisVendidos'])->name('admin.relatorios.produtos');
+
+    // Cupons - CRUD completo
+    Route::get('cupons', [\App\Http\Controllers\CupomController::class, 'index'])->name('admin.cupons.index');
+    Route::get('cupons/create', [\App\Http\Controllers\CupomController::class, 'create'])->name('admin.cupons.create');
+    Route::post('cupons', [\App\Http\Controllers\CupomController::class, 'store'])->name('admin.cupons.store');
+    Route::get('cupons/{id}/edit', [\App\Http\Controllers\CupomController::class, 'edit'])->name('admin.cupons.edit');
+    Route::put('cupons/{id}', [\App\Http\Controllers\CupomController::class, 'update'])->name('admin.cupons.update');
+    Route::delete('cupons/{id}', [\App\Http\Controllers\CupomController::class, 'destroy'])->name('admin.cupons.destroy');
 
 });
 
