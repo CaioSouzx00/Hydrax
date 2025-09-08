@@ -61,6 +61,10 @@
       <span class="text-lg"></span>
       <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">Relatorios Pordutos</span>
     </a>
+    <a href="{{ route('admin.cupons.index') }}" class="flex items-center space-x-3 px-2 py-2 hover:bg-[#211828] rounded-md transition">
+      <span class="text-lg"></span>
+      <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">Listagem de cu</span>
+    </a>
   </div>
 
   <div class="flex flex-col justify-between space-y-4 w-full px-2">

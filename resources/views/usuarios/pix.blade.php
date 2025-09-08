@@ -31,10 +31,13 @@
             {{ $chavePix }}
         </div>
 
-        <!-- Valor -->
-        <p class="font-bold text-2xl text-gray-900 mb-8">
-            Total: R$ {{ number_format($total, 2, ',', '.') }}
-        </p>
+        @if($cupomAplicado)
+    <p class="text-green-600">Desconto aplicado: R$ {{ number_format($desconto, 2, ',', '.') }}</p>
+    @endif
+
+<p class="font-bold text-2xl text-gray-900 mb-8">
+    Total: R$ {{ number_format($total, 2, ',', '.') }}
+</p>
 
         <!-- Info -->
         <p class="text-sm text-gray-500 mb-8">
