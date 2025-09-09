@@ -60,28 +60,38 @@ class CarrinhoController extends Controller
     }
 
     // 2️⃣ Visualizar carrinho
-    public function verCarrinho()
-    {
-        $usuario = Auth::guard('usuarios')->user();
+// 2️⃣ Visualizar carrinho
+public function verCarrinho()
+{
+    $usuario = Auth::guard('usuarios')->user();
 
-        $carrinho = $usuario->carrinhoAtivo ?? Carrinho::create([
-            'id_usuarios' => $usuario->id_usuarios,
-            'status' => 'ativo',
-        ]);
+    $carrinho = $usuario->carrinhoAtivo ?? Carrinho::create([
+        'id_usuarios' => $usuario->id_usuarios,
+        'status' => 'ativo',
+    ]);
 
-        $carrinho->load(['itens.produto']);
+    $carrinho->load(['itens.produto']);
 
-        $enderecos = EnderecoUsuario::where('id_usuarios', $usuario->id_usuarios)->get();
-        $total = $carrinho->itens->sum(fn($item) => $item->produto->preco * $item->quantidade);
+    $enderecos = EnderecoUsuario::where('id_usuarios', $usuario->id_usuarios)->get();
+    $total = $carrinho->itens->sum(fn($item) => $item->produto->preco * $item->quantidade);
 
-        $cupons = Cupom::where('ativo', 1)
-            ->where(fn($q) => $q->whereNull('validade')->orWhere('validade', '>=', now()))
-            ->get();
+    $cupons = Cupom::where('ativo', 1)
+        ->where(fn($q) => $q->whereNull('validade')->orWhere('validade', '>=', now()))
+        ->get();
 
-        $cupomAplicado = session('cupom_aplicado');
+    $cupomAplicado = session('cupom_aplicado');
 
-        return view('usuarios.carrinho', compact('carrinho', 'total', 'enderecos', 'cupons', 'cupomAplicado'));
-    }
+    // 🔥 Buscar 4 produtos aleatórios para recomendação
+    $produtos = ProdutoFornecedor::ativos()
+        ->inRandomOrder()
+        ->take(4)
+        ->get();
+
+    return view('usuarios.carrinho', compact(
+        'carrinho', 'total', 'enderecos', 'cupons', 'cupomAplicado', 'produtos'
+    ));
+}
+
 
     // 3️⃣ Remover produto do carrinho
     public function removerProduto($produtoId, $tamanho)
