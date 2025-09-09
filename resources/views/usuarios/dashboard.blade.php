@@ -246,13 +246,13 @@
         <div class="overflow-hidden relative h-80">
             <div class="flex transition-transform duration-500" id="carousel-slides">
                 <div class="flex-shrink-0 w-full h-80 bg-red-500 flex items-center justify-center text-white text-2xl">
-                    Slide 1
+                    <img src="/imagens/hydrax/NIKE.png" alt="Nike 1" class="h-full w-full object-cover">
                 </div>
                 <div class="flex-shrink-0 w-full h-80 bg-green-500 flex items-center justify-center text-white text-2xl">
-                    Slide 2
+                    <img src="/imagens/hydrax/NIKE (2).png" alt="Nike 1" class="h-full w-full object-cover">
                 </div>
                 <div class="flex-shrink-0 w-full h-80 bg-blue-500 flex items-center justify-center text-white text-2xl">
-                    Slide 3
+                    <img src="/imagens/hydrax/NIKE (1).png" alt="Nike 1" class="h-full w-full object-cover">
                 </div>
             </div>
 
@@ -266,12 +266,12 @@
         </div>
 
             <!-- Últimos Produtos -->
-    <div class="container mx-auto px-6 mt-16 mb-10">
-        <hr class="border-t border-[#d5891b]/20 my-12">
-        <h2 class="text-2xl font-bold mb-6">ÚLTIMOS PRODUTOS</h2>
+    <div class="container mt-16 mb-5">
+        <hr class="border-t border-[#d5891b]/20 ml-44 my-12">
+        <h2 class="text-2xl pl-12 font-bold">NOVOS NA HYDRAX</h2>
         <div id="ultimos-produtos-container" 
-             class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6
-                    [&>div]:bg-white [&>div]:rounded-xl [&>div]:shadow 
+             class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-96 pr-10 scale-75
+                    [&>div]:bg-white [&>div]:rounded-xl [&>div]:shadow
                     [&>div]:hover:shadow-lg [&>div]:transition 
                     [&>div]:overflow-hidden [&>div]:relative
                     [&>div]:flex [&>div]:flex-col">
@@ -287,23 +287,15 @@
     <div id="carousel-2" class="relative w-full pt-12 pb-12">
         <div class="overflow-hidden relative h-80">
             <div class="flex transition-transform duration-500" id="carousel-slides-2">
-                <div class="flex-shrink-0 w-full h-80 bg-purple-500 flex items-center justify-center text-white text-2xl">
-                    Slide A
-                </div>
-                <div class="flex-shrink-0 w-full h-80 bg-yellow-500 flex items-center justify-center text-white text-2xl">
-                    Slide B
-                </div>
-                <div class="flex-shrink-0 w-full h-80 bg-pink-500 flex items-center justify-center text-white text-2xl">
-                    Slide C
-                </div>
+                    <img src="/imagens/hydrax/HYDRA’x (2).png" alt="Nike 1" class="h-full w-full pr-12 pl-12 object-cover">
             </div>
 
             <!-- Botões -->
             <div class="absolute inset-y-0 left-0 flex items-center">
-                <button id="prev-2" class="bg-black/10 text-white/30 hover:bg-black/30 hover:text-white p-2 rounded-full mx-4">‹</button>
+                <button id="prev-2" class="bg-black/0 text-white/0 hover:bg-black/00 hover:text-white/0 p-2 rounded-full mx-4">‹</button>
             </div>
             <div class="absolute inset-y-0 right-0 flex items-center">
-                <button id="next-2" class="bg-black/10 text-white/30 hover:bg-black/30 hover:text-white p-2 rounded-full mx-4">›</button>
+                <button id="next-2" class="bg-black/0 text-white/0 hover:bg-black/00 hover:text-white/0 p-2 rounded-full mx-4">›</button>
             </div>
         </div>
     </div>
@@ -311,7 +303,7 @@
 
         
     </div>
-
+<h2 class="text-2xl pl-24 font-bold">PRODUTOS</h2>
     <style>
         body { overflow-x: hidden; }
     </style>
