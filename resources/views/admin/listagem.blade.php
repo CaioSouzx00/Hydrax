@@ -8,41 +8,22 @@
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #f5f5f5;
-        }
-        table th, table td {
-            text-align: center;
-        }
-        .btn-adidas {
-            @apply px-3 py-1 rounded font-semibold transition-colors;
-        }
-        .btn-ativar {
-            @apply bg-black text-white hover:bg-gray-800;
-        }
-        .btn-desativar {
-            @apply bg-red-600 text-white hover:bg-red-700;
-        }
-        .pagination a {
-            @apply px-3 py-1 border border-gray-300 rounded mx-1 hover:bg-gray-200;
-        }
-        .pagination .active {
-            @apply bg-black text-white border-black;
         }
     </style>
 </head>
-<body>
+<body class="bg-[#0f0f0f] text-gray-200">
     <div class="container mx-auto py-10 px-4">
-        <h1 class="text-3xl font-bold mb-6 text-black">Todos os Produtos</h1>
+        <h1 class="text-3xl font-bold mb-6 text-white">Todos os Produtos</h1>
 
         @if(session('success'))
-            <div class="mb-6 p-3 bg-green-500 text-white rounded shadow">
+            <div class="mb-6 p-3 bg-green-600 text-white rounded shadow">
                 {{ session('success') }}
             </div>
         @endif
 
-        <div class="overflow-x-auto shadow-lg rounded-lg bg-white">
+        <div class="overflow-x-auto shadow-lg rounded-lg bg-[#1a1a1a] border border-gray-800">
             <table class="w-full table-auto">
-                <thead class="bg-black text-white">
+                <thead class="bg-[#111] text-gray-100">
                     <tr>
                         <th class="px-4 py-3">ID</th>
                         <th class="px-4 py-3">Nome</th>
@@ -54,9 +35,9 @@
                 </thead>
                 <tbody>
                     @foreach($produtos as $produto)
-                        <tr class="{{ $produto->ativo ? '' : 'bg-red-100' }} hover:bg-gray-50 transition-colors">
+                        <tr class="{{ $produto->ativo ? 'hover:bg-[#222]' : 'bg-red-900/40 hover:bg-red-900/60' }} transition-colors">
                             <td class="px-4 py-3">{{ $produto->id_produtos }}</td>
-                            <td class="px-4 py-3 font-medium">{{ $produto->nome }}</td>
+                            <td class="px-4 py-3 font-medium text-white">{{ $produto->nome }}</td>
                             <td class="px-4 py-3">{{ $produto->fornecedor->nome_empresa ?? 'Sem fornecedor' }}</td>
                             <td class="px-4 py-3">R$ {{ number_format($produto->preco, 2, ',', '.') }}</td>
                             <td class="px-4 py-3">{{ $produto->ativo ? 'Sim' : 'Não' }}</td>
@@ -64,7 +45,11 @@
                                 <form action="{{ route('admin.produtos.toggle', $produto->id_produtos) }}" method="POST">
                                     @csrf
                                     @method('PATCH')
-                                    <button type="submit" class="btn-adidas {{ $produto->ativo ? 'btn-desativar' : 'btn-ativar' }}">
+                                    <button type="submit" 
+                                        class="px-3 py-1 rounded font-semibold transition-colors 
+                                               {{ $produto->ativo 
+                                                    ? 'bg-red-600 text-white hover:bg-red-700' 
+                                                    : 'bg-green-600 text-white hover:bg-green-700' }}">
                                         {{ $produto->ativo ? 'Desativar' : 'Ativar' }}
                                     </button>
                                 </form>
@@ -75,7 +60,7 @@
             </table>
         </div>
 
-        <div class="mt-6 flex justify-center pagination">
+        <div class="mt-6 flex justify-center space-x-2">
             {{ $produtos->links() }}
         </div>
     </div>
