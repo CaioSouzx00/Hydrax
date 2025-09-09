@@ -156,7 +156,7 @@
   
   <div class="w-1/4 bg-black/20 rounded-xl border border-white/30 shadow-inner p-4 flex flex-col items-center">
     <h1 class="mb-3 text-center">Produtos no Sistema</h1>
-    <a href="#_" id="btnUsuarios" data-route="{{ route('dashboard.dadosProdutos') }}"
+    <a href="#_" id="btnProdutos" data-route="{{ route('dashboard.dadosProdutos') }}"
        class="w-30 px-5 py-2.5 relative rounded group overflow-hidden font-medium bg-purple-50 text-[#211828] flex justify-center">
       <span class="absolute top-0 left-0 flex w-full h-0 mb-0 transition-all duration-200 ease-out bg-[#211828] group-hover:h-full"></span>
       <span class="relative group-hover:text-white">Produtos</span>
@@ -165,7 +165,7 @@
 
   <div class="w-1/4 bg-black/20 rounded-xl border border-white/30 shadow-inner p-4 flex flex-col items-center">
     <h1 class="mb-3 text-center">Vendas na Semana</h1>
-    <a href="#_" id="btnUsuarios" data-route="{{ route('dashboard.vendasSemana') }}"
+    <a href="#_" id="btnVendasSemana" data-route="{{ route('dashboard.vendasSemana') }}"
        class="w-30 px-5 py-2.5 relative rounded group overflow-hidden font-medium bg-purple-50 text-[#211828] flex justify-center">
       <span class="absolute top-0 left-0 flex w-full h-0 mb-0 transition-all duration-200 ease-out bg-[#211828] group-hover:h-full"></span>
       <span class="relative group-hover:text-white">Vendas</span>
@@ -174,7 +174,7 @@
 
   <div class="w-1/4 bg-black/20 rounded-xl border border-white/30 shadow-inner p-4 flex flex-col items-center">
                 <h1 class="mb-3 text-center">Faturamento Total</h1>
-    <a href="#_" id="btnUsuarios" data-route="{{ route('admin.faturamentoSemana') }}"
+    <a href="#_" id="btnFaturamentoSemana" data-route="{{ route('admin.faturamentoSemana') }}"
        class="w-30 px-5 py-2.5 relative rounded group overflow-hidden font-medium bg-purple-50 text-[#211828] flex justify-center">
       <span class="absolute top-0 left-0 flex w-full h-0 mb-0 transition-all duration-200 ease-out bg-[#211828] group-hover:h-full"></span>
       <span class="relative group-hover:text-white">Total</span>
@@ -184,7 +184,7 @@
 
   <div class="w-1/4 bg-black/20 rounded-xl border border-white/30 shadow-inner p-4 flex flex-col items-center">
             <h1 class="mb-3 text-center">Produtos Mais Vendidos</h1>
-    <a href="#_" id="btnUsuarios" data-route="{{ route('dashboard.produtosMaisVendidos') }}"
+    <a href="#_" id="btnProdutosVendidos" data-route="{{ route('dashboard.produtosMaisVendidos') }}"
        class="w-30 px-5 py-2.5 relative rounded group overflow-hidden font-medium bg-purple-50 text-[#211828] flex justify-center">
       <span class="absolute top-0 left-0 flex w-full h-0 mb-0 transition-all duration-200 ease-out bg-[#211828] group-hover:h-full"></span>
       <span class="relative group-hover:text-white">Produtos</span>
