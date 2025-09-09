@@ -6,12 +6,12 @@
   <title>Editar Cupom - Admin</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-white text-gray-900">
+<body class="bg-[#0f0f0f] text-gray-200 font-sans">
   <div class="max-w-2xl mx-auto p-6">
-    <h1 class="text-3xl font-extrabold tracking-tight mb-6 uppercase">Editar Cupom</h1>
+    <h1 class="text-3xl font-extrabold tracking-tight mb-6 uppercase text-white">Editar Cupom</h1>
 
     @if($errors->any())
-      <div class="mb-6 p-4 bg-red-100 text-red-700 border border-red-300">
+      <div class="mb-6 p-4 bg-gray-800 text-red-500 border border-gray-700 rounded">
         <ul class="list-disc pl-5">
           @foreach($errors->all() as $erro)
             <li>{{ $erro }}</li>
@@ -25,46 +25,46 @@
       @method('PUT')
 
       <div>
-        <label class="block text-sm font-semibold mb-1 uppercase">Código</label>
+        <label class="block text-sm font-semibold mb-1 uppercase text-gray-200">Código</label>
         <input type="text" name="codigo" value="{{ old('codigo', $cupom->codigo) }}" 
-               class="w-full border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black" required>
+               class="w-full bg-gray-900 border border-gray-700 px-3 py-2 text-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-600 rounded" required>
       </div>
 
       <div>
-        <label class="block text-sm font-semibold mb-1 uppercase">Tipo</label>
+        <label class="block text-sm font-semibold mb-1 uppercase text-gray-200">Tipo</label>
         <select name="tipo" 
-                class="w-full border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black" required>
+                class="w-full bg-gray-900 border border-gray-700 px-3 py-2 text-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-600 rounded" required>
           <option value="percentual" {{ old('tipo', $cupom->tipo)=='percentual' ? 'selected' : '' }}>Percentual</option>
           <option value="valor" {{ old('tipo', $cupom->tipo)=='valor' ? 'selected' : '' }}>Valor Fixo</option>
         </select>
       </div>
 
       <div>
-        <label class="block text-sm font-semibold mb-1 uppercase">Valor</label>
+        <label class="block text-sm font-semibold mb-1 uppercase text-gray-200">Valor</label>
         <input type="number" step="0.01" name="valor" value="{{ old('valor', $cupom->valor) }}" 
-               class="w-full border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black" required>
+               class="w-full bg-gray-900 border border-gray-700 px-3 py-2 text-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-600 rounded" required>
       </div>
 
       <div>
-        <label class="block text-sm font-semibold mb-1 uppercase">Validade</label>
+        <label class="block text-sm font-semibold mb-1 uppercase text-gray-200">Validade</label>
         <input type="date" name="validade" value="{{ old('validade', $cupom->validade) }}" 
-               class="w-full border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black">
+               class="w-full bg-gray-900 border border-gray-700 px-3 py-2 text-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-600 rounded">
       </div>
 
       <div>
-        <label class="block text-sm font-semibold mb-1 uppercase">Uso Máximo</label>
+        <label class="block text-sm font-semibold mb-1 uppercase text-gray-200">Uso Máximo</label>
         <input type="number" name="uso_maximo" value="{{ old('uso_maximo', $cupom->uso_maximo) }}" 
-               class="w-full border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black">
+               class="w-full bg-gray-900 border border-gray-700 px-3 py-2 text-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-600 rounded">
       </div>
 
       <div class="flex items-center space-x-2">
         <input type="checkbox" name="ativo" value="1" {{ old('ativo', $cupom->ativo) ? 'checked' : '' }} 
-               class="w-4 h-4 border-gray-400">
-        <label class="text-sm font-semibold uppercase">Ativo</label>
+               class="w-4 h-4 border-gray-500 bg-gray-800 text-gray-200">
+        <label class="text-sm font-semibold uppercase text-gray-200">Ativo</label>
       </div>
 
       <button type="submit" 
-              class="w-full bg-black text-white font-bold py-3 text-lg hover:bg-gray-800 transition">
+              class="w-full bg-gray-900 text-gray-200 font-bold py-3 text-lg hover:bg-gray-700 transition rounded">
         Atualizar Cupom
       </button>
     </form>

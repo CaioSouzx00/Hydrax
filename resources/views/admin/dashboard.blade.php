@@ -48,22 +48,22 @@
 
 <nav class="fixed top-64 right-[calc(100%-12.5rem)] h-[calc(100vh-30rem)] bg-black/25 backdrop-blur-md border border-white/25 shadow-xl text-white z-10 rounded-3xl overflow-hidden group transition-all duration-300 w-14 hover:w-48 flex flex-col justify-between items-start py-4 origin-right">
     
-  <div class="flex flex-col space-y-4 w-full px-2">
-    <a href="{{ route('admin.relatorios.usuarios') }}" class="flex items-center space-x-3 px-2 py-2 hover:bg-[#211828] rounded-md transition">
+  <div class="flex flex-col space-y-3 w-full px-2">
+    <a href="{{ route('admin.relatorios.usuarios') }}" class="flex items-center space-x-3 px-1 py-2 hover:bg-[#211828] rounded-md transition">
       <span class="text-lg"></span>
       <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">Relatorios Usuarios</span>
     </a>
-    <a href="{{ route('admin.relatorios.fornecedores') }}" class="flex items-center space-x-3 px-2 py-2 hover:bg-[#211828] rounded-md transition">
+    <a href="{{ route('admin.relatorios.fornecedores') }}" class="flex items-center space-x-3 px-1 py-2 hover:bg-[#211828] rounded-md transition">
       <span class="text-lg"></span>
-      <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">Relatorios Fornecedores/span>
+      <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">Relatorios Fornecedor</span>
     </a> 
-    <a href="{{ route('admin.relatorios.produtos') }}" class="flex items-center space-x-3 px-2 py-2 hover:bg-[#211828] rounded-md transition">
+    <a href="{{ route('admin.relatorios.produtos') }}" class="flex items-center space-x-3 px-1 py-2 hover:bg-[#211828] rounded-md transition">
       <span class="text-lg"></span>
-      <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">Relatorios Pordutos</span>
+      <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">Relatorios Produtos</span>
     </a>
-    <a href="{{ route('admin.cupons.index') }}" class="flex items-center space-x-3 px-2 py-2 hover:bg-[#211828] rounded-md transition">
+    <a href="{{ route('admin.cupons.index') }}" class="flex items-center space-x-3 px-1 py-2 hover:bg-[#211828] rounded-md transition">
       <span class="text-lg"></span>
-      <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">Listagem de cu</span>
+      <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">Listagem Cupons</span>
     </a>
   </div>
 
@@ -98,7 +98,7 @@
   <div class="flex justify-between gap-4 mb-4 h-[60%]">
     <div class="w-1/5 bg-black/20 rounded-xl border border-white/10 shadow-inner p-4">
       <h1 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#383838] to-white mb-2 text-center">
-        Painel Fornecedor
+        Fornecedor
       </h1>
 
       <div class="flex flex-col space-y-4">
@@ -155,39 +155,41 @@
   </div>
   
   <div class="w-1/4 bg-black/20 rounded-xl border border-white/30 shadow-inner p-4 flex flex-col items-center">
-    <h1 class="mb-3 text-center">Produtos no sistema</h1>
-    <a href="#_" id="btnProdutos" data-route="{{ route('dashboard.dadosProdutos') }}"
-       class="w-30 px-50 py-2.5 relative rounded group overflow-hidden font-medium bg-purple-50 text-[#211828] flex justify-center">
+    <h1 class="mb-3 text-center">Produtos no Sistema</h1>
+    <a href="#_" id="btnUsuarios" data-route="{{ route('dashboard.dadosProdutos') }}"
+       class="w-30 px-5 py-2.5 relative rounded group overflow-hidden font-medium bg-purple-50 text-[#211828] flex justify-center">
       <span class="absolute top-0 left-0 flex w-full h-0 mb-0 transition-all duration-200 ease-out bg-[#211828] group-hover:h-full"></span>
       <span class="relative group-hover:text-white">Produtos</span>
     </a>
   </div>
 
   <div class="w-1/4 bg-black/20 rounded-xl border border-white/30 shadow-inner p-4 flex flex-col items-center">
-    <h1 class="mb-3 text-center">Vendas da Semana</h1>
-    <a href="#_" id="btnVendasSemana" data-route="{{ route('dashboard.vendasSemana') }}"
-       class="w-30 px-50 py-2.5 relative rounded group overflow-hidden font-medium bg-purple-50 text-[#211828] flex justify-center">
-       <span class="absolute top-0 left-0 flex w-full h-0 transition-all duration-200 ease-out bg-[#211828] group-hover:h-full"></span>
-       <span class="relative group-hover:text-white">Vendas Semana</span>
+    <h1 class="mb-3 text-center">Vendas na Semana</h1>
+    <a href="#_" id="btnUsuarios" data-route="{{ route('dashboard.vendasSemana') }}"
+       class="w-30 px-5 py-2.5 relative rounded group overflow-hidden font-medium bg-purple-50 text-[#211828] flex justify-center">
+      <span class="absolute top-0 left-0 flex w-full h-0 mb-0 transition-all duration-200 ease-out bg-[#211828] group-hover:h-full"></span>
+      <span class="relative group-hover:text-white">Vendas</span>
     </a>
   </div>
 
   <div class="w-1/4 bg-black/20 rounded-xl border border-white/30 shadow-inner p-4 flex flex-col items-center">
-    <h1 class="mb-3 text-center">Faturamento</h1>
-    <a href="#_" id="btnFaturamentoSemana" data-route="{{ route('admin.faturamentoSemana') }}"
-       class="w-30 px-50 py-2.5 relative rounded group overflow-hidden font-medium bg-purple-50 text-[#211828] flex justify-center">
-      <span class="absolute top-0 left-0 flex w-full h-0 transition-all duration-200 ease-out bg-[#211828] group-hover:h-full"></span>
-      <span class="relative group-hover:text-white">Faturamento</span>
+                <h1 class="mb-3 text-center">Faturamento Total</h1>
+    <a href="#_" id="btnUsuarios" data-route="{{ route('admin.faturamentoSemana') }}"
+       class="w-30 px-5 py-2.5 relative rounded group overflow-hidden font-medium bg-purple-50 text-[#211828] flex justify-center">
+      <span class="absolute top-0 left-0 flex w-full h-0 mb-0 transition-all duration-200 ease-out bg-[#211828] group-hover:h-full"></span>
+      <span class="relative group-hover:text-white">Total</span>
     </a>
+
   </div>
 
   <div class="w-1/4 bg-black/20 rounded-xl border border-white/30 shadow-inner p-4 flex flex-col items-center">
-    <h1 class="mb-3 text-center">Produtos Mais Vendidos</h1>
-    <a href="#_" id="btnProdutosVendidos" data-route="{{ route('dashboard.produtosMaisVendidos') }}"
-       class="w-30 px-50 py-2.5 relative rounded group overflow-hidden font-medium bg-purple-50 text-[#211828] flex justify-center">
-       <span class="absolute top-0 left-0 flex w-full h-0 transition-all duration-200 ease-out bg-[#211828] group-hover:h-full"></span>
-       <span class="relative group-hover:text-white">Top Produtos</span>
+            <h1 class="mb-3 text-center">Produtos Mais Vendidos</h1>
+    <a href="#_" id="btnUsuarios" data-route="{{ route('dashboard.produtosMaisVendidos') }}"
+       class="w-30 px-5 py-2.5 relative rounded group overflow-hidden font-medium bg-purple-50 text-[#211828] flex justify-center">
+      <span class="absolute top-0 left-0 flex w-full h-0 mb-0 transition-all duration-200 ease-out bg-[#211828] group-hover:h-full"></span>
+      <span class="relative group-hover:text-white">Produtos</span>
     </a>
+
   </div>
 </div>
 
