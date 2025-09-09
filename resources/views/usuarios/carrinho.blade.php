@@ -163,6 +163,7 @@
         @endforelse
     </div>
 </div>
+
 @include('usuarios.partials.footer')
 </body>
 </html>
