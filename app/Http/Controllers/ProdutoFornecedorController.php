@@ -212,21 +212,6 @@ public function destroy($id)
     $produto->delete();
 
     return redirect()->back()->with('success', 'Produto excluído com sucesso!');
-
 }
-
-public function toggleProduto($id)
-{
-    $produto = ProdutoFornecedor::findOrFail($id);
-
-    // Alterna entre ativo (1) e inativo (0)
-    $produto->ativo = $produto->ativo ? 0 : 1;
-    $produto->save();
-
-    $statusTexto = $produto->ativo ? 'ATIVO' : 'INATIVO';
-
-    return redirect()->back()->with('success', "Produto atualizado para {$statusTexto} com sucesso!");
-}
-
 
 }

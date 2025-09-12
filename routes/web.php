@@ -174,8 +174,4 @@ Route::middleware([FornecedorMiddleware::class])->prefix('fornecedores')->name('
     Route::put('/produtos/{id}', [ProdutoFornecedorController::class, 'update'])->name('produtos.update');
 
     Route::delete('/produtos/{id}', [ProdutoFornecedorController::class, 'destroy'])->name('produtos.destroy');
-
-    Route::patch('/produtos/{id}/toggle', [ProdutoFornecedorController::class, 'toggleProduto'])
-    ->name('produtos.toggle');
-
 });
