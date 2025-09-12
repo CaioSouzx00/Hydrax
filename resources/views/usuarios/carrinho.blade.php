@@ -157,7 +157,7 @@
                 [&>div]:overflow-hidden [&>div]:relative
                 [&>div]:flex [&>div]:flex-col">
         @forelse($produtos ?? [] as $produto)
-            @include('usuarios.partials.card-produto', ['produto' => $produto])
+            @include('usuarios.partials.card-rec', ['produto' => $produto])
         @empty
             <p class="text-gray-400">Nenhum produto disponível no momento.</p>
         @endforelse

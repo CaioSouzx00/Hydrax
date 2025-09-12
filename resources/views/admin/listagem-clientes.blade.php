@@ -20,7 +20,6 @@
         <div class="bg-[#1a1a1a] border border-gray-700 rounded-xl shadow p-4 flex flex-col justify-between">
             <h2 class="text-lg font-bold mb-1">{{ $usuario->nome_completo }}</h2>
             <p class="text-gray-400 text-sm mb-1">Email: {{ $usuario->email }}</p>
-            <p class="text-gray-400 text-sm mb-1">Telefone: {{ $usuario->telefone }}</p>
             <p class="text-gray-400 text-sm mb-1">CPF: {{ $usuario->cpf }}</p>
             <p class="text-sm mb-2">Status: 
                 <span class="{{ $usuario->ativo ? 'text-green-400' : 'text-red-400' }}">
