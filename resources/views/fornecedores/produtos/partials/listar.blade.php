@@ -48,40 +48,40 @@
                             <td class="px-6 py-4">{{ ucfirst($produto->categoria) }}</td>
 
                             <td class="px-6 py-4">
-    @if(!empty($produto->tamanhos_disponiveis))
-        <div class="flex flex-wrap gap-1">
-            @foreach($produto->tamanhos_disponiveis as $tamanho)
-                <span class="bg-[#d5891b] text-black px-2 py-1 text-xs rounded">{{ $tamanho }}</span>
-            @endforeach
-        </div>
-    @else
-        <span class="text-gray-400">-</span>
-    @endif
-</td>
+                                @if(!empty($produto->tamanhos_disponiveis))
+                                    <div class="flex flex-wrap gap-1">
+                                        @foreach($produto->tamanhos_disponiveis as $tamanho)
+                                            <span class="bg-[#d5891b] text-black px-2 py-1 text-xs rounded">{{ $tamanho }}</span>
+                                        @endforeach
+                                    </div>
+                                @else
+                                    <span class="text-gray-400">-</span>
+                                @endif
+                            </td>
 
-<td class="px-6 py-4">
-    @if(!empty($produto->fotos))
-        <div class="flex gap-2">
-            @foreach($produto->fotos as $foto)
-                <img src="{{ asset('storage/' . $foto) }}" class="w-10 h-10 rounded shadow border border-[#d5891b]/40" alt="Foto Produto">
-            @endforeach
-        </div>
-    @else
-        <span class="text-gray-400">-</span>
-    @endif
-</td>
+                            <td class="px-6 py-4">
+                                @if(!empty($produto->fotos))
+                                    <div class="flex gap-2">
+                                        @foreach($produto->fotos as $foto)
+                                            <img src="{{ asset('storage/' . $foto) }}" class="w-10 h-10 rounded shadow border border-[#d5891b]/40" alt="Foto Produto">
+                                        @endforeach
+                                    </div>
+                                @else
+                                    <span class="text-gray-400">-</span>
+                                @endif
+                            </td>
 
-<td class="px-6 py-4">
-    @if(!empty($produto->estoque_imagem))
-        <div class="flex gap-2">
-            @foreach($produto->estoque_imagem as $img)
-                <img src="{{ asset('storage/' . $img) }}" class="w-10 h-10 rounded shadow border border-[#e29b37]/40" alt="Imagem Estoque">
-            @endforeach
-        </div>
-    @else
-        <span class="text-gray-400">-</span>
-    @endif
-</td>
+                            <td class="px-6 py-4">
+                                @if(!empty($produto->estoque_imagem))
+                                    <div class="flex gap-2">
+                                        @foreach($produto->estoque_imagem as $img)
+                                            <img src="{{ asset('storage/' . $img) }}" class="w-10 h-10 rounded shadow border border-[#e29b37]/40" alt="Imagem Estoque">
+                                        @endforeach
+                                    </div>
+                                @else
+                                    <span class="text-gray-400">-</span>
+                                @endif
+                            </td>
 
                             <!-- Ações -->
                             <td class="px-6 py-4 flex flex-col gap-1">
@@ -91,6 +91,17 @@
                                     Editar
                                 </a>
 
+                                <!-- Ativar / Desativar -->
+                                <form action="{{ route('fornecedores.produtos.toggle', $produto->id_produtos) }}" method="POST" class="inline">
+                                    @csrf
+                                    @method('PATCH')
+                                    <button type="submit" 
+                                            class="text-sm hover:underline {{ $produto->ativo ? 'text-red-500' : 'text-green-500' }}">
+                                        {{ $produto->ativo ? 'Desativar' : 'Ativar' }}
+                                    </button>
+                                </form>
+
+                                <!-- Excluir -->
                                 <button
                                   class="btn-excluir-produto text-red-400 hover:underline text-sm text-left p-0 bg-transparent border-0 cursor-pointer"
                                   data-id="{{ $produto->id_produtos }}"
