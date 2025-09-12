@@ -59,7 +59,7 @@
 <body class="min-h-screen bg-gradient-to-br from-[#211828] via-[#0b282a] to-[#17110d] text-white">
 
   <!-- Navbar -->
-  <header class="fixed top-0 left-0 w-full z-50 backdrop-blur-md bg-black/50 border-b border-[#7f3a0e] shadow-sm">
+  <header class="fixed top-0 left-0 w-full z-50 backdrop-blur-md bg-gradient-to-br from-[#211828]/90 via-[#0b282a]/90 to-[#17110d]/90ss border-b border-[#7f3a0e] shadow-sm">
     <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
 
       <!-- Logo -->
@@ -287,7 +287,7 @@
     <div id="carousel-2" class="relative w-full pt-12 pb-12">
         <div class="overflow-hidden relative h-80">
             <div class="flex transition-transform duration-500" id="carousel-slides-2">
-                    <img src="/imagens/hydrax/HYDRA’x (2).png" alt="Nike 1" class="h-full w-full pr-12 pl-12 object-cover">
+                    <img src="/imagens/hydrax/HYDRA’x (3).png" alt="Nike 1" class="h-full w-full pr-12 pl-12 object-cover">
             </div>
 
             <!-- Botões -->
@@ -444,7 +444,7 @@
   <label for="menu-toggle"
     class="fixed top-4 left-5 z-50 text-white text-2xl p-2 cursor-pointer peer-checked:hidden hover:text-[#a68e7b]">☰</label>
   <aside
-    class="fixed top-0 left-0 h-full w-64 bg-black/80 backdrop-blur-md text-white z-50 transform -translate-x-full peer-checked:translate-x-0 transition-transform duration-300 ease-in-out shadow-2xl border-r border-[#d5891b]/30">
+    class="fixed top-0 left-0 h-full w-64 bg-gradient-to-br from-[#211828]/90 via-[#0b282a]/90 to-[#17110d]/90 backdrop-blur-md text-white z-50 transform -translate-x-full peer-checked:translate-x-0 transition-transform duration-300 ease-in-out shadow-2xl border-r border-[#d5891b]/30">
     <label for="menu-toggle"
       class="absolute top-4 right-4 text-white text-2xl cursor-pointer hover:text-[#a68e7b] transition">✕</label>
     <div class="mt-16 px-4 py-6">
