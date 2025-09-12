@@ -14,123 +14,142 @@ use App\Mail\FornecedorRejeitadoMail;
 
 class FornecedorController extends Controller
 {
-    public function showLoginForm()
+    // Lista todos os produtos do fornecedor logado
+    public function index()
     {
-        return view('fornecedores.login');
+        $fornecedor = auth()->guard('fornecedores')->user();
+        $produtos = ProdutoFornecedor::where('fornecedor_id', $fornecedor->id_fornecedores)->get();
+
+        return view('fornecedores.produtos.index', compact('produtos'));
     }
 
+    // Formulário de criação
     public function create()
     {
-        return view('fornecedores.create');
+        return view('fornecedores.produtos.create');
     }
 
+    // Salvar novo produto
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nome_empresa' => 'required|string|max:255',
-            'cnpj' => 'required|string|min:14|unique:fornecedores_pendentes,cnpj',
-            'email' => 'required|email|unique:fornecedores_pendentes,email',
-            'telefone' => 'required|string|max:20',
-            'password' => 'required|string|min:6|confirmed',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'nome' => 'required|string|max:255',
+            'preco' => 'required|numeric',
+            'categoria' => 'required|string|max:100',
+            'tamanhos_disponiveis' => 'nullable|array',
+            'fotos.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'estoque_imagem.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'status' => 'nullable|in:ATIVO,INATIVO'
         ]);
 
-        $path = null;
-        if ($request->hasFile('foto')) {
-            $path = $request->file('foto')->store('fornecedores', 'public');
+        $fornecedor = auth()->guard('fornecedores')->user();
+
+        $fotos = [];
+        if ($request->hasFile('fotos')) {
+            foreach ($request->file('fotos') as $foto) {
+                $fotos[] = $foto->store('produtos', 'public');
+            }
         }
 
-        FornecedorPendente::create([
-            'nome_empresa' => $validated['nome_empresa'], 
-            'cnpj' => $validated['cnpj'],
-            'email' => $validated['email'],
-            'telefone' => $validated['telefone'],
-            'password' => $validated['password'], // ainda não usa Hash
-            'status' => 'pendente',
-            'foto' => $path,
+        $estoqueImgs = [];
+        if ($request->hasFile('estoque_imagem')) {
+            foreach ($request->file('estoque_imagem') as $img) {
+                $estoqueImgs[] = $img->store('estoque', 'public');
+            }
+        }
+
+        ProdutoFornecedor::create([
+            'fornecedor_id' => $fornecedor->id_fornecedores,
+            'nome' => $validated['nome'],
+            'preco' => $validated['preco'],
+            'categoria' => $validated['categoria'],
+            'tamanhos_disponiveis' => json_encode($validated['tamanhos_disponiveis'] ?? []),
+            'fotos' => json_encode($fotos),
+            'estoque_imagem' => json_encode($estoqueImgs),
+            'status' => $validated['status'] ?? 'ATIVO'
         ]);
 
-        return redirect()->route('fornecedores.login')->with('success', 'Cadastro enviado para análise.');
+        return redirect()->route('fornecedores.produtos.index')->with('success', 'Produto cadastrado com sucesso!');
     }
 
-    public function login(Request $request)
+    // Formulário de edição
+    public function edit($id)
     {
-        $credentials = [
-            'email' => $request->input('email'),
-            'password' => $request->input('password'),
-        ];
-    // Usar Auth::guard com o nome correto da guard: 'fornecedores'
-        if (Auth::guard('fornecedores')->attempt($credentials)) {
-            $request->session()->regenerate();  // ESSENCIAL para proteção CSRF
-            return redirect()->route('fornecedores.dashboard');
-        }
-
-        return back()->withErrors([
-            'email' => 'Credenciais inválidas.',
-        ])->withInput();
+        $produto = ProdutoFornecedor::findOrFail($id);
+        return view('fornecedores.produtos.edit', compact('produto'));
     }
 
-    public function logout(Request $request)
+    // Atualizar produto
+    public function update(Request $request, $id)
     {
-        Auth::guard('fornecedores')->logout();
+        $produto = ProdutoFornecedor::findOrFail($id);
 
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return redirect()->route('fornecedores.login')->with('success', 'Você saiu do sistema.');
-    }
-
-    public function listarPendentes()
-    {
-        $pendentes = FornecedorPendente::all();
-        return view('admin.verifyfornecedor', compact('pendentes'));
-    }
-
-    public function aprovar($id)
-    {
-        $pendente = FornecedorPendente::findOrFail($id);
-
-        Fornecedor::create([
-            'nome_empresa' => $pendente->nome_empresa,
-            'cnpj' => $pendente->cnpj,
-            'email' => $pendente->email,
-            'telefone' => $pendente->telefone,
-            'password' => Hash::make($pendente->password),
-            'foto' => $pendente->foto, // mantém a foto enviada
+        $validated = $request->validate([
+            'nome' => 'required|string|max:255',
+            'preco' => 'required|numeric',
+            'categoria' => 'required|string|max:100',
+            'tamanhos_disponiveis' => 'nullable|array',
+            'fotos.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'estoque_imagem.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'status' => 'nullable|in:ATIVO,INATIVO'
         ]);
 
-    // Enviar e-mail de aprovação
-        Mail::to($pendente->email)->send(new FornecedorAprovadoMail($pendente));
-
-        $pendente->delete();
-
-        return redirect()->route('fornecedores.pendentes')->with('success', 'Fornecedor aprovado!');
-    }
-
-    public function rejeitar($id)
-    {
-        $pendente = FornecedorPendente::findOrFail($id);
-
-    // Enviar e-mail de rejeição
-        Mail::to($pendente->email)->send(new FornecedorRejeitadoMail($pendente));
-
-        // Se tiver foto, pode até remover do storage
-        if ($pendente->foto) {
-            Storage::disk('public')->delete($pendente->foto);
+        // Atualiza imagens se houver upload
+        $fotos = json_decode($produto->fotos, true) ?? [];
+        if ($request->hasFile('fotos')) {
+            foreach ($request->file('fotos') as $foto) {
+                $fotos[] = $foto->store('produtos', 'public');
+            }
         }
 
-        $pendente->delete();
+        $estoqueImgs = json_decode($produto->estoque_imagem, true) ?? [];
+        if ($request->hasFile('estoque_imagem')) {
+            foreach ($request->file('estoque_imagem') as $img) {
+                $estoqueImgs[] = $img->store('estoque', 'public');
+            }
+        }
 
-        return redirect()->route('fornecedores.pendentes')->with('success', 'Fornecedor rejeitado!');
+        $produto->update([
+            'nome' => $validated['nome'],
+            'preco' => $validated['preco'],
+            'categoria' => $validated['categoria'],
+            'tamanhos_disponiveis' => json_encode($validated['tamanhos_disponiveis'] ?? []),
+            'fotos' => json_encode($fotos),
+            'estoque_imagem' => json_encode($estoqueImgs),
+            'status' => $validated['status'] ?? $produto->status
+        ]);
+
+        return redirect()->route('fornecedores.produtos.index')->with('success', 'Produto atualizado com sucesso!');
     }
 
-    public function dashboard()
+    // Excluir produto
+    public function destroy($id)
     {
-        $fornecedor = Auth::guard('fornecedores')->user();
-        return view('fornecedores.dashboard', compact('fornecedor'));
+        $produto = ProdutoFornecedor::findOrFail($id);
+
+        // Remove fotos do storage
+        foreach (json_decode($produto->fotos ?? '[]', true) as $foto) {
+            Storage::disk('public')->delete($foto);
+        }
+        foreach (json_decode($produto->estoque_imagem ?? '[]', true) as $img) {
+            Storage::disk('public')->delete($img);
+        }
+
+        $produto->delete();
+        return redirect()->route('fornecedores.produtos.index')->with('success', 'Produto excluído com sucesso!');
     }
 
+public function toggleProduto($id)
+{
+    $produto = ProdutoFornecedor::findOrFail($id);
 
+    // Alterna entre 0 e 1
+    $produto->ativo = !$produto->ativo;
+    $produto->save();
+
+    $status = $produto->ativo ? 'ATIVO' : 'INATIVO';
+
+    return redirect()->back()->with('success', "Produto atualizado para {$status} com sucesso!");
 }
 
-
+}
