@@ -1,4 +1,4 @@
-<a href="{{ route('produtos.detalhes', $produto->id_produtos) }}" class="block w-96 mx-auto">
+<a href="{{ route('produtos.detalhes', $produto->id_produtos) }}" class="block w-80 mx-auto">
   <div
     class="bg-[#111]/50 border border-[#222] rounded-xl shadow-lg p-8 min-h-[580px] cursor-pointer hover:border-[#D5891B]/20 transition-all duration-200"
     role="button"

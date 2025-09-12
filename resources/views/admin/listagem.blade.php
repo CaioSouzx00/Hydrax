@@ -12,6 +12,14 @@
     </style>
 </head>
 <body class="bg-[#0f0f0f] text-gray-200">
+      <!-- Botão voltar -->
+  <a href="{{ route('admin.dashboard') }}"
+     class="fixed top-4 left-4 z-50 w-9 h-9 flex items-center justify-center rounded-full bg-gray-700 hover:bg-gray-600 transition-colors duration-300 shadow-[0_4px_20px_rgba(0,0,0,0.5)]"
+     title="Voltar para o painel">
+    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+    </svg>
+  </a>
     <div class="container mx-auto py-10 px-4">
         <h1 class="text-3xl font-bold mb-6 text-white">Todos os Produtos</h1>
 
@@ -20,49 +28,39 @@
                 {{ session('success') }}
             </div>
         @endif
+        
+<form class="mb-6 flex items-center space-x-2">
+    <input type="text" id="busca" name="busca"
+        placeholder="Pesquisar produto ou fornecedor..."
+        class="px-4 py-2 rounded-lg bg-[#1a1a1a] border border-gray-700 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full max-w-md">
+    <span class="px-4 py-2 rounded-lg bg-blue-600 text-white">🔍</span>
+</form>
 
-        <div class="overflow-x-auto shadow-lg rounded-lg bg-[#1a1a1a] border border-gray-800">
-            <table class="w-full table-auto">
-                <thead class="bg-[#111] text-gray-100">
-                    <tr>
-                        <th class="px-4 py-3">ID</th>
-                        <th class="px-4 py-3">Nome</th>
-                        <th class="px-4 py-3">Fornecedor</th>
-                        <th class="px-4 py-3">Preço</th>
-                        <th class="px-4 py-3">Ativo</th>
-                        <th class="px-4 py-3">Ações</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($produtos as $produto)
-                        <tr class="{{ $produto->ativo ? 'hover:bg-[#222]' : 'bg-red-900/40 hover:bg-red-900/60' }} transition-colors">
-                            <td class="px-4 py-3">{{ $produto->id_produtos }}</td>
-                            <td class="px-4 py-3 font-medium text-white">{{ $produto->nome }}</td>
-                            <td class="px-4 py-3">{{ $produto->fornecedor->nome_empresa ?? 'Sem fornecedor' }}</td>
-                            <td class="px-4 py-3">R$ {{ number_format($produto->preco, 2, ',', '.') }}</td>
-                            <td class="px-4 py-3">{{ $produto->ativo ? 'Sim' : 'Não' }}</td>
-                            <td class="px-4 py-3">
-                                <form action="{{ route('admin.produtos.toggle', $produto->id_produtos) }}" method="POST">
-                                    @csrf
-                                    @method('PATCH')
-                                    <button type="submit" 
-                                        class="px-3 py-1 rounded font-semibold transition-colors 
-                                               {{ $produto->ativo 
-                                                    ? 'bg-red-600 text-white hover:bg-red-700' 
-                                                    : 'bg-green-600 text-white hover:bg-green-700' }}">
-                                        {{ $produto->ativo ? 'Desativar' : 'Ativar' }}
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
+<div id="tabela-produtos" class="overflow-x-auto shadow-lg rounded-lg bg-[#1a1a1a] border border-gray-800">
+    @include('admin.partials.tabela-produtos', ['produtos' => $produtos])
+</div>
+
 
         <div class="mt-6 flex justify-center space-x-2">
             {{ $produtos->links() }}
         </div>
     </div>
+
+<script>
+document.getElementById('busca').addEventListener('keyup', function() {
+    let termo = this.value;
+
+    fetch(`{{ route('admin.produtos.listar') }}?busca=${termo}`, {
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.text())
+    .then(html => {
+        document.getElementById('tabela-produtos').innerHTML = html;
+    });
+});
+</script>
+
 </body>
 </html>

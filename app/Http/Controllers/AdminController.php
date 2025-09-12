@@ -235,14 +235,31 @@ public function produtosMaisVendidos()
     ]);
 }
 
- // Listagem de produtos
-    public function listarProdutos()
-    {
-        // Pega todos os produtos com dados do fornecedor
-        $produtos = ProdutoFornecedor::with('fornecedor')->paginate(10);
+// Listagem de produtos com pesquisa
+public function listarProdutos(Request $request)
+{
+    $busca = $request->input('busca');
 
-        return view('admin.listagem', compact('produtos'));
+    $query = ProdutoFornecedor::with('fornecedor');
+
+    if ($busca) {
+        $query->where('nome', 'LIKE', "%{$busca}%")
+              ->orWhereHas('fornecedor', function ($q) use ($busca) {
+                  $q->where('nome_empresa', 'LIKE', "%{$busca}%");
+              });
     }
+
+    $produtos = $query->paginate(10);
+
+    // Se for AJAX, retorna só a tabela
+    if ($request->ajax()) {
+        return view('admin.partials.tabela-produtos', compact('produtos'))->render();
+    }
+
+    return view('admin.listagem', compact('produtos', 'busca'));
+}
+
+
 
     // Ativar / Desativar produto
     public function toggleProduto($id)
