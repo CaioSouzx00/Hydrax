@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use App\Mail\FornecedorAprovadoMail;
 use App\Mail\FornecedorRejeitadoMail;
+use App\Models\ProdutoFornecedor;
 
 class FornecedorController extends Controller
 {
@@ -59,9 +60,9 @@ class FornecedorController extends Controller
             'email' => $request->input('email'),
             'password' => $request->input('password'),
         ];
-    // Usar Auth::guard com o nome correto da guard: 'fornecedores'
+
         if (Auth::guard('fornecedores')->attempt($credentials)) {
-            $request->session()->regenerate();  // ESSENCIAL para proteção CSRF
+            $request->session()->regenerate();  
             return redirect()->route('fornecedores.dashboard');
         }
 
@@ -96,10 +97,9 @@ class FornecedorController extends Controller
             'email' => $pendente->email,
             'telefone' => $pendente->telefone,
             'password' => Hash::make($pendente->password),
-            'foto' => $pendente->foto, // mantém a foto enviada
+            'foto' => $pendente->foto,
         ]);
 
-    // Enviar e-mail de aprovação
         Mail::to($pendente->email)->send(new FornecedorAprovadoMail($pendente));
 
         $pendente->delete();
@@ -111,10 +111,8 @@ class FornecedorController extends Controller
     {
         $pendente = FornecedorPendente::findOrFail($id);
 
-    // Enviar e-mail de rejeição
         Mail::to($pendente->email)->send(new FornecedorRejeitadoMail($pendente));
 
-        // Se tiver foto, pode até remover do storage
         if ($pendente->foto) {
             Storage::disk('public')->delete($pendente->foto);
         }
@@ -130,7 +128,16 @@ class FornecedorController extends Controller
         return view('fornecedores.dashboard', compact('fornecedor'));
     }
 
+    public function toggleProduto($id)
+    {
+        $produto = ProdutoFornecedor::findOrFail($id);
 
+        // Alterna entre 0 e 1
+        $produto->ativo = !$produto->ativo;
+        $produto->save();
+
+        $status = $produto->ativo ? 'ATIVO' : 'INATIVO';
+
+        return redirect()->back()->with('success', "Produto atualizado para {$status} com sucesso!");
+    }
 }
-
-
