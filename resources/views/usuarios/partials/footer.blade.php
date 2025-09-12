@@ -4,10 +4,8 @@
     <!-- Coluna 1 -->
     <div>
       <ul class="space-y-3">
-        <li><a href="#" class="hover:underline">Cadastre-se para receber novidades</a></li>
         <li><a href="#" class="hover:underline">Cartão presente</a></li>
         <li><a href="#" class="hover:underline">Guia de produtos</a></li>
-        <li><a href="#" class="hover:underline">Black Friday</a></li>
         <li><a href="#" class="hover:underline">Acompanhe seu pedido</a></li>
       </ul>
     </div>
@@ -20,12 +18,7 @@
         <li><a href="#" class="hover:underline">Encontre seu tamanho</a></li>
         <li><a href="#" class="hover:underline">Entregas</a></li>
         <li><a href="#" class="hover:underline">Pedidos</a></li>
-        <li><a href="#" class="hover:underline">Devoluções</a></li>
-        <li><a href="#" class="hover:underline">Pagamentos</a></li>
         <li><a href="#" class="hover:underline">Produtos</a></li>
-        <li><a href="#" class="hover:underline">Corporativo</a></li>
-        <li><a href="#" class="hover:underline">Fale conosco</a></li>
-        <li><a href="#" class="hover:underline">Relatar problema</a></li>
       </ul>
     </div>
 
@@ -33,10 +26,9 @@
     <div>
       <h3 class="font-semibold mb-3">Sobre Hydrax</h3>
       <ul class="space-y-3">
-        <li><a href="{{ url('/quem-somos') }}" class="hover:underline">Quem Somos?</a></li>
         <li><a href="#" class="hover:underline">Propósito</a></li>
         <li><a href="#" class="hover:underline">Sustentabilidade</a></li>
-        <li><a href="#" class="hover:underline">Sobre o SURA, Inc.</a></li>
+        <li><a href="{{ url('/quem-somos') }}" class="hover:underline">Sobre o SURA, Inc.</a></li>
       </ul>
     </div>
 

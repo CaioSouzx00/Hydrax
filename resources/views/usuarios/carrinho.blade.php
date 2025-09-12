@@ -147,8 +147,9 @@
 </div>
 
 <!-- RECOMENDAÇÕES -->
-<div class="container px-6 mt-16 mb-10">
-    <hr class="border-t border-[#d5891b]/20 my-12">
+     <hr class="border-t ml-12 mr-12 border-[#d5891b]/20 my-12">
+<div class="container mt-16 mb-10">
+
     <h2 class="text-2xl font-bold mb-2 pl-12">RECOMENDADOS PARA VOCÊ</h2>
     <div id="produtos-container" 
          class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-96 scale-75 pr-12

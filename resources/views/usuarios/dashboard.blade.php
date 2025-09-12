@@ -309,14 +309,17 @@
     </style>
 
     <div class="flex relative">
-        <!-- Botão de abrir/fechar filtros -->
-        <button id="toggle-filtros" 
-            class="absolute top-0 right-12 text-white hover:text-[#14BA88] px-4 py-2 rounded-md z-50 flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L15 14.414V19a1 1 0 01-1.447.894l-4-2A1 1 0 019 17v-2.586L3.293 6.707A1 1 0 013 6V4z" />
-            </svg>
-            Filtros
-        </button>
+<!-- Botão de filtros no fluxo normal -->
+<div class="absolute top-0 right-12">
+  <button id="toggle-filtros" 
+          class="text-white hover:text-[#14BA88] px-4 py-2 rounded-md flex items-center gap-2">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L15 14.414V19a1 1 0 01-1.447.894l-4-2A1 1 0 019 17v-2.586L3.293 6.707A1 1 0 013 6V4z" />
+    </svg>
+    Filtros
+  </button>
+</div>
+
 
         <!-- SIDEBAR DE FILTROS -->
         <form id="sidebar-filtros" method="GET" action="{{ route('dashboard') }}" 
