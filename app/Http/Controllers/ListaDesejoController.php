@@ -24,12 +24,26 @@ public function store($id_produtos)
 {
     $idUsuario = Auth::guard('usuarios')->id();
 
-    ListaDesejo::firstOrCreate([
-        'id_usuarios' => $idUsuario,
-        'id_produtos' => $id_produtos,
-    ]);
+    $item = ListaDesejo::where('id_usuarios', $idUsuario)
+        ->where('id_produtos', $id_produtos)
+        ->first();
 
-    return back()->with('success', 'Produto adicionado à lista de desejos!');
+    if ($item) {
+        // Já existe → remover
+        $item->delete();
+        return redirect()
+            ->route('lista-desejos.index')
+            ->with('success', 'Produto removido da lista de desejos!');
+    } else {
+        // Não existe → adicionar
+        ListaDesejo::create([
+            'id_usuarios' => $idUsuario,
+            'id_produtos' => $id_produtos,
+        ]);
+        return redirect()
+            ->route('lista-desejos.index')
+            ->with('success', 'Produto adicionado à lista de desejos!');
+    }
 }
 
 
