@@ -17,6 +17,10 @@ class Avaliacao extends Model
         'id_produtos',
         'nota',
         'comentario',
+        'conforto', // Adicionado
+        'qualidade', // Adicionado
+        'tamanho', // Adicionado
+        'largura', // Adicionado
     ];
 
     public function usuario()

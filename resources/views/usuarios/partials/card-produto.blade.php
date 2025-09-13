@@ -41,15 +41,27 @@
                 </div>
 
                 {{-- estrelas --}}
-                <div class="flex items-center space-x-2 mt-1">
-                    <div class="flex items-center space-x-[1px]">
-                        @for ($i = 0; $i < 4; $i++)
-                            <svg class="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.97a1 1 0 00.95.69h4.178c.969 0 1.371 1.24.588 1.81l-3.38 2.455a1 1 0 00-.364 1.118l1.287 3.97c.3.922-.755 1.688-1.54 1.118l-3.38-2.454a1 1 0 00-1.176 0l-3.38 2.454c-.784.57-1.838-.196-1.539-1.118l1.287-3.97a1 1 0 00-.364-1.118L2.047 9.397c-.783-.57-.38-1.81.588-1.81h4.178a1 1 0 00.95-.69l1.286-3.97z"/>
-                            </svg>
-                        @endfor
-                    </div>
-                </div>
+               <div class="flex items-center space-x-2 mt-1">
+    <div class="flex items-center space-x-[1px]">
+        @php
+            $notaMediaCard = $produto->avaliacoes_avg_nota ?? 0;
+            $avaliacoesContador = $produto->avaliacoes->count() ?? 0;
+        @endphp
+
+        @for ($i = 1; $i <= 5; $i++)
+            @if ($i <= floor($notaMediaCard))
+                <span class="text-[#14ba88]">&#9733;</span>
+            @elseif ($i - 0.5 <= $notaMediaCard)
+                <span class="text-[#14ba88] opacity-50">&#9733;</span>
+            @else
+                <span class="text-gray-600">&#9733;</span>
+            @endif
+        @endfor
+    </div>
+    @if($avaliacoesContador > 0)
+        <span class="text-xs text-gray-400">({{ $avaliacoesContador }} avaliações)</span>
+    @endif
+</div>
             </div>
         </div>
     </a>

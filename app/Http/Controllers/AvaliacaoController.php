@@ -15,16 +15,19 @@ class AvaliacaoController extends Controller
     }
 
     // Salva a avaliação
-    public function store(Request $request, $id_produto)
+   public function store(Request $request, $id_produto)
     {
         $idUsuario = Auth::guard('usuarios')->id();
 
         $request->validate([
             'nota' => 'required|integer|min:1|max:5',
             'comentario' => 'nullable|string|max:500',
+            'conforto' => 'required|integer|min:1|max:5', // Adicionado
+            'qualidade' => 'required|integer|min:1|max:5', // Adicionado
+            'tamanho' => 'required|integer|min:1|max:5', // Adicionado
+            'largura' => 'required|integer|min:1|max:5', // Adicionado
         ]);
 
-        // Impede duplicidade
         if (Avaliacao::where('id_usuarios', $idUsuario)->where('id_produtos', $id_produto)->exists()) {
             return back()->with('error', 'Você já avaliou este produto.');
         }
@@ -34,6 +37,10 @@ class AvaliacaoController extends Controller
             'id_produtos' => $id_produto,
             'nota' => $request->nota,
             'comentario' => $request->comentario,
+            'conforto' => $request->conforto, // Adicionado
+            'qualidade' => $request->qualidade, // Adicionado
+            'tamanho' => $request->tamanho, // Adicionado
+            'largura' => $request->largura, // Adicionado
         ]);
 
         return redirect()->back()->with('success', 'Avaliação enviada!');
