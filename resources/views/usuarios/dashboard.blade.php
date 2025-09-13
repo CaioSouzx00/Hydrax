@@ -198,6 +198,28 @@
 }
 </style>
 
+<!-- Lista de Desejos -->
+<a href="{{ route('lista-desejos.index') }}" class="relative hover:text-gray-300 transition ml-4">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 
+                 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 
+                 4.5 0 00-6.364 0z" />
+    </svg>
+
+    @php
+        $wishlistCount = Auth::guard('usuarios')->check()
+            ? Auth::guard('usuarios')->user()->wishlist()->count()
+            : 0;
+    @endphp
+
+    @if($wishlistCount > 0)
+        <span class="absolute -top-2 -right-2 bg-black text-white rounded-full w-5 h-5 text-xs flex items-center justify-center animate-bounce-subtle shadow-lg">
+            {{ $wishlistCount }}
+        </span>
+    @endif
+</a>
+
 
 </a>
 
