@@ -1,13 +1,3 @@
-
-
-</html>
-@php
-    $fotos = is_string($produto->fotos) ? json_decode($produto->fotos, true) : ($produto->fotos ?? []);
-    $estoqueImagens = is_string($produto->estoque_imagem) ? json_decode($produto->estoque_imagem, true) : ($produto->estoque_imagem ?? []);
-    $tamanhos = is_string($produto->tamanhos_disponiveis) ? json_decode($produto->tamanhos_disponiveis, true) : ($produto->tamanhos_disponiveis ?? []);
-@endphp
-
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -32,14 +22,19 @@
     </span>
 </a>
 
-
 <div class="max-w-7xl mx-auto p-6 mt-20">
 
     <!-- Grid principal -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 relative">
         
         <!-- Galeria -->
         <div>
+            @php
+                $fotos = is_array($produto->fotos) ? $produto->fotos : json_decode($produto->fotos, true) ?? [];
+                $estoqueImagens = is_array($produto->estoque_imagem) ? $produto->estoque_imagem : json_decode($produto->estoque_imagem, true) ?? [];
+                $tamanhos = is_array($produto->tamanhos_disponiveis) ? $produto->tamanhos_disponiveis : json_decode($produto->tamanhos_disponiveis, true) ?? [];
+            @endphp
+
             <img src="{{ asset('storage/' . ($fotos[0] ?? 'sem-imagem.png')) }}"
                  class="w-full h-[480px] object-cover rounded-md border border-[#d5891b]/50 shadow main-image">
                
@@ -54,7 +49,7 @@
             </div>
             @endif
 
-            <!-- Fornecedor principal -->
+            <!-- Fornecedor -->
             @if($produto->fornecedor)
             <div class="flex items-center gap-3 mt-6">
                 <img src="{{ $produto->fornecedor->foto ? asset('storage/' . $produto->fornecedor->foto) : asset('storage/sem-logo.png') }}" 
@@ -67,18 +62,14 @@
             </div>
             @endif
         </div>
-    <!-- Linha vertical parcial -->
-    <div class="hidden md:block mt-20 absolute top-0 left-1/2 transform -translate-x-1/2 bg-[#d5891b]/20" 
-         style="width:1px; height:550px;"></div>
+
         <!-- Infos -->
         <div class="flex flex-col gap-6">
             <h1 class="text-4xl font-bold tracking-tight text-white">{{ $produto->nome }}</h1>
-
             <div class="flex items-center gap-2 text-[#e29b37]">
                 ★★★★☆ <span class="text-gray-400 text-sm">(89 avaliações)</span>
             </div>
 
-            <!-- Preços -->
             <div>
                 <span class="text-3xl font-bold text-white block">R$ {{ number_format($produto->preco, 2, ',', '.') }}</span>
                 <span class="text-sm line-through text-gray-500">R$ {{ number_format($produto->preco * 1.2, 2, ',', '.') }}</span>
@@ -87,7 +78,7 @@
 
             <p class="text-gray-300 leading-relaxed">{{ $produto->categoria }}</p>
 
-            <!-- Cores / Estoque -->
+            <!-- Imagens extras -->
             @php
                 $coresComPrincipal = array_merge([$fotos[0] ?? 'sem-imagem.png'], $estoqueImagens);
             @endphp
@@ -119,193 +110,173 @@
             <p class="text-gray-500">Nenhum tamanho disponível</p>
             @endif
 
-<!-- Botão principal -->
-<form action="{{ route('carrinho.adicionar', $produto->id_produtos) }}" method="POST" id="form-carrinho-principal">
-    @csrf
-    <input type="hidden" name="tamanho" id="tamanhoSelecionadoPrincipal">
-
-    <button type="submit" 
-        class="relative w-[29rem] px-5 py-3 overflow-hidden font-bold text-gray-600 bg-white border border-[#14ba88] rounded-lg shadow-inner group text-lg">
-
-        <!-- bordas animadas -->
-        <span class="absolute top-0 left-0 w-0 h-0 transition-all duration-200 
-                     border-t-2 border-[#14ba88] group-hover:w-full ease"></span>
-        <span class="absolute bottom-0 right-0 w-0 h-0 transition-all duration-200 
-                     border-b-2 border-[#14ba88] group-hover:w-full ease"></span>
-
-        <!-- preenchimento verde -->
-        <span class="absolute top-0 left-0 w-full h-0 transition-all duration-300 
-                     delay-200 bg-[#14ba88] group-hover:h-full ease"></span>
-        <span class="absolute bottom-0 left-0 w-full h-0 transition-all duration-300 
-                     delay-200 bg-[#14ba88] group-hover:h-full ease"></span>
-
-        <!-- overlay mais escuro -->
-        <span class="absolute inset-0 w-full h-full duration-300 delay-300 
-                     bg-[#117c66] opacity-0 group-hover:opacity-100"></span>
-
-        <!-- texto -->
-        <span class="relative transition-colors duration-300 delay-200 
-                     group-hover:text-white ease">
-            Adicionar ao carrinho
-        </span>
-    </button>
-
-    <p id="erroTamanhoPrincipal" class="text-red-500 mt-2 hidden">
-        Por favor, selecione um tamanho antes.
-    </p>
-</form>
-
+            <!-- Botão Carrinho -->
+            <form action="{{ route('carrinho.adicionar', $produto->id_produtos) }}" method="POST" id="form-carrinho-principal">
+                @csrf
+                <input type="hidden" name="tamanho" id="tamanhoSelecionadoPrincipal">
+                <button type="submit" 
+                    class="relative w-[29rem] px-5 py-3 overflow-hidden font-bold text-gray-600 bg-white border border-[#14ba88] rounded-lg shadow-inner group text-lg">
+                    <span class="relative transition-colors duration-300 delay-200 group-hover:text-white ease">
+                        Adicionar ao carrinho
+                    </span>
+                </button>
+                <p id="erroTamanhoPrincipal" class="text-red-500 mt-2 hidden">
+                    Por favor, selecione um tamanho antes.
+                </p>
+            </form>
         </div>
     </div>
+
 <hr class="border-t border-[#d5891b]/20 my-12">
-    <!-- Produtos recomendados -->
-    @if(isset($produtos) && $produtos->isNotEmpty())
-    <div class="mt-16">
-        <h2 class="text-2xl font-bold mb-8 text-white">Você também pode gostar</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-            @foreach($produtos as $prod)
-                @php
-                $fotosRec = is_string($prod->fotos) ? json_decode($prod->fotos, true) : ($prod->fotos ?? []);
-                $estoqueRec = is_string($prod->estoque_imagem) ? json_decode($prod->estoque_imagem, true) : ($prod->estoque_imagem ?? []);
-                $tamanhosRec = is_string($prod->tamanhos_disponiveis) ? json_decode($prod->tamanhos_disponiveis, true) : ($prod->tamanhos_disponiveis ?? []);
-                @endphp
 
 
-                <div class="bg-[#1a1a1a]/50 rounded-md border border-[#222] hover:border-[#D5891B]/20 shadow hover:shadow-lg transition p-4 flex flex-col">
-                    
-                    <!-- Imagem -->
-                    <a href="{{ route('produtos.detalhes', $prod->id_produtos) }}" class="block mb-3">
-                        <img src="{{ asset('storage/' . ($fotosRec[0] ?? 'sem-imagem.png')) }}" class="w-full h-52 object-cover rounded-md mb-3">
-                        <h3 class="font-semibold text-lg text-white">{{ $prod->nome }}</h3>
-                    </a>
+<div class="mt-12 max-w-6xl mx-auto px-4 space-y-4">
 
-                    <!-- Miniaturas -->
-                    @if(count($estoqueRec))
-                    <div class="flex gap-2 mb-3">
-                        @foreach($estoqueRec as $img)
-                            <img src="{{ asset('storage/' . $img) }}" 
-                                 class="w-10 h-10 rounded border border-[#333] cursor-pointer hover:opacity-80"
-                                 onclick="this.closest('div.flex.flex-col').querySelector('img').src=this.src">
-                        @endforeach
+    <!-- BOTÕES ACORDEÃO VERTICAIS -->
+    <div class="flex flex-col gap-2">
+
+        <!-- Botão Descrição -->
+        <button class="w-full bg-[#111] border border-[#14ba88] text-white font-bold py-4 rounded-lg hover:bg-[#14ba88]/20 transition"
+                data-target="descricao">
+            Descrição
+        </button>
+        <div id="descricao" class="hidden w-full bg-[#111] border border-[#14ba88]/20 p-6 rounded-lg">
+            <p class="text-gray-300 text-lg leading-relaxed">
+                {{ $produto->descricao ?? 'Sem descrição disponível.' }}
+            </p>
+        </div>
+
+        <!-- Botão Avaliações -->
+        <button class="w-full bg-[#111] border border-[#14ba88] text-white font-bold py-4 rounded-lg hover:bg-[#14ba88]/20 transition"
+                data-target="avaliacoes">
+            Avaliações ({{ $produto->avaliacoes->count() ?? 0 }})
+        </button>
+        <div id="avaliacoes" class="hidden w-full bg-[#0b282a] border border-[#14ba88]/30 p-6 rounded-lg max-h-[70vh] overflow-y-auto">
+            @forelse($produto->avaliacoes as $avaliacao)
+                <div class="bg-[#111] border border-[#14ba88]/20 p-4 rounded-lg mb-3">
+                    <div class="flex justify-between items-center">
+                        <span class="font-semibold text-[#14ba88]">{{ $avaliacao->usuario->nome_completo }}</span>
+                        <div class="flex text-yellow-400">
+                            @for($i=1; $i<=5; $i++)
+                                @if($i <= $avaliacao->nota)
+                                    <span class="text-[#14ba88] text-xl">★</span>
+                                @else
+                                    <span class="text-gray-600 text-xl">★</span>
+                                @endif
+                            @endfor
+                        </div>
                     </div>
+                    @if($avaliacao->comentario)
+                        <p class="text-gray-300 mt-2">{{ $avaliacao->comentario }}</p>
                     @endif
-
-                    <!-- Preço -->
-                    <div class="flex items-center gap-2 mb-2">
-                        <span class="text-white font-bold">R$ {{ number_format($prod->preco,2,',','.') }}</span>
-                        <span class="line-through text-gray-500 text-sm">R$ {{ number_format($prod->preco*1.2,2,',','.') }}</span>
-                    </div>
-
-                    <!-- Tamanhos -->
-                    @if(count($tamanhosRec))
-                    <div class="flex flex-wrap gap-2 mb-3">
-                        @foreach($tamanhosRec as $tam)
-                            <button type="button" class="tamanho-btn-rec px-3 py-1 border border-gray-600 rounded-md text-sm hover:bg-[#14ba88]/20 transition" data-tamanho="{{ $tam }}">
-                                {{ $tam }}
-                            </button>
-                        @endforeach
-                    </div>
-                    @endif
-
-                    <!-- Carrinho -->
-                    <form action="{{ route('carrinho.adicionar', $prod->id_produtos) }}" method="POST" class="form-carrinho-rec mt-auto">
-                        @csrf
-                        <input type="hidden" name="tamanho" class="tamanhoSelecionado-rec">
-                        <button type="submit" class="w-full bg-[#14ba88] text-white font-bold py-2 rounded-md hover:bg-[#117c66] transition">
-                            Adicionar
-                        </button>
-                        <p class="text-red-500 mt-2 hidden erroTamanho-rec">Selecione um tamanho.</p>
-                    </form>
+                    <span class="text-gray-500 text-sm mt-1">{{ $avaliacao->created_at->format('d/m/Y H:i') }}</span>
                 </div>
-            @endforeach
+            @empty
+                <p class="text-gray-400">Nenhuma avaliação ainda.</p>
+            @endforelse
         </div>
+
     </div>
-    @endif
 </div>
-<footer class="bg-black text-white w-full mt-16">
-  <div class="max-w-7xl mx-auto px-6 py-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 text-sm">
-    
-    <!-- Coluna 1 -->
-    <div>
-      <ul class="space-y-3">
-        <li><a href="#" class="hover:underline">Cadastre-se para receber novidades</a></li>
-        <li><a href="#" class="hover:underline">Cartão presente</a></li>
-        <li><a href="#" class="hover:underline">Guia de produtos</a></li>
-        <li><a href="#" class="hover:underline">Black Friday</a></li>
-        <li><a href="#" class="hover:underline">Acompanhe seu pedido</a></li>
-      </ul>
+
+<script>
+    const botoes = document.querySelectorAll('[data-target]');
+    botoes.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const alvo = document.getElementById(btn.dataset.target);
+
+            // Fecha todos os conteúdos
+            document.querySelectorAll('#descricao, #avaliacoes').forEach(div => {
+                if(div !== alvo) div.classList.add('hidden');
+            });
+
+            // Alterna o conteúdo clicado
+            alvo.classList.toggle('hidden');
+
+            // Scroll suave para mostrar o conteúdo aberto
+            if(!alvo.classList.contains('hidden')){
+                alvo.scrollIntoView({behavior: 'smooth', block: 'start'});
+            }
+        });
+    });
+</script>
+
+
+
+
+
+<!-- Produtos recomendados -->
+@if(isset($produtos) && $produtos->isNotEmpty())
+<div class="mt-16">
+    <h2 class="text-2xl font-bold mb-8 text-white">Você também pode gostar</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+        @foreach($produtos as $prod)
+            @php
+                $fotosRec = is_array($prod->fotos) ? $prod->fotos : json_decode($prod->fotos, true) ?? [];
+                $estoqueRec = is_array($prod->estoque_imagem) ? $prod->estoque_imagem : json_decode($prod->estoque_imagem, true) ?? [];
+                $tamanhosRec = is_array($prod->tamanhos_disponiveis) ? $prod->tamanhos_disponiveis : json_decode($prod->tamanhos_disponiveis, true) ?? [];
+            @endphp
+
+            <div class="bg-[#1a1a1a]/50 rounded-md border border-[#222] hover:border-[#D5891B]/20 shadow p-4 flex flex-col relative">
+                <!-- Wishlist -->
+                <form action="{{ route('lista-desejos.store', $prod->id_produtos) }}" method="POST" class="absolute top-2 right-2 z-50">
+                    @csrf
+                    <button type="submit" class="w-10 h-10 flex items-center justify-center bg-[#111] border border-[#d5891b]/50 rounded-lg hover:bg-[#222] transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-[#d5891b]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 
+                                     4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 
+                                     4.5 0 00-6.364 0z" />
+                        </svg>
+                    </button>
+                </form>
+
+                <a href="{{ route('produtos.detalhes', $prod->id_produtos) }}" class="block mb-3">
+                    <img src="{{ asset('storage/' . ($fotosRec[0] ?? 'sem-imagem.png')) }}" class="w-full h-52 object-cover rounded-md mb-3">
+                    <h3 class="font-semibold text-lg text-white">{{ $prod->nome }}</h3>
+                </a>
+
+                @if(count($estoqueRec))
+                <div class="flex gap-2 mb-3">
+                    @foreach($estoqueRec as $img)
+                        <img src="{{ asset('storage/' . $img) }}" 
+                             class="w-10 h-10 rounded border border-[#333] cursor-pointer hover:opacity-80"
+                             onclick="this.closest('div.flex.flex-col').querySelector('img').src=this.src">
+                    @endforeach
+                </div>
+                @endif
+
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="text-white font-bold">R$ {{ number_format($prod->preco,2,',','.') }}</span>
+                    <span class="line-through text-gray-500 text-sm">R$ {{ number_format($prod->preco*1.2,2,',','.') }}</span>
+                </div>
+
+                @if(count($tamanhosRec))
+                <div class="flex flex-wrap gap-2 mb-3">
+                    @foreach($tamanhosRec as $tam)
+                        <button type="button" class="tamanho-btn-rec px-3 py-1 border border-gray-600 rounded-md text-sm hover:bg-[#14ba88]/20 transition" data-tamanho="{{ $tam }}">
+                            {{ $tam }}
+                        </button>
+                    @endforeach
+                </div>
+                @endif
+
+                <form action="{{ route('carrinho.adicionar', $prod->id_produtos) }}" method="POST" class="form-carrinho-rec mt-auto">
+                    @csrf
+                    <input type="hidden" name="tamanho" class="tamanhoSelecionado-rec">
+                    <button type="submit" class="w-full bg-[#14ba88] text-white font-bold py-2 rounded-md hover:bg-[#117c66] transition">
+                        Adicionar
+                    </button>
+                    <p class="text-red-500 mt-2 hidden erroTamanho-rec">Selecione um tamanho.</p>
+                </form>
+            </div>
+        @endforeach
     </div>
+</div>
+@endif
 
-    <!-- Coluna 2 -->
-    <div>
-      <h3 class="font-semibold mb-3">Ajuda</h3>
-      <ul class="space-y-3">
-        <li><a href="#" class="hover:underline">Dúvidas gerais</a></li>
-        <li><a href="#" class="hover:underline">Encontre seu tamanho</a></li>
-        <li><a href="#" class="hover:underline">Entregas</a></li>
-        <li><a href="#" class="hover:underline">Pedidos</a></li>
-        <li><a href="#" class="hover:underline">Devoluções</a></li>
-        <li><a href="#" class="hover:underline">Pagamentos</a></li>
-        <li><a href="#" class="hover:underline">Produtos</a></li>
-        <li><a href="#" class="hover:underline">Corporativo</a></li>
-        <li><a href="#" class="hover:underline">Fale conosco</a></li>
-        <li><a href="#" class="hover:underline">Relatar problema</a></li>
-      </ul>
-    </div>
+</div>
 
-    <!-- Coluna 3 -->
-    <div>
-      <h3 class="font-semibold mb-3">Sobre Hydrax</h3>
-      <ul class="space-y-3">
-        <li><a href="#" class="hover:underline">Propósito</a></li>
-        <li><a href="#" class="hover:underline">Sustentabilidade</a></li>
-        <li><a href="#" class="hover:underline">Sobre o SURA, Inc.</a></li>
-      </ul>
-    </div>
-
-    <!-- Coluna 4 -->
-    <div class="space-y-6">
-      <div>
-        <h3 class="font-semibold mb-3">Redes sociais</h3>
-        <div class="flex space-x-4 text-2xl">
-          <a href="#" class="hover:text-[#1877F2]"><i class="fab fa-facebook"></i></a>
-          <a href="#" class="hover:text-[#E4405F]"><i class="fab fa-instagram"></i></a>
-          <a href="#" class="hover:text-[#FF0000]"><i class="fab fa-youtube"></i></a>
-        </div>
-      </div>
-      <div>
-        <h3 class="font-semibold mb-3">Formas de pagamento</h3>
-        <div class="flex flex-wrap gap-3 items-center">
-          <!-- Mastercard -->
-          <img src="https://img.icons8.com/color/48/mastercard-logo.png" class="h-8" alt="Mastercard">
-
-          <!-- Pix (SVG inline, sem depender de link externo) -->
-          <svg viewBox="0 0 64 64" class="h-8 w-8" role="img" aria-label="Pix" title="Pix">
-            <!-- losango com cantos suavizados -->
-            <rect x="14" y="14" width="36" height="36" rx="10" ry="10"
-                  transform="rotate(45 32 32)" fill="#32BCAD"/>
-            <!-- detalhes leves para lembrar o traço interno (opcional) -->
-            <path d="M22 32h20" stroke="white" stroke-width="3" stroke-linecap="round" opacity="0.9"/>
-            <path d="M32 22v20" stroke="white" stroke-width="3" stroke-linecap="round" opacity="0.9"/>
-          </svg>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Linha de baixo -->
-  <div class="border-t border-gray-700 mt-6 py-4 text-center text-xs text-gray-400 flex flex-wrap justify-center gap-4">
-    <a href="#" class="hover:underline">Brasil</a>
-    <a href="#" class="hover:underline">Política de privacidade</a>
-    <a href="#" class="hover:underline">Política de cookies</a>
-    <a href="#" class="hover:underline">Termos de uso</a>
-  </div>
-
-  <!-- Créditos -->
-  <div class="text-center text-xs text-gray-500 px-6 pb-6">
-    © 2025 Hydrax. Todos os direitos reservados. 
-  </div>
-</footer>
 <script>
     // Principal
     const tamanhoBtnsPrincipal = document.querySelectorAll('.tamanho-btn-produto');

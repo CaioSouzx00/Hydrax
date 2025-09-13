@@ -17,6 +17,9 @@ use App\Http\Controllers\PrivacidadeController;
 use App\Http\Controllers\ProdutoController;
 use App\Http\Controllers\CarrinhoController;
 use App\Http\Controllers\RelatorioController;
+use App\Http\Controllers\ListaDesejoController;
+use App\Http\Controllers\AvaliacaoController;
+
 
 
 Route::prefix('fornecedores/senha')->group(function () {
@@ -107,6 +110,12 @@ Route::post('/carrinho/finalizar', [CarrinhoController::class, 'processarFinaliz
 Route::get('/meus-pedidos', [CarrinhoController::class, 'meusPedidos'])->name('usuarios.pedidos');
 Route::get('/pedidos/{pedido}', [CarrinhoController::class, 'detalhePedido'])->name('pedidos.detalhe');
 Route::post('/carrinho/aplicar-cupom', [\App\Http\Controllers\CarrinhoController::class, 'aplicarCupom'])->name('carrinho.aplicarCupom');
+Route::get('/lista-desejos', [ListaDesejoController::class, 'index'])->name('lista-desejos.index');
+Route::post('/lista-desejos/{id_produtos}', [ListaDesejoController::class, 'store'])->name('lista-desejos.store');
+Route::delete('/lista-desejos/{id_produtos}', [ListaDesejoController::class, 'destroy'])->name('lista-desejos.destroy');
+
+Route::get('/avaliacoes/create/{id_produto}', [AvaliacaoController::class, 'create'])->name('avaliacoes.create');
+Route::post('/avaliacoes/store/{id_produto}', [AvaliacaoController::class, 'store'])->name('avaliacoes.store');
 
 ////////////////////////Rotas de views do FOOTER/////////////////////////////
 

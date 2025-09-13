@@ -52,5 +52,11 @@ public function carrinhoItens()
     return $this->hasMany(CarrinhoItem::class, 'produto_id', 'id_produtos');
 }
 
+public function avaliacoes()
+{
+    return $this->hasMany(Avaliacao::class, 'id_produtos', 'id_produtos');
+}
+
+
 
 }

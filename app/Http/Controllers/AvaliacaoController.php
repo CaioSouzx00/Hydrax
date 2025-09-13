@@ -1,0 +1,41 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Avaliacao;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+class AvaliacaoController extends Controller
+{
+  // Mostra a tela de avaliação
+    public function create($id_produto)
+    {
+        return view('usuarios.avaliacoes.create', compact('id_produto'));
+    }
+
+    // Salva a avaliação
+    public function store(Request $request, $id_produto)
+    {
+        $idUsuario = Auth::guard('usuarios')->id();
+
+        $request->validate([
+            'nota' => 'required|integer|min:1|max:5',
+            'comentario' => 'nullable|string|max:500',
+        ]);
+
+        // Impede duplicidade
+        if (Avaliacao::where('id_usuarios', $idUsuario)->where('id_produtos', $id_produto)->exists()) {
+            return back()->with('error', 'Você já avaliou este produto.');
+        }
+
+        Avaliacao::create([
+            'id_usuarios' => $idUsuario,
+            'id_produtos' => $id_produto,
+            'nota' => $request->nota,
+            'comentario' => $request->comentario,
+        ]);
+
+        return redirect()->back()->with('success', 'Avaliação enviada!');
+    }
+}

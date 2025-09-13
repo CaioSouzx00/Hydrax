@@ -91,13 +91,12 @@
         $subtotal = $item->quantidade * $item->produto->preco;
         $foto = json_decode($item->produto->fotos ?? '[]', true)[0] ?? null;
 
-        // Verifica se o cupom foi aplicado neste item
+        // Verifica desconto
         $descontoItem = 0;
         if(isset($cupomAplicado)) {
             if($cupomAplicado['tipo'] === 'percentual'){
                 $descontoItem = $subtotal * ($cupomAplicado['valor']/100);
             } else {
-                // Cupom fixo distribuído proporcionalmente
                 $totalProdutos = $pedido->itens->sum(fn($i)=> $i->quantidade * $i->produto->preco);
                 $descontoItem = ($subtotal / $totalProdutos) * $cupomAplicado['valor'];
             }
@@ -106,6 +105,11 @@
         $subtotalComDesconto = $subtotal - $descontoItem;
         $totalItens += $subtotalComDesconto;
         $descontoTotal += $descontoItem;
+
+        // Verifica se já foi avaliado
+        $jaAvaliado = \App\Models\Avaliacao::where('id_usuarios', Auth::guard('usuarios')->id())
+                        ->where('id_produtos', $item->produto->id_produtos)
+                        ->exists();
     @endphp
 
     <div class="flex flex-col md:flex-row items-center justify-between border-b border-[#14ba88]/20 py-4 last:border-b-0 gap-4">
@@ -135,6 +139,18 @@
                 <p class="text-gray-400 text-sm mt-1">{{ $item->produto->descricao }}</p>
             @endif
         </div>
+
+        <!-- Botão de avaliação -->
+        @if($pedido->status === 'finalizado' && !$jaAvaliado)
+            <div class="mt-2 md:mt-0">
+                <a href="{{ route('avaliacoes.create', ['id_produto' => $item->produto->id_produtos]) }}"
+                   class="px-4 py-2 bg-[#14ba88] hover:bg-[#0f9e70] text-black font-semibold rounded-lg shadow-md transition">
+                    Avaliar Produto
+                </a>
+            </div>
+        @elseif($pedido->status === 'finalizado' && $jaAvaliado)
+            <span class="px-4 py-2 bg-gray-600 text-white text-sm rounded-lg">Produto avaliado</span>
+        @endif
     </div>
 @endforeach
 

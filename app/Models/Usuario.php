@@ -63,5 +63,10 @@ public function getCarrinhoAtivoAttribute()
     return $this->carrinhoAtivo()->first();
 }
 
+public function wishlist()
+{
+    return $this->hasMany(ListaDesejo::class, 'id_usuarios', 'id_usuarios');
+}
+
 
 }
