@@ -42,7 +42,7 @@ class FornecedorController extends Controller
         }
 
         FornecedorPendente::create([
-            'nome_empresa' => $validated['nome_empresa'], 
+            'nome_empresa' => $validated['nome_empresa'],
             'cnpj' => $validated['cnpj'],
             'email' => $validated['email'],
             'telefone' => $validated['telefone'],
@@ -62,7 +62,7 @@ class FornecedorController extends Controller
         ];
 
         if (Auth::guard('fornecedores')->attempt($credentials)) {
-            $request->session()->regenerate();  
+            $request->session()->regenerate();
             return redirect()->route('fornecedores.dashboard');
         }
 
@@ -128,16 +128,41 @@ class FornecedorController extends Controller
         return view('fornecedores.dashboard', compact('fornecedor'));
     }
 
+    // --- Toggle Produto ---
     public function toggleProduto($id)
     {
         $produto = ProdutoFornecedor::findOrFail($id);
 
-        // Alterna entre 0 e 1
+        // Alterna ativo
         $produto->ativo = !$produto->ativo;
         $produto->save();
 
         $status = $produto->ativo ? 'ATIVO' : 'INATIVO';
 
-        return redirect()->back()->with('success', "Produto atualizado para {$status} com sucesso!");
+        // Retorna JSON para não recarregar a página
+        return response()->json([
+            'success' => true,
+            'message' => "Produto atualizado para {$status} com sucesso!",
+            'produto_id' => $produto->id_produtos,
+            'ativo' => $produto->ativo
+        ]);
+    }
+
+    // --- Excluir Produto ---
+    public function destroyProduto($id)
+    {
+        $produto = ProdutoFornecedor::findOrFail($id);
+
+        if ($produto->foto) {
+            Storage::disk('public')->delete($produto->foto);
+        }
+
+        $produto->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => "Produto excluído com sucesso!",
+            'produto_id' => $id
+        ]);
     }
 }

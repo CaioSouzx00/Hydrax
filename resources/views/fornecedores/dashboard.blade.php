@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -28,6 +29,7 @@
       transition: opacity 0.3s ease;
       z-index: 40;
     }
+
     #overlay.active {
       opacity: 0.5;
       pointer-events: auto;
@@ -49,6 +51,7 @@
       font-size: 0.75rem;
       letter-spacing: 1px;
     }
+
     .field-value {
       color: #ffffff;
       font-size: 1rem;
@@ -65,11 +68,13 @@
       font-weight: 600;
       text-transform: uppercase;
     }
+
     .status-ativo {
       background-color: rgba(34, 197, 94, 0.2);
       color: #22c55e;
       border: 1px solid #22c55e;
     }
+
     .status-inativo {
       background-color: rgba(239, 68, 68, 0.2);
       color: #ef4444;
@@ -77,10 +82,16 @@
     }
 
     /* Perfil */
-    #perfil-section { display: none; }
-    #perfil-section.show { display: block; }
+    #perfil-section {
+      display: none;
+    }
+
+    #perfil-section.show {
+      display: block;
+    }
   </style>
 </head>
+
 <body class="text-white flex min-h-screen">
 
   <!-- Overlay -->
@@ -113,8 +124,8 @@
       <!-- User dropdown -->
       <div id="user-dropdown" class="relative group flex items-center space-x-3 cursor-pointer">
         <div class="w-10 h-10 bg-[#d5891b] rounded-full flex items-center justify-center hover:bg-[#b3731a] transition-colors">
-                     <img src="{{ $fornecedor->foto ? asset('storage/' . $fornecedor->foto) : asset('images/default-avatar.png') }}" alt="Foto da Empresa" class="w-10 h-10 bg-[#d5891b] border-2 border-[#d5891b] rounded-full flex items-center justify-center hover:bg-[#b3731a] transition-colors">
-        
+          <img src="{{ $fornecedor->foto ? asset('storage/' . $fornecedor->foto) : asset('images/default-avatar.png') }}" alt="Foto da Empresa" class="w-10 h-10 bg-[#d5891b] border-2 border-[#d5891b] rounded-full flex items-center justify-center hover:bg-[#b3731a] transition-colors">
+
           <svg xmlns="http" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21h18M9 8h6M9 12h6M9 16h6M4 21V5a1 1 0 011-1h3v4h8V4h3a1 1 0 011 1v16" />
           </svg>
@@ -124,7 +135,7 @@
         @php $fornecedor = Auth::guard('fornecedores')->user(); @endphp
 
         <button type="button" class="flex items-center space-x-2 focus:outline-none text-white font-semibold hover:text-[#d5891b] transition-colors">
-          <span>{{ \Illuminate\Support\Str::limit($fornecedor->nome_empresa, 15, '...') }} ▾</span>        </button>
+          <span>{{ \Illuminate\Support\Str::limit($fornecedor->nome_empresa, 15, '...') }} ▾</span> </button>
         <!-- Logout menu -->
         <div id="logout-menu" class="absolute right-0 hidden mt-14 bg-[#211828]/90 border border-[#d5891b] rounded shadow-lg py-2 min-w-[140px] z-50">
           <form method="POST" action="{{ route('fornecedores.logout') }}">
@@ -144,47 +155,47 @@
     <main class="pt-20 pb-10 px-8 bg-transparent flex-1 overflow-auto">
       <!-- Success message -->
       @if(session('success'))
-        <div id="success-message" class="bg-green-600 text-white p-2 rounded mb-4 w-full max-w-md transition-opacity duration-500">
-          {{ session('success') }}
-        </div>
+      <div id="success-message" class="bg-green-600 text-white p-2 rounded mb-4 w-full max-w-md transition-opacity duration-500">
+        {{ session('success') }}
+      </div>
       @endif
 
-<div id="dashboard-content" class="space-y-6">
-  <h1 class="text-3xl font-bold mb-4">Bem-vindo, {{ $fornecedor->nome_empresa }}!</h1>
-  <p class="text-gray-300">Aqui está um resumo rápido das suas informações no sistema:</p>
+      <div id="dashboard-content" class="space-y-6">
+        <h1 class="text-3xl font-bold mb-4">Bem-vindo, {{ $fornecedor->nome_empresa }}!</h1>
+        <p class="text-gray-300">Aqui está um resumo rápido das suas informações no sistema:</p>
 
-  <!-- Resumo rápido -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-    <div class="card-glass p-4 text-center">
-      <h3 class="text-lg font-semibold text-[#d5891b] mb-2">Status da Conta</h3>
-      <span class="status-badge {{ $fornecedor->status === 'ATIVO' ? 'status-ativo' : 'status-inativo' }}">
-        {{ $fornecedor->status }}
-      </span>
-    </div>
+        <!-- Resumo rápido -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="card-glass p-4 text-center">
+            <h3 class="text-lg font-semibold text-[#d5891b] mb-2">Status da Conta</h3>
+            <span class="status-badge {{ $fornecedor->status === 'ATIVO' ? 'status-ativo' : 'status-inativo' }}">
+              {{ $fornecedor->status }}
+            </span>
+          </div>
 
-    <div class="card-glass p-4 text-center">
-      <h3 class="text-lg font-semibold text-[#d5891b] mb-2">Última Atualização</h3>
-      <p class="field-value">{{ $fornecedor->updated_at?->format('d/m/Y H:i:s') ?? 'Nunca atualizado' }}</p>
-    </div>
+          <div class="card-glass p-4 text-center">
+            <h3 class="text-lg font-semibold text-[#d5891b] mb-2">Última Atualização</h3>
+            <p class="field-value">{{ $fornecedor->updated_at?->format('d/m/Y H:i:s') ?? 'Nunca atualizado' }}</p>
+          </div>
 
-    <div class="card-glass p-4 text-center">
-      <h3 class="text-lg font-semibold text-[#d5891b] mb-2">Ações Rápidas</h3>
-      <div class="flex flex-col gap-2">
-        <a href="{{ route('fornecedores.produtos.index') }}" class="px-2 py-1 bg-[#14ba88] rounded hover:bg-[#2d4e50] transition">Meus Produtos</a>
+          <div class="card-glass p-4 text-center">
+            <h3 class="text-lg font-semibold text-[#d5891b] mb-2">Ações Rápidas</h3>
+            <div class="flex flex-col gap-2">
+              <a href="{{ route('fornecedores.produtos.index') }}" class="px-2 py-1 bg-[#14ba88] rounded hover:bg-[#2d4e50] transition">Meus Produtos</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Informação complementar -->
+        <div class="card-glass p-6">
+          <h2 class="text-xl font-bold text-[#d5891b] mb-2">Dicas e Atalhos</h2>
+          <ul class="list-disc list-inside text-gray-300">
+            <li>Clique em "Gerenciar Produtos" para atualizar ou adicionar novos produtos.</li>
+            <li>Verifique seu perfil regularmente para manter seus dados atualizados.</li>
+            <li>Use a seção de segurança para atualizar sua senha sempre que necessário.</li>
+          </ul>
+        </div>
       </div>
-    </div>
-  </div>
-
-  <!-- Informação complementar -->
-  <div class="card-glass p-6">
-    <h2 class="text-xl font-bold text-[#d5891b] mb-2">Dicas e Atalhos</h2>
-    <ul class="list-disc list-inside text-gray-300">
-      <li>Clique em "Gerenciar Produtos" para atualizar ou adicionar novos produtos.</li>
-      <li>Verifique seu perfil regularmente para manter seus dados atualizados.</li>
-      <li>Use a seção de segurança para atualizar sua senha sempre que necessário.</li>
-    </ul>
-  </div>
-</div>
 
 
       <!-- Perfil Section -->
@@ -223,8 +234,12 @@
           <div class="card-glass p-6">
             <h3 class="text-lg font-semibold text-[#d5891b] mb-4 flex items-center">Informações da Empresa</h3>
             <div class="space-y-4">
-              <div><label class="field-label">Nome da Empresa</label><p class="field-value">{{ $fornecedor->nome_empresa }}</p></div>
-              <div><label class="field-label">CNPJ</label><p class="field-value">{{ $fornecedor->cnpj }}</p></div>
+              <div><label class="field-label">Nome da Empresa</label>
+                <p class="field-value">{{ $fornecedor->nome_empresa }}</p>
+              </div>
+              <div><label class="field-label">CNPJ</label>
+                <p class="field-value">{{ $fornecedor->cnpj }}</p>
+              </div>
               <div><label class="field-label">Status da Conta</label>
                 <span class="status-badge {{ $fornecedor->status === 'ATIVO' ? 'status-ativo' : 'status-inativo' }}">{{ $fornecedor->status }}</span>
               </div>
@@ -235,8 +250,12 @@
           <div class="card-glass p-6">
             <h3 class="text-lg font-semibold text-[#d5891b] mb-4 flex items-center">Informações de Contato</h3>
             <div class="space-y-4">
-              <div><label class="field-label">E-mail</label><p class="field-value">{{ $fornecedor->email }}</p></div>
-              <div><label class="field-label">Telefone</label><p class="field-value">{{ $fornecedor->telefone }}</p></div>
+              <div><label class="field-label">E-mail</label>
+                <p class="field-value">{{ $fornecedor->email }}</p>
+              </div>
+              <div><label class="field-label">Telefone</label>
+                <p class="field-value">{{ $fornecedor->telefone }}</p>
+              </div>
             </div>
           </div>
 
@@ -244,8 +263,12 @@
           <div class="card-glass p-6">
             <h3 class="text-lg font-semibold text-[#d5891b] mb-4 flex items-center">Informações do Sistema</h3>
             <div class="space-y-4">
-              <div><label class="field-label">Data de Cadastro</label><p class="field-value">{{ $fornecedor->created_at?->format('d/m/Y H:i:s') ?? 'Não informado' }}</p></div>
-              <div><label class="field-label">Última Atualização</label><p class="field-value">{{ $fornecedor->updated_at?->format('d/m/Y H:i:s') ?? 'Nunca atualizado' }}</p></div>
+              <div><label class="field-label">Data de Cadastro</label>
+                <p class="field-value">{{ $fornecedor->created_at?->format('d/m/Y H:i:s') ?? 'Não informado' }}</p>
+              </div>
+              <div><label class="field-label">Última Atualização</label>
+                <p class="field-value">{{ $fornecedor->updated_at?->format('d/m/Y H:i:s') ?? 'Nunca atualizado' }}</p>
+              </div>
             </div>
           </div>
 
@@ -337,4 +360,5 @@
   </script>
 
 </body>
+
 </html>
