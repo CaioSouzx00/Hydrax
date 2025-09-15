@@ -12,17 +12,30 @@ public function index()
 {
     $idUsuario = Auth::guard('usuarios')->id();
 
-    $desejos = ListaDesejo::with('produto')
-        ->where('id_usuarios', $idUsuario)
-        ->get();
+    $desejos = ListaDesejo::with(['produto' => function($query) {
+        $query->with('fornecedor')        // fornecedor do produto
+              ->with('avaliacoes')        // todas as avaliações
+              ->withAvg('avaliacoes', 'nota'); // média das notas
+    }])
+    ->where('id_usuarios', $idUsuario)
+    ->get();
 
     return view('usuarios.lista-desejos', compact('desejos'));
 }
 
 
-public function store($id_produtos)
+
+public function store($id_produtos, Request $request)
 {
     $idUsuario = Auth::guard('usuarios')->id();
+
+    if (!$idUsuario) {
+        if ($request->ajax()) {
+            return response()->json(['success' => false, 'action' => null], 401);
+        } else {
+            return redirect()->route('login');
+        }
+    }
 
     $item = ListaDesejo::where('id_usuarios', $idUsuario)
         ->where('id_produtos', $id_produtos)
@@ -31,20 +44,34 @@ public function store($id_produtos)
     if ($item) {
         // Já existe → remover
         $item->delete();
-        return redirect()
-            ->route('lista-desejos.index')
-            ->with('success', 'Produto removido da lista de desejos!');
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'action' => 'removido',
+            ]);
+        } else {
+            return redirect()->route('lista-desejos.index');
+        }
     } else {
         // Não existe → adicionar
         ListaDesejo::create([
             'id_usuarios' => $idUsuario,
             'id_produtos' => $id_produtos,
         ]);
-        return redirect()
-            ->route('lista-desejos.index')
-            ->with('success', 'Produto adicionado à lista de desejos!');
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'action' => 'adicionado',
+            ]);
+        } else {
+            return redirect()->route('lista-desejos.index');
+        }
     }
 }
+
+
 
 
 public function destroy($id_produtos)

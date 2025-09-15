@@ -19,6 +19,7 @@ use App\Http\Controllers\CarrinhoController;
 use App\Http\Controllers\RelatorioController;
 use App\Http\Controllers\ListaDesejoController;
 use App\Http\Controllers\AvaliacaoController;
+use App\Http\Controllers\ProdutosRecomendadosController;
 
 
 
@@ -113,9 +114,9 @@ Route::post('/carrinho/aplicar-cupom', [\App\Http\Controllers\CarrinhoController
 Route::get('/lista-desejos', [ListaDesejoController::class, 'index'])->name('lista-desejos.index');
 Route::post('/lista-desejos/{id_produtos}', [ListaDesejoController::class, 'store'])->name('lista-desejos.store');
 Route::delete('/lista-desejos/{id_produtos}', [ListaDesejoController::class, 'destroy'])->name('lista-desejos.destroy');
-
 Route::get('/avaliacoes/create/{id_produto}', [AvaliacaoController::class, 'create'])->name('avaliacoes.create');
 Route::post('/avaliacoes/store/{id_produto}', [AvaliacaoController::class, 'store'])->name('avaliacoes.store');
+
 
 ////////////////////////Rotas de views do FOOTER/////////////////////////////
 

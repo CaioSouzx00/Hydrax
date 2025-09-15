@@ -13,11 +13,22 @@
     $enderecos = $usuario->enderecos ?? collect();
     $carrinho = $carrinho ?? $usuario->carrinhoAtivo;
     $cupons = $cupons ?? collect();
-    $cupomAplicado = session('cupom') ?? null;
 
-    $total = 0;
+    $subtotal = $carrinho->itens->sum(fn($item) => $item->produto->preco * $item->quantidade);
     $entrega = 15;
+    $totalComEntrega = $subtotal + $entrega;
+
+    $cupomAplicado = session('cupom_aplicado') ?? null;
     $desconto = 0;
+
+    if ($cupomAplicado) {
+        if ($cupomAplicado['tipo'] === 'percentual') {
+            $desconto = $totalComEntrega * ($cupomAplicado['valor']/100);
+        } else {
+            $desconto = $cupomAplicado['valor'];
+        }
+        $totalComEntrega -= $desconto;
+    }
 @endphp
 
 <div class="container mx-auto max-w-6xl grid grid-cols-1 md:grid-cols-3 gap-12 py-10">
@@ -40,7 +51,6 @@
         <!-- Endereço -->
         <div class="bg-[#1b1b27] p-6 rounded-2xl shadow-md border border-[#14ba88]/20">
             <h2 class="font-extrabold uppercase mb-4 text-[#14ba88] text-lg">Endereço de entrega</h2>
-
             @if($enderecos->isEmpty())
                 <form action="{{ route('usuarios.enderecos.store') }}" method="POST" class="space-y-4">
                     @csrf
@@ -126,51 +136,41 @@
             <h2 class="font-extrabold uppercase mb-6 text-[#14ba88]">Seu Pedido</h2>
 
             @foreach($carrinho->itens as $item)
-                @if($item->produto)
-                    @php
-                        $subtotal = $item->quantidade * $item->produto->preco;
-                        $total += $subtotal;
-                        $foto = is_array(json_decode($item->produto->fotos, true)) 
-                            ? json_decode($item->produto->fotos, true)[0] 
-                            : $item->produto->fotos;
-                    @endphp
-                    <div class="flex items-center justify-between border-b border-[#14ba88]/10 py-3">
-                        <div class="flex items-center space-x-3">
-                            <img src="{{ asset('storage/' . $foto) }}" 
-                                 alt="{{ $item->produto->nome }}" 
-                                 class="w-16 h-16 object-cover rounded">
-                            <span>{{ $item->produto->nome }} ({{ $item->quantidade }})</span>
-                        </div>
-                        <span>R$ {{ number_format($subtotal, 2, ',', '.') }}</span>
+                @php
+                    $itemSubtotal = $item->produto->preco * $item->quantidade;
+                @endphp
+                <div class="flex items-center justify-between border-b border-[#14ba88]/10 py-3">
+                    <div class="flex items-center space-x-3">
+                        @php
+                            $foto = is_array(json_decode($item->produto->fotos, true)) 
+                                ? json_decode($item->produto->fotos, true)[0] 
+                                : $item->produto->fotos;
+                        @endphp
+                        <img src="{{ asset('storage/' . $foto) }}" alt="{{ $item->produto->nome }}" class="w-16 h-16 object-cover rounded">
+                        <span>{{ $item->produto->nome }} ({{ $item->quantidade }})</span>
                     </div>
-                @endif
+                    <span>R$ {{ number_format($itemSubtotal, 2, ',', '.') }}</span>
+                </div>
             @endforeach
 
-            @php
-                $totalComEntrega = $total + $entrega;
-                if($cupomAplicado) {
-                    if($cupomAplicado['tipo'] === 'percentual'){
-                        $desconto = $totalComEntrega * ($cupomAplicado['valor']/100);
-                    } else {
-                        $desconto = $cupomAplicado['valor'];
-                    }
-                    $totalComEntrega -= $desconto;
-                }
-            @endphp
+            <div class="flex justify-between mt-2 text-sm border-t border-gray-300 pt-3">
+                <span>Subtotal</span>
+                <span>R$ {{ number_format($subtotal, 2, ',', '.') }}</span>
+            </div>
 
-            <div class="flex justify-between mt-4 text-sm text-gray-300">
+            <div class="flex justify-between mt-1 text-sm">
                 <span>Entrega</span>
                 <span>R$ {{ number_format($entrega, 2, ',', '.') }}</span>
             </div>
 
-            @if($cupomAplicado)
-                <div class="flex justify-between mt-2 text-sm text-green-400 font-bold">
-                    <span>Desconto ({{ $cupomAplicado['codigo'] }})</span>
+            @if($desconto > 0)
+                <div class="flex justify-between mt-1 text-sm text-green-600">
+                    <span>Cupom ({{ $cupomAplicado['codigo'] }})</span>
                     <span>- R$ {{ number_format($desconto, 2, ',', '.') }}</span>
                 </div>
             @endif
 
-            <div class="flex justify-between mt-2 text-lg font-bold border-t border-[#14ba88]/30 pt-3">
+            <div class="flex justify-between mt-2 text-lg font-bold">
                 <span>Total</span>
                 <span>R$ {{ number_format($totalComEntrega, 2, ',', '.') }}</span>
             </div>
@@ -178,6 +178,7 @@
 
     </div>
 </div>
+
 @include('usuarios.partials.footer')
 </body>
 </html>
