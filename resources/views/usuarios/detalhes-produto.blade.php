@@ -86,7 +86,7 @@
              @endphp
              @if(count($coresComPrincipal))
              <div>
-                 <h3 class="font-semibold mb-1 text-white">Imagens</h3>
+                 <h3 class="font-semibold text-white">Imagens</h3>
                  <div class="flex gap-3">
                      @foreach($coresComPrincipal as $img)
                          <img src="{{ asset('storage/' . $img) }}"
@@ -98,7 +98,7 @@
              @endif
 
              @if(count($tamanhos))
-             <div class="flex flex-wrap gap-2 mt-2">
+             <div class="flex flex-wrap gap-2">
                  @foreach($tamanhos as $tamanho)
                      <button type="button" 
                              class="tamanho-btn-produto px-4 py-2 border border-gray-600 rounded-md hover:bg-[#14ba88]/20 transition"
@@ -115,12 +115,28 @@
      <form action="{{ route('carrinho.adicionar', $produto->id_produtos) }}" method="POST" id="form-carrinho-principal" class="flex-1">
          @csrf
          <input type="hidden" name="tamanho" id="tamanhoSelecionadoPrincipal">
-         <button type="submit" 
-                 class="w-full px-5 py-3 overflow-hidden font-bold text-gray-600 bg-white border border-[#14ba88] rounded-lg shadow-inner group text-lg">
-             <span class="relative transition-colors duration-300 delay-200 group-hover:text-white ease">
-                 Adicionar ao carrinho
-             </span>
-         </button>
+<button type="submit" 
+        class="relative w-full px-5 py-3 overflow-hidden font-medium text-gray-600 bg-gray-100 border border-[#14ba88] rounded-lg shadow-inner group text-lg">
+
+    <!-- Top border -->
+    <span class="absolute top-0 left-0 w-0 h-0 transition-all duration-200 border-t-2 border-[#14ba88] group-hover:w-full ease"></span>
+
+    <!-- Bottom border -->
+    <span class="absolute bottom-0 right-0 w-0 h-0 transition-all duration-200 border-b-2 border-[#14ba88] group-hover:w-full ease"></span>
+
+    <!-- Top fill -->
+    <span class="absolute top-0 left-0 w-full h-0 transition-all duration-300 delay-200 bg-[#14ba88]/20 group-hover:h-full ease"></span>
+
+    <!-- Bottom fill -->
+    <span class="absolute bottom-0 left-0 w-full h-0 transition-all duration-300 delay-200 bg-[#14ba88]/20 group-hover:h-full ease"></span>
+
+    <!-- Overlay fade -->
+    <span class="absolute inset-0 w-full h-full duration-300 delay-300 bg-[#14ba88] opacity-0 group-hover:opacity-100 rounded-lg"></span>
+
+    <!-- Button text -->
+    <span class="relative transition-colors duration-300 delay-200 group-hover:text-white ease">Adicionar ao carrinho</span>
+</button>
+
          <p id="erroTamanhoPrincipal" class="text-red-500 mt-2 hidden">
              Por favor, selecione um tamanho antes.
          </p>
@@ -129,7 +145,7 @@
      <form action="{{ route('lista-desejos.store', $produto->id_produtos) }}" method="POST">
          @csrf
          <button type="submit" 
-                 class="w-14 h-14 flex items-center justify-center bg-[#111] border border-[#d5891b]/50 rounded-lg hover:bg-[#222] transition"
+                 class="w-14 h-14 flex items-center justify-center bg-[#042118] border border-[#d5891b]/50 rounded-lg hover:bg-[#14BA88]/10 transition"
                  title="Adicionar à lista de desejos">
              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-[#d5891b]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -151,192 +167,206 @@
  <hr class="border-t border-[#d5891b]/20 my-12">
 
 
- <div class="mt-12 max-w-6xl mx-auto px-4 space-y-4">
+ <div class="mt-12 space-y-4">
 
      <div class="flex flex-col gap-2">
 
-         <button class="w-full bg-[#111] border border-[#14ba88] text-white font-bold py-4 rounded-lg hover:bg-[#14ba88]/20 transition"
+         <button class="w-full bg-[#111]/50 border border-[#D5891B]/30 text-white font-bold py-4 rounded-lg hover:bg-[#14ba88]/20 transition"
         data-target="descricao">
     Descrição
 </button>
-<div id="descricao" class="hidden w-full bg-[#111] border border-[#14ba88]/20 p-6 rounded-lg">
+<div id="descricao" class="hidden w-full bg-gradient-to-br from-[#0b282a]/90 to-[#17110d]/90 border border-[#D5891B]/30 p-6 rounded-xl shadow-md backdrop-blur-sm">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
         <!-- Texto -->
-        <p class="text-gray-300 text-lg leading-relaxed">
-            {{ $produto->descricao ?? 'Sem descrição disponível.' }}
-        </p>
+        <div>
+            <h2 class="text-xl font-bold text-[#D5891B]/90 border-b border-[#D5891B]/30 pb-1 mb-3">
+                Detalhes do Produto
+            </h2>
+            <p class="text-gray-300 text-base leading-relaxed">
+                {{ $produto->descricao ?? 'Sem descrição disponível.' }}
+            </p>
+        </div>
 
-        <!-- Imagem -->
-        <img src="{{ asset('storage/' . ($fotos[0] ?? 'sem-imagem.png')) }}"
-             alt="{{ $produto->nome }}"
-             class="w-full h-auto object-contain rounded-lg">
+            <!-- Imagem com zoom seguindo o mouse -->
+            <div class="flex justify-center">
+                <div class="relative overflow-hidden rounded-lg border border-[#D5891B] shadow-lg w-full max-w-sm cursor-zoom-in"> 
+                    <img id="zoom-img"
+                         src="{{ asset('storage/' . ($fotos[0] ?? 'sem-imagem.png')) }}"
+                         alt="{{ $produto->nome }}"
+                         class="w-full h-auto object-contain transition-transform duration-300 ease-out">
+                </div>
+            </div>
     </div>
 </div>
 
+<script>
+    const zoomImg = document.getElementById("zoom-img");
+    const container = zoomImg.parentElement;
 
-         <button class="w-full bg-[#111] border border-[#14ba88] text-white font-bold py-4 rounded-lg hover:bg-[#14ba88]/20 transition"
+    container.addEventListener("mousemove", (e) => {
+        const { left, top, width, height } = container.getBoundingClientRect();
+        const x = ((e.clientX - left) / width) * 100;
+        const y = ((e.clientY - top) / height) * 100;
+
+        zoomImg.style.transformOrigin = `${x}% ${y}%`;
+        zoomImg.style.transform = "scale(2)";
+    });
+
+    container.addEventListener("mouseleave", () => {
+        zoomImg.style.transformOrigin = "center center";
+        zoomImg.style.transform = "scale(1)";
+    });
+</script>
+
+
+
+         <button class="w-full bg-[#111]/50 border border-[#D5891B]/30 text-white font-bold py-4 rounded-lg hover:bg-[#14ba88]/20 transition"
                  data-target="avaliacoes">
-             Avaliações ({{ $totalAvaliadores }})
+             Avaliações({{ $totalAvaliadores }})
          </button>
-         <div id="avaliacoes" class="hidden w-full bg-[#0b282a] border border-[#14ba88]/30 p-6 rounded-lg max-h-[70vh] overflow-y-auto">
-             
-             @if($totalAvaliadores > 0)
-                 <div class="flex flex-col md:flex-row justify-between items-center mb-6">
-                     <div class="text-white text-3xl font-bold mb-4 md:mb-0">{{ $totalAvaliadores }} Avaliações</div>
-                     <div class="flex items-center space-x-2 text-xl md:text-2xl">
-                         @for($i = 1; $i <= 5; $i++)
-                             @if($i <= floor($notaMedia))
-                                 <span class="text-[#14ba88]">&#9733;</span>
-                             @elseif($i - 0.5 <= $notaMedia)
-                                 <span class="text-[#14ba88] opacity-50">&#9733;</span>
-                             @else
-                                 <span class="text-gray-600">&#9733;</span>
-                             @endif
-                         @endfor
-                     </div>
-                 </div>
-                 
-                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                     <div class="flex items-center gap-4">
-                         <div class="text-6xl font-extrabold text-[#14ba88]">{{ number_format($notaMedia, 1) }}</div>
-                         <div class="flex flex-col">
-                             <div class="flex text-2xl mb-1">
-                                 @for($i = 1; $i <= 5; $i++)
-                                     @if($i <= round($notaMedia))
-                                         <span class="text-[#14ba88]">&#9733;</span>
-                                     @else
-                                         <span class="text-gray-600">&#9733;</span>
-                                     @endif
-                                 @endfor
-                             </div>
-                             <div class="text-sm text-gray-400">{{ $totalAvaliadores }} avaliações</div>
-                         </div>
-                     </div>
+         <div id="avaliacoes" class="hidden w-full bg-gradient-to-br from-[#0b282a]/90 to-[#17110d]/90  border border-[#D5891B]/30 p-6 rounded-lg max-h-[70vh] overflow-y-auto custom-scroll">
+    @if($totalAvaliadores > 0)
+        <!-- Resumo geral -->
+        <div class="flex flex-col md:flex-row justify-between items-center mb-6">
+            <div class="text-white text-3xl font-bold mb-4 md:mb-0">Avaliações ({{ $totalAvaliadores }})</div>
+            <div class="flex items-center space-x-2 text-xl md:text-2xl">
+                @for($i = 1; $i <= 5; $i++)
+                    @if($i <= floor($notaMedia))
+                        <span class="text-[#14ba88]">&#9733;</span>
+                    @elseif ($i - 0.5 <= $notaMedia)
+                        <span class="text-[#14ba88] opacity-50">&#9733;</span>
+                    @else
+                        <span class="text-gray-600">&#9733;</span>
+                    @endif
+                @endfor
+            </div>
+        </div>
 
-                     <div class="space-y-4">
-                         <div>
-                             <span class="text-gray-300">Conforto</span>
-                             <div class="relative w-full h-2 bg-gray-700 rounded-full mt-1">
-                                 <div class="h-full bg-[#14ba88] rounded-full" style="width: {{ min(100, ($confortoDist / 5) * 100) }}%;"></div>
-                             </div>
-                             <div class="flex justify-between text-xs mt-1 text-gray-400">
-                                 <span>Muito Ruim</span>
-                                 <span>Excelente</span>
-                             </div>
-                         </div>
-                         
-                         <div>
-                             <span class="text-gray-300">Qualidade</span>
-                             <div class="relative w-full h-2 bg-gray-700 rounded-full mt-1">
-                                 <div class="h-full bg-[#14ba88] rounded-full" style="width: {{ min(100, ($qualidadeDist / 5) * 100) }}%;"></div>
-                             </div>
-                             <div class="flex justify-between text-xs mt-1 text-gray-400">
-                                 <span>Muito Ruim</span>
-                                 <span>Excelente</span>
-                             </div>
-                         </div>
-                         
-                         <div>
-                             <span class="text-gray-300">Tamanho</span>
-                             <div class="relative w-full h-2 bg-gray-700 rounded-full mt-1">
-                                 <div class="h-full bg-[#14ba88] rounded-full" style="width: {{ min(100, ($tamanhoDist / 5) * 100) }}%;"></div>
-                             </div>
-                             <div class="flex justify-between text-xs mt-1 text-gray-400">
-                                 <span>Muito Pequeno</span>
-                                 <span>Perfeito</span>
-                                 <span>Muito Grande</span>
-                             </div>
-                         </div>
-                         
-                         <div>
-                             <span class="text-gray-300">Largura</span>
-                             <div class="relative w-full h-2 bg-gray-700 rounded-full mt-1">
-                                 <div class="h-full bg-[#14ba88] rounded-full" style="width: {{ min(100, ($larguraDist / 5) * 100) }}%;"></div>
-                             </div>
-                             <div class="flex justify-between text-xs mt-1 text-gray-400">
-                                 <span>Muito Pequeno</span>
-                                 <span>Perfeito</span>
-                                 <span>Muito Largo</span>
-                             </div>
-                         </div>
-                     </div>
-                 </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+            <!-- Nota média -->
+            <div class="flex items-center gap-4">
+                <div class="text-6xl font-extrabold text-[#14ba88]">{{ number_format($notaMedia, 1) }}</div>
+                <div class="flex flex-col">
+                    <div class="flex text-2xl mb-1">
+                        @for($i = 1; $i <= 5; $i++)
+                            @if($i <= round($notaMedia))
+                                <span class="text-[#14ba88]">&#9733;</span>
+                            @else
+                                <span class="text-gray-600">&#9733;</span>
+                            @endif
+                        @endfor
+                    </div>
+                    <div class="text-sm text-gray-400">avaliações ({{ $totalAvaliadores }})</div>
+                </div>
+            </div>
 
-                 <hr class="border-t border-[#14ba88]/20 my-8">
+            <!-- Distribuições -->
+            <div class="space-y-4">
+                @foreach(['Conforto' => $confortoDist, 'Qualidade' => $qualidadeDist, 'Tamanho' => $tamanhoDist, 'Largura' => $larguraDist] as $key => $value)
+                    <div>
+                        <span class="text-gray-300">{{ $key }}</span>
+                        <div class="relative w-full h-2 bg-gray-700 rounded-full mt-1">
+                            <div class="h-full bg-[#14ba88] rounded-full" style="width: {{ min(100, ($value / 5) * 100) }}%;"></div>
+                        </div>
+                        <div class="flex justify-between text-xs mt-1 text-gray-400">
+                            @if($key == 'Conforto' || $key == 'Qualidade')
+                                <span>Muito Ruim</span><span>Excelente</span>
+                            @elseif($key == 'Tamanho' || $key == 'Largura')
+                                <span>Muito Pequeno</span><span>Perfeito</span><span>Grande</span>
+                            @endif
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
 
-                 <div class="flex flex-col md:flex-row justify-between items-center mb-6 space-y-4 md:space-y-0">
-                     <div class="flex items-center space-x-2">
-                         <span class="text-gray-400">Filtrar por avaliações</span>
-                         <div class="flex space-x-1">
-                         <button class="px-3 py-1 border border-gray-600 rounded-md hover:bg-gray-700 transition" data-nota="5">5 ★</button>
-                         <button class="px-3 py-1 border border-gray-600 rounded-md hover:bg-gray-700 transition" data-nota="4">4 ★</button>
-                         <button class="px-3 py-1 border border-gray-600 rounded-md hover:bg-gray-700 transition" data-nota="3">3 ★</button>
-                         <button class="px-3 py-1 border border-gray-600 rounded-md hover:bg-gray-700 transition" data-nota="2">2 ★</button>
-                         <button class="px-3 py-1 border border-gray-600 rounded-md hover:bg-gray-700 transition" data-nota="1">1 ★</button>
-                         <button class="px-3 py-1 border border-gray-600 rounded-md hover:bg-gray-700 transition" data-nota="all">Todos</button>
-                         </div>
-                     </div>
-                     <div>
-                         <span class="text-gray-400">Ordenar por:</span>
-                         <select class="bg-[#111] border border-gray-600 rounded-md py-1 px-2 text-white">
-                             <option value="mais-recente">Mais recente</option>
-                             <option value="maior-nota">Maior nota</option>
-                             <option value="menor-nota">Menor nota</option>
-                         </select>
-                     </div>
-                 </div>
-             
+        <hr class="border-t border-[#14ba88]/20 my-8">
 
-                <div class="space-y-4 max-h-[70vh] overflow-y-auto pr-2 avaliacoes-container">
-                 @foreach($avaliacoes->sortByDesc('created_at') as $avaliacao)
-                     {{-- ADICIONE A CLASSE ABAIXO --}}
-                     <div class="bg-[#111] border border-[#14ba88]/20 p-4 rounded-lg avaliacao-item"
-                          data-nota="{{ $avaliacao->nota }}"
-                          data-timestamp="{{ $avaliacao->created_at->timestamp }}">
-                         <div class="flex justify-between items-center mb-2">
-                             <span class="font-semibold text-[#14ba88]">{{ $avaliacao->usuario->nome_completo }}</span>
-                             <span class="text-gray-500 text-sm">{{ $avaliacao->created_at->format('d/m/Y') }}</span>
-                         </div>
-                         <div class="flex text-xl mb-2">
-                             @for($i = 1; $i <= 5; $i++)
-                                 @if($i <= $avaliacao->nota)
-                                     <span class="text-[#14ba88]">&#9733;</span>
-                                 @else
-                                     <span class="text-gray-600">&#9733;</span>
-                                 @endif
-                             @endfor
-                         </div>
-                         @if($avaliacao->comentario)
-                             <p class="text-gray-300 mt-2">{{ $avaliacao->comentario }}</p>
-                         @endif
-                         @if($avaliacao->conforto || $avaliacao->qualidade || $avaliacao->tamanho || $avaliacao->largura)
-                             <div class="flex flex-wrap gap-4 mt-4 text-sm text-gray-400">
-                                 @if($avaliacao->conforto)
-                                     <span>**Conforto:** {{ ['Muito Ruim', 'Ruim', 'Médio', 'Bom', 'Excelente'][$avaliacao->conforto-1] }}</span>
-                                 @endif
-                                 @if($avaliacao->qualidade)
-                                     <span>**Qualidade:** {{ ['Muito Ruim', 'Ruim', 'Médio', 'Bom', 'Excelente'][$avaliacao->qualidade-1] }}</span>
-                                 @endif
-                                 @if($avaliacao->tamanho)
-                                     <span>**Tamanho:** {{ ['Muito Pequeno', 'Pequeno', 'Perfeito', 'Grande', 'Muito Grande'][$avaliacao->tamanho-1] }}</span>
-                                 @endif
-                                 @if($avaliacao->largura)
-                                     <span>**Largura:** {{ ['Muito Pequeno', 'Pequeno', 'Perfeito', 'Largo', 'Muito Largo'][$avaliacao->largura-1] }}</span>
-                                 @endif
-                             </div>
-                         @endif
-                     </div>
-                 @endforeach
-             </div>
-                 @else
-                     <div class="text-center text-gray-400">
-                         <p class="text-lg">Nenhuma avaliação para este produto ainda.</p>
-                         <a href="{{ route('avaliacoes.create', $produto->id_produtos) }}" class="mt-4 inline-block px-4 py-2 rounded-lg bg-[#14ba88] text-black font-semibold hover:bg-[#117c66] transition">
-                             Seja o primeiro a avaliar!
-                         </a>
-                     </div>
-                 @endif
-         </div>
+        <!-- Filtros e ordenação -->
+        <div class="flex flex-col md:flex-row justify-between items-center mb-6 space-y-4 md:space-y-0">
+            <div class="flex items-center space-x-2">
+                <span class="text-gray-400">Filtrar por avaliações</span>
+                <div class="flex space-x-1">
+                    @for($i = 5; $i >= 1; $i--)
+                        <button class="px-3 py-1 border border-gray-600 rounded-md hover:bg-gray-700 transition" data-nota="{{ $i }}">{{ $i }} ★</button>
+                    @endfor
+                    <button class="px-3 py-1 border border-gray-600 rounded-md hover:bg-gray-700 transition" data-nota="all">Todos</button>
+                </div>
+            </div>
+            <div>
+                <span class="text-gray-400">Ordenar por:</span>
+                <select class="bg-[#111] border border-gray-600 rounded-md py-1 px-2 text-white">
+                    <option value="mais-recente">Mais recente</option>
+                    <option value="maior-nota">Maior nota</option>
+                    <option value="menor-nota">Menor nota</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Lista de avaliações -->
+        <div class="space-y-4 avaliacoes-container">
+            @foreach($avaliacoes->sortByDesc('created_at') as $avaliacao)
+                <div class="bg-[#111] border border-[#14ba88]/20 p-4 rounded-lg avaliacao-item"
+                     data-nota="{{ $avaliacao->nota }}"
+                     data-timestamp="{{ $avaliacao->created_at->timestamp }}">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-semibold text-[#14ba88]">{{ $avaliacao->usuario->nome_completo }}</span>
+                        <span class="text-gray-500 text-sm">{{ $avaliacao->created_at->format('d/m/Y') }}</span>
+                    </div>
+                    <div class="flex text-xl mb-2">
+                        @for($i = 1; $i <= 5; $i++)
+                            @if($i <= $avaliacao->nota)
+                                <span class="text-[#14ba88]">&#9733;</span>
+                            @else
+                                <span class="text-gray-600">&#9733;</span>
+                            @endif
+                        @endfor
+                    </div>
+                    @if($avaliacao->comentario)
+                        <p class="text-gray-300 mt-2">{{ $avaliacao->comentario }}</p>
+                    @endif
+                </div>
+            @endforeach
+        </div>
+
+    @else
+        <div class="text-center text-gray-400">
+            <p class="text-lg">Nenhuma avaliação para este produto ainda.</p>
+            <a href="{{ route('avaliacoes.create', $produto->id_produtos) }}" class="mt-4 inline-block px-4 py-2 rounded-lg bg-[#14ba88] text-black font-semibold hover:bg-[#117c66] transition">
+                Seja o primeiro a avaliar!
+            </a>
+        </div>
+    @endif
+</div>
+
+<style>
+/* Barra de rolagem dourado escuro e transparente */
+.custom-scroll::-webkit-scrollbar {
+    width: 10px;
+}
+
+.custom-scroll::-webkit-scrollbar-track {
+    background: #0b282a;
+    border-radius: 10px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, rgba(197,133,41,0.7), rgba(226,155,55,0.7), rgba(127,58,14,0.7));
+    border-radius: 10px;
+    border: 2px solid #0b282a;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, rgba(180,112,20,0.8), rgba(197,133,41,0.8), rgba(127,58,14,0.8));
+}
+
+/* Firefox */
+.custom-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(197,133,41,0.7) #0b282a;
+}
+</style>
+
 
      </div>
  </div>
@@ -537,6 +567,6 @@
          });
      });
  </script>
-
+@include('usuarios.partials.footer')
  </body>
  </html>
