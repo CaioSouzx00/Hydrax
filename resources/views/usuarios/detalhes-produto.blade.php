@@ -156,14 +156,23 @@
      <div class="flex flex-col gap-2">
 
          <button class="w-full bg-[#111] border border-[#14ba88] text-white font-bold py-4 rounded-lg hover:bg-[#14ba88]/20 transition"
-                 data-target="descricao">
-             Descrição
-         </button>
-         <div id="descricao" class="hidden w-full bg-[#111] border border-[#14ba88]/20 p-6 rounded-lg">
-             <p class="text-gray-300 text-lg leading-relaxed">
-                 {{ $produto->descricao ?? 'Sem descrição disponível.' }}
-             </p>
-         </div>
+        data-target="descricao">
+    Descrição
+</button>
+<div id="descricao" class="hidden w-full bg-[#111] border border-[#14ba88]/20 p-6 rounded-lg">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+        <!-- Texto -->
+        <p class="text-gray-300 text-lg leading-relaxed">
+            {{ $produto->descricao ?? 'Sem descrição disponível.' }}
+        </p>
+
+        <!-- Imagem -->
+        <img src="{{ asset('storage/' . ($fotos[0] ?? 'sem-imagem.png')) }}"
+             alt="{{ $produto->nome }}"
+             class="w-full h-auto object-contain rounded-lg">
+    </div>
+</div>
+
 
          <button class="w-full bg-[#111] border border-[#14ba88] text-white font-bold py-4 rounded-lg hover:bg-[#14ba88]/20 transition"
                  data-target="avaliacoes">
@@ -277,7 +286,8 @@
                      </div>
                  </div>
              
-             <div class="space-y-4 max-h-[70vh] overflow-y-auto pr-2">
+
+                <div class="space-y-4 max-h-[70vh] overflow-y-auto pr-2 avaliacoes-container">
                  @foreach($avaliacoes->sortByDesc('created_at') as $avaliacao)
                      {{-- ADICIONE A CLASSE ABAIXO --}}
                      <div class="bg-[#111] border border-[#14ba88]/20 p-4 rounded-lg avaliacao-item"
@@ -354,61 +364,61 @@
  </script>
 
  <script>
-     // Seleciona os elementos principais
-     const avaliacoesContainer = document.querySelector('.space-y-4.max-h-\[70vh\]');
-     const botoesFiltro = document.querySelectorAll('[data-nota]');
-     const seletorOrdenacao = document.querySelector('select');
-     const avaliacoes = document.querySelectorAll('.avaliacao-item');
+    const avaliacoesContainer = document.querySelector('.avaliacoes-container');
+    const botoesFiltro = document.querySelectorAll('[data-nota]');
+    const seletorOrdenacao = document.querySelector('select');
+    let avaliacoes = Array.from(document.querySelectorAll('.avaliacao-item'));
 
-     function renderizarAvaliacoes(avaliacoesArray) {
-         avaliacoesContainer.innerHTML = '';
-         avaliacoesArray.forEach(avaliacao => {
-             avaliacoesContainer.appendChild(avaliacao);
-         });
-     }
+    function renderizarAvaliacoes(avaliacoesArray) {
+        avaliacoesContainer.innerHTML = '';
+        avaliacoesArray.forEach(avaliacao => {
+            avaliacoesContainer.appendChild(avaliacao);
+        });
+    }
 
-     function ordenarAvaliacoes(avaliacoesArray) {
-         const ordenacao = seletorOrdenacao.value;
-         if (ordenacao === 'mais-recente') {
-             return avaliacoesArray.sort((a, b) => b.dataset.timestamp - a.dataset.timestamp);
-         } else if (ordenacao === 'maior-nota') {
-             return avaliacoesArray.sort((a, b) => b.dataset.nota - a.dataset.nota);
-         } else if (ordenacao === 'menor-nota') {
-             return avaliacoesArray.sort((a, b) => a.dataset.nota - b.dataset.nota);
-         }
-         return avaliacoesArray;
-     }
+    function ordenarAvaliacoes(avaliacoesArray) {
+        const ordenacao = seletorOrdenacao.value;
+        if (ordenacao === 'mais-recente') {
+            return avaliacoesArray.sort((a, b) => b.dataset.timestamp - a.dataset.timestamp);
+        } else if (ordenacao === 'maior-nota') {
+            return avaliacoesArray.sort((a, b) => b.dataset.nota - a.dataset.nota);
+        } else if (ordenacao === 'menor-nota') {
+            return avaliacoesArray.sort((a, b) => a.dataset.nota - b.dataset.nota);
+        }
+        return avaliacoesArray;
+    }
 
-     function aplicarFiltrosEOrdenacao() {
-         const notaAtiva = document.querySelector('.bg-gray-600.text-white[data-nota]');
-         const notaSelecionada = notaAtiva ? notaAtiva.dataset.nota : 'all';
+    function aplicarFiltrosEOrdenacao() {
+        const notaAtiva = document.querySelector('.bg-gray-600.text-white[data-nota]');
+        const notaSelecionada = notaAtiva ? notaAtiva.dataset.nota : 'all';
 
-         let avaliacoesFiltradas = Array.from(avaliacoes).filter(avaliacao => {
-             const nota = avaliacao.dataset.nota;
-             return notaSelecionada === 'all' || nota === notaSelecionada;
-         });
+        let avaliacoesFiltradas = avaliacoes.filter(avaliacao => {
+            const nota = avaliacao.dataset.nota;
+            return notaSelecionada === 'all' || Number(nota) === Number(notaSelecionada);
+        });
 
-         const avaliacoesOrdenadas = ordenarAvaliacoes(avaliacoesFiltradas);
-         renderizarAvaliacoes(avaliacoesOrdenadas);
-     }
+        const avaliacoesOrdenadas = ordenarAvaliacoes(avaliacoesFiltradas);
+        renderizarAvaliacoes(avaliacoesOrdenadas);
+    }
 
-     botoesFiltro.forEach(botao => {
-         botao.addEventListener('click', () => {
-             botoesFiltro.forEach(b => b.classList.remove('bg-gray-600', 'text-white'));
-             botao.classList.add('bg-gray-600', 'text-white');
-             aplicarFiltrosEOrdenacao();
-         });
-     });
+    botoesFiltro.forEach(botao => {
+        botao.addEventListener('click', () => {
+            botoesFiltro.forEach(b => b.classList.remove('bg-gray-600', 'text-white'));
+            botao.classList.add('bg-gray-600', 'text-white');
+            aplicarFiltrosEOrdenacao();
+        });
+    });
 
-     seletorOrdenacao.addEventListener('change', () => {
-         aplicarFiltrosEOrdenacao();
-     });
+    seletorOrdenacao.addEventListener('change', () => {
+        aplicarFiltrosEOrdenacao();
+    });
 
-     // Inicia a renderização com as configurações padrão ao carregar a página.
-     window.addEventListener('load', () => {
-         aplicarFiltrosEOrdenacao();
-     });
- </script>
+    // inicia com tudo renderizado
+    window.addEventListener('load', () => {
+        aplicarFiltrosEOrdenacao();
+    });
+</script>
+
 
 
  @if(isset($produtos) && $produtos->isNotEmpty())
