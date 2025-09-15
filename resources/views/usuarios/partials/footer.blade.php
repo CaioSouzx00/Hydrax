@@ -65,9 +65,9 @@
   <!-- Linha de baixo -->
   <div class="border-t border-gray-700 mt-6 py-4 text-center text-xs text-gray-400 flex flex-wrap justify-center gap-4">
     <a href="#" class="hover:underline">Brasil</a>
-    <a href="#" class="hover:underline">Política de privacidade</a>
-    <a href="#" class="hover:underline">Política de cookies</a>
-    <a href="#" class="hover:underline">Termos de uso</a>
+    <a href="{{ url('/politica-privacidade') }}" class="hover:underline">Política de privacidade</a>
+    <a href="{{ url('/politica-cookies') }}" class="hover:underline">Política de cookies</a>
+    <a href="{{ url('/termos-de-uso') }}" class="hover:underline">Termos de uso</a>
   </div>
 
   <!-- Créditos -->
