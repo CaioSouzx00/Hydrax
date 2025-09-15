@@ -121,6 +121,10 @@ Route::post('/avaliacoes/store/{id_produto}', [AvaliacaoController::class, 'stor
 ////////////////////////Rotas de views do FOOTER/////////////////////////////
 
 Route::view('/quem-somos', 'usuarios.quem_somos');
+Route::view('/politica-privacidade', 'usuarios.privacidade');
+Route::view('/politica-cookies', 'usuarios.cookies');
+Route::view('/termos-de-uso', 'usuarios.termos-de-uso');
+
 
 
 });
