@@ -347,15 +347,18 @@
     <!-- Gênero -->
     <h3 class="font-semibold mb-3 text-[#14ba88]">Gênero</h3>
     <div class="flex flex-col gap-1">
-        <label class="flex items-center gap-2 cursor-pointer">
-            <input type="radio" name="genero" value="MASCULINO" class="accent-[#14ba88]"> Masculino
-        </label>
-        <label class="flex items-center gap-2 cursor-pointer">
-            <input type="radio" name="genero" value="FEMININO" class="accent-[#14ba88]"> Feminino
-        </label>
-        <label class="flex items-center gap-2 cursor-pointer">
-            <input type="radio" name="genero" value="UNISSEX" class="accent-[#14ba88]"> Unissex
-        </label>
+        @foreach(['MASCULINO', 'FEMININO', 'UNISSEX'] as $g)
+            <label class="cursor-pointer">
+                <input type="radio" name="genero" value="{{ $g }}" 
+                       class="peer hidden" 
+                       {{ request('genero') === $g ? 'checked' : '' }}>
+                <span class="flex items-center gap-2 px-2 py-1 border rounded-lg transition
+                            peer-checked:bg-[#14ba88]/30 peer-checked:border-[#14ba88]
+                            bg-black/30 border-[#14ba88]/30 hover:bg-[#14ba88]/20">
+                    {{ ucfirst(strtolower($g)) }}
+                </span>
+            </label>
+        @endforeach
     </div>
 
     <!-- Categoria -->
@@ -363,73 +366,77 @@
     <select name="categoria" 
             class="w-full p-2 bg-black/30 text-white border border-[#14ba88]/50 rounded-lg backdrop-blur-sm focus:ring-2 focus:ring-[#14ba88] focus:outline-none">
         <option value="">Todas</option>
-        <option value="Corrida">Corrida</option>
-        <option value="Basquete">Basquete</option>
-        <option value="Lifestyle">Lifestyle</option>
+        <option value="Corrida" {{ request('categoria') === 'Corrida' ? 'selected' : '' }}>Corrida</option>
+        <option value="Basquete" {{ request('categoria') === 'Basquete' ? 'selected' : '' }}>Basquete</option>
+        <option value="Lifestyle" {{ request('categoria') === 'Lifestyle' ? 'selected' : '' }}>Lifestyle</option>
     </select>
 
-    <!-- Tamanho -->
-    <h3 class="font-semibold mt-5 mb-2 text-[#14ba88]">Tamanho</h3>
-    <div class="flex flex-wrap gap-2">
-        @foreach([37,38,39,40,41,42,43,44,45,46] as $t)
-            <label class="flex items-center justify-center px-2 py-1 bg-black/30 border border-[#14ba88]/30 rounded-lg cursor-pointer hover:bg-[#14ba88]/20 transition">
-                <input type="radio" name="tamanho" value="{{ $t }}" class="accent-[#14ba88] hidden"> {{ $t }}
-            </label>
-        @endforeach
-    </div>
+<!-- Tamanho -->
+<h3 class="font-semibold mt-5 mb-2 text-[#14ba88]">Tamanho</h3>
+<div class="grid grid-cols-4 gap-2">
+    @foreach([37,38,39,40,41,42,43,44,45,46] as $t)
+        <label class="cursor-pointer">
+            <input type="radio" name="tamanho" value="{{ $t }}" class="peer hidden" 
+                   {{ request('tamanho') == $t ? 'checked' : '' }}>
+            <span class="flex items-center justify-center w-12 h-12 border rounded-lg transition
+                        peer-checked:bg-[#14ba88]/30 peer-checked:border-[#14ba88]
+                        bg-black/30 border-[#14ba88]/30 hover:bg-[#14ba88]/20 text-white font-bold">
+                {{ $t }}
+            </span>
+        </label>
+    @endforeach
+</div>
+
 
     <!-- Preço -->
     <h3 class="font-semibold mt-5 mb-2 text-[#14ba88]">Preço</h3>
     <div class="flex items-center gap-2">
         <input type="number" name="preco_min" placeholder="Mín" 
+               value="{{ request('preco_min') ?? '' }}"
                class="w-20 p-2 bg-black/30 text-white border border-[#14ba88]/50 rounded-lg focus:ring-2 focus:ring-[#14ba88] focus:outline-none">
         <span class="text-[#14ba88] font-bold">-</span>
         <input type="number" name="preco_max" placeholder="Máx" 
+               value="{{ request('preco_max') ?? '' }}"
                class="w-20 p-2 bg-black/30 text-white border border-[#14ba88]/50 rounded-lg focus:ring-2 focus:ring-[#14ba88] focus:outline-none">
     </div>
 
-<!-- Botões do sidebar -->
-<div class="flex flex-col gap-3 mt-5">
-    <!-- Botão Filtrar (verde Hydrax) -->
-    <button type="submit" 
-        class="relative inline-flex items-center justify-center px-6 py-3 overflow-hidden font-bold text-white rounded-md shadow-2xl group">
-        
-        <span class="absolute inset-0 w-full h-full transition duration-300 ease-out opacity-0 
-                     bg-gradient-to-br from-[#14ba88]/70 via-[#14ba88]/50 to-[#14ba88]/30 
-                     group-hover:opacity-100 rounded-md"></span>
+    <!-- Botões do sidebar -->
+    <div class="flex flex-col gap-3 mt-5">
+        <!-- Botão Filtrar -->
+        <button type="submit" 
+            class="relative inline-flex items-center justify-center px-6 py-3 overflow-hidden font-bold text-white rounded-md shadow-2xl group">
+            <span class="absolute inset-0 w-full h-full transition duration-300 ease-out opacity-0 
+                         bg-gradient-to-br from-[#14ba88]/70 via-[#14ba88]/50 to-[#14ba88]/30 
+                         group-hover:opacity-100 rounded-md"></span>
+            <span class="absolute top-0 left-0 w-full bg-gradient-to-b from-white to-transparent opacity-5 h-1/3 rounded-t-md"></span>
+            <span class="absolute bottom-0 left-0 w-full h-1/3 bg-gradient-to-t from-white to-transparent opacity-5 rounded-b-md"></span>
+            <span class="absolute bottom-0 left-0 w-4 h-full bg-gradient-to-r from-white to-transparent opacity-5 rounded-l-md"></span>
+            <span class="absolute bottom-0 right-0 w-4 h-full bg-gradient-to-l from-white to-transparent opacity-5 rounded-r-md"></span>
+            <span class="absolute inset-0 w-full h-full border border-[#14ba88]/50 rounded-md opacity-20"></span>
+            <span class="absolute w-0 h-0 transition-all duration-300 ease-out bg-[#14ba88]/20 rounded-full 
+                         group-hover:w-56 group-hover:h-56 opacity-20"></span>
+            <span class="relative">Filtrar</span>
+        </button>
 
-        <span class="absolute top-0 left-0 w-full bg-gradient-to-b from-white to-transparent opacity-5 h-1/3 rounded-t-md"></span>
-        <span class="absolute bottom-0 left-0 w-full h-1/3 bg-gradient-to-t from-white to-transparent opacity-5 rounded-b-md"></span>
-        <span class="absolute bottom-0 left-0 w-4 h-full bg-gradient-to-r from-white to-transparent opacity-5 rounded-l-md"></span>
-        <span class="absolute bottom-0 right-0 w-4 h-full bg-gradient-to-l from-white to-transparent opacity-5 rounded-r-md"></span>
-        <span class="absolute inset-0 w-full h-full border border-[#14ba88]/50 rounded-md opacity-20"></span>
-        <span class="absolute w-0 h-0 transition-all duration-300 ease-out bg-[#14ba88]/20 rounded-full 
-                     group-hover:w-56 group-hover:h-56 opacity-20"></span>
-
-        <span class="relative">Filtrar</span>
-    </button>
-
-    <!-- Botão Limpar filtros (preto/cinza) -->
-    <button type="button" id="limpar-filtros" 
-        class="relative inline-flex items-center justify-center px-6 py-3 overflow-hidden font-bold text-white rounded-md shadow-2xl group">
-        
-        <span class="absolute inset-0 w-full h-full transition duration-300 ease-out opacity-0 
-                     bg-gradient-to-br from-gray-800 via-gray-700 to-black 
-                     group-hover:opacity-100 rounded-md"></span>
-
-        <span class="absolute top-0 left-0 w-full bg-gradient-to-b from-white to-transparent opacity-5 h-1/3 rounded-t-md"></span>
-        <span class="absolute bottom-0 left-0 w-full h-1/3 bg-gradient-to-t from-white to-transparent opacity-5 rounded-b-md"></span>
-        <span class="absolute bottom-0 left-0 w-4 h-full bg-gradient-to-r from-white to-transparent opacity-5 rounded-l-md"></span>
-        <span class="absolute bottom-0 right-0 w-4 h-full bg-gradient-to-l from-white to-transparent opacity-5 rounded-r-md"></span>
-        <span class="absolute inset-0 w-full h-full border border-gray-600 rounded-md opacity-20"></span>
-        <span class="absolute w-0 h-0 transition-all duration-300 ease-out bg-gray-500/20 rounded-full 
-                     group-hover:w-56 group-hover:h-56 opacity-20"></span>
-
-        <span class="relative">Limpar filtros</span>
-    </button>
-</div>
-
+        <!-- Botão Limpar filtros (preto/cinza, sem reload) -->
+        <button type="button" id="limpar-filtros" 
+            class="relative inline-flex items-center justify-center px-6 py-3 overflow-hidden font-bold text-white rounded-md shadow-2xl group"
+            onclick="document.getElementById('sidebar-filtros').reset();">
+            <span class="absolute inset-0 w-full h-full transition duration-300 ease-out opacity-0 
+                         bg-gradient-to-br from-gray-800 via-gray-700 to-black 
+                         group-hover:opacity-100 rounded-md"></span>
+            <span class="absolute top-0 left-0 w-full bg-gradient-to-b from-white to-transparent opacity-5 h-1/3 rounded-t-md"></span>
+            <span class="absolute bottom-0 left-0 w-full h-1/3 bg-gradient-to-t from-white to-transparent opacity-5 rounded-b-md"></span>
+            <span class="absolute bottom-0 left-0 w-4 h-full bg-gradient-to-r from-white to-transparent opacity-5 rounded-l-md"></span>
+            <span class="absolute bottom-0 right-0 w-4 h-full bg-gradient-to-l from-white to-transparent opacity-5 rounded-r-md"></span>
+            <span class="absolute inset-0 w-full h-full border border-gray-600 rounded-md opacity-20"></span>
+            <span class="absolute w-0 h-0 transition-all duration-300 ease-out bg-gray-500/20 rounded-full 
+                         group-hover:w-56 group-hover:h-56 opacity-20"></span>
+            <span class="relative">Limpar filtros</span>
+        </button>
+    </div>
 </form>
+
 
 
         <!-- Grid de produtos (3 colunas centralizadas) -->
