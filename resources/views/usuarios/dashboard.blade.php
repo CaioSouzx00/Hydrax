@@ -292,7 +292,7 @@
         <hr class="border-t border-[#d5891b]/20 ml-44 my-12">
         <h2 class="text-2xl pl-12 font-bold">NOVOS NA HYDRAX</h2>
         <div id="ultimos-produtos-container" 
-     class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 pr-10">
+     class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
     @forelse($ultimosProdutos ?? [] as $produto)
         @include('usuarios.partials.card-rec', ['produto' => $produto])
     @empty
@@ -321,7 +321,7 @@
 
         
     </div>
-<h2 class="text-2xl pl-24 font-bold">PRODUTOS</h2>
+<h2 class="text-2xl pl-24 pb-5 font-bold">PRODUTOS</h2>
     <style>
         body { overflow-x: hidden; }
     </style>
@@ -339,42 +339,98 @@
 </div>
 
 
-        <!-- SIDEBAR DE FILTROS -->
-        <form id="sidebar-filtros" method="GET" action="{{ route('dashboard') }}" 
-            class="w-64 p-4 bg-black/30 backdrop-blur-md text-white border-r border-[#D5891B]/30 
-                   absolute h-full z-40 transform -translate-x-full opacity-0 transition-all duration-500 ease-in-out">
-            
-            <h3 class="font-bold mb-2 text-[#B69F8F]">Gênero</h3>
-            <label class="inline-block mb-1"><input type="radio" name="genero" value="MASCULINO"> Masculino</label><br>
-            <label class="inline-block mb-1"><input type="radio" name="genero" value="FEMININO"> Feminino</label><br>
-            <label class="inline-block mb-1"><input type="radio" name="genero" value="UNISSEX"> Unissex</label>
+<!-- SIDEBAR DE FILTROS -->
+<form id="sidebar-filtros" method="GET" action="{{ route('dashboard') }}" 
+      class="w-64 p-5 bg-black/30 backdrop-blur-md text-white border-r border-[#14ba88]/30 
+             absolute h-full z-40 transform -translate-x-full opacity-0 transition-all duration-500 ease-in-out rounded-r-lg">
 
-            <h3 class="font-bold mt-4 mb-2 text-[#B69F8F]">Categoria</h3>
-            <select name="categoria" class="border border-[#D5891B]/50 p-1 w-full bg-black/30 text-white rounded backdrop-blur-sm">
-                <option value="">Todas</option>
-                <option value="Corrida">Corrida</option>
-                <option value="Basquete">Basquete</option>
-                <option value="Lifestyle">Lifestyle</option>
-            </select>
+    <!-- Gênero -->
+    <h3 class="font-semibold mb-3 text-[#14ba88]">Gênero</h3>
+    <div class="flex flex-col gap-1">
+        <label class="flex items-center gap-2 cursor-pointer">
+            <input type="radio" name="genero" value="MASCULINO" class="accent-[#14ba88]"> Masculino
+        </label>
+        <label class="flex items-center gap-2 cursor-pointer">
+            <input type="radio" name="genero" value="FEMININO" class="accent-[#14ba88]"> Feminino
+        </label>
+        <label class="flex items-center gap-2 cursor-pointer">
+            <input type="radio" name="genero" value="UNISSEX" class="accent-[#14ba88]"> Unissex
+        </label>
+    </div>
 
-            <h3 class="font-bold mt-4 mb-2 text-[#B69F8F]">Tamanho</h3>
-            @foreach([37,38,39,40,41,42,43,44,45,46] as $t)
-                <label class="inline-block mr-2 mb-2">
-                    <input type="radio" name="tamanho" value="{{ $t }}"> {{ $t }}
-                </label>
-            @endforeach
+    <!-- Categoria -->
+    <h3 class="font-semibold mt-5 mb-2 text-[#14ba88]">Categoria</h3>
+    <select name="categoria" 
+            class="w-full p-2 bg-black/30 text-white border border-[#14ba88]/50 rounded-lg backdrop-blur-sm focus:ring-2 focus:ring-[#14ba88] focus:outline-none">
+        <option value="">Todas</option>
+        <option value="Corrida">Corrida</option>
+        <option value="Basquete">Basquete</option>
+        <option value="Lifestyle">Lifestyle</option>
+    </select>
 
-            <h3 class="font-bold mt-4 mb-2 text-[#B69F8F]">Preço</h3>
-            <input type="number" name="preco_min" placeholder="Mín" class="border border-[#D5891B]/50 p-1 w-20 bg-black/30 text-white rounded backdrop-blur-sm"> -
-            <input type="number" name="preco_max" placeholder="Máx" class="border border-[#D5891B]/50 p-1 w-20 bg-black/30 text-white rounded backdrop-blur-sm">
+    <!-- Tamanho -->
+    <h3 class="font-semibold mt-5 mb-2 text-[#14ba88]">Tamanho</h3>
+    <div class="flex flex-wrap gap-2">
+        @foreach([37,38,39,40,41,42,43,44,45,46] as $t)
+            <label class="flex items-center justify-center px-2 py-1 bg-black/30 border border-[#14ba88]/30 rounded-lg cursor-pointer hover:bg-[#14ba88]/20 transition">
+                <input type="radio" name="tamanho" value="{{ $t }}" class="accent-[#14ba88] hidden"> {{ $t }}
+            </label>
+        @endforeach
+    </div>
 
-            <button type="submit" class="mt-4 bg-[#D5891B]/50 hover:bg-[#e29b37] text-black font-bold px-4 py-2 w-full rounded transition-colors">
-                Filtrar
-            </button>
-            <button type="button" id="limpar-filtros" class="mt-2 bg-gray-700 hover:bg-gray-600 text-white font-bold px-4 py-2 w-full rounded transition-colors">
-                Limpar filtros
-            </button>
-        </form>
+    <!-- Preço -->
+    <h3 class="font-semibold mt-5 mb-2 text-[#14ba88]">Preço</h3>
+    <div class="flex items-center gap-2">
+        <input type="number" name="preco_min" placeholder="Mín" 
+               class="w-20 p-2 bg-black/30 text-white border border-[#14ba88]/50 rounded-lg focus:ring-2 focus:ring-[#14ba88] focus:outline-none">
+        <span class="text-[#14ba88] font-bold">-</span>
+        <input type="number" name="preco_max" placeholder="Máx" 
+               class="w-20 p-2 bg-black/30 text-white border border-[#14ba88]/50 rounded-lg focus:ring-2 focus:ring-[#14ba88] focus:outline-none">
+    </div>
+
+<!-- Botões do sidebar -->
+<div class="flex flex-col gap-3 mt-5">
+    <!-- Botão Filtrar (verde Hydrax) -->
+    <button type="submit" 
+        class="relative inline-flex items-center justify-center px-6 py-3 overflow-hidden font-bold text-white rounded-md shadow-2xl group">
+        
+        <span class="absolute inset-0 w-full h-full transition duration-300 ease-out opacity-0 
+                     bg-gradient-to-br from-[#14ba88]/70 via-[#14ba88]/50 to-[#14ba88]/30 
+                     group-hover:opacity-100 rounded-md"></span>
+
+        <span class="absolute top-0 left-0 w-full bg-gradient-to-b from-white to-transparent opacity-5 h-1/3 rounded-t-md"></span>
+        <span class="absolute bottom-0 left-0 w-full h-1/3 bg-gradient-to-t from-white to-transparent opacity-5 rounded-b-md"></span>
+        <span class="absolute bottom-0 left-0 w-4 h-full bg-gradient-to-r from-white to-transparent opacity-5 rounded-l-md"></span>
+        <span class="absolute bottom-0 right-0 w-4 h-full bg-gradient-to-l from-white to-transparent opacity-5 rounded-r-md"></span>
+        <span class="absolute inset-0 w-full h-full border border-[#14ba88]/50 rounded-md opacity-20"></span>
+        <span class="absolute w-0 h-0 transition-all duration-300 ease-out bg-[#14ba88]/20 rounded-full 
+                     group-hover:w-56 group-hover:h-56 opacity-20"></span>
+
+        <span class="relative">Filtrar</span>
+    </button>
+
+    <!-- Botão Limpar filtros (preto/cinza) -->
+    <button type="button" id="limpar-filtros" 
+        class="relative inline-flex items-center justify-center px-6 py-3 overflow-hidden font-bold text-white rounded-md shadow-2xl group">
+        
+        <span class="absolute inset-0 w-full h-full transition duration-300 ease-out opacity-0 
+                     bg-gradient-to-br from-gray-800 via-gray-700 to-black 
+                     group-hover:opacity-100 rounded-md"></span>
+
+        <span class="absolute top-0 left-0 w-full bg-gradient-to-b from-white to-transparent opacity-5 h-1/3 rounded-t-md"></span>
+        <span class="absolute bottom-0 left-0 w-full h-1/3 bg-gradient-to-t from-white to-transparent opacity-5 rounded-b-md"></span>
+        <span class="absolute bottom-0 left-0 w-4 h-full bg-gradient-to-r from-white to-transparent opacity-5 rounded-l-md"></span>
+        <span class="absolute bottom-0 right-0 w-4 h-full bg-gradient-to-l from-white to-transparent opacity-5 rounded-r-md"></span>
+        <span class="absolute inset-0 w-full h-full border border-gray-600 rounded-md opacity-20"></span>
+        <span class="absolute w-0 h-0 transition-all duration-300 ease-out bg-gray-500/20 rounded-full 
+                     group-hover:w-56 group-hover:h-56 opacity-20"></span>
+
+        <span class="relative">Limpar filtros</span>
+    </button>
+</div>
+
+</form>
+
 
         <!-- Grid de produtos (3 colunas centralizadas) -->
         <div id="produtos-container"

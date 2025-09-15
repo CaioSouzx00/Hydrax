@@ -67,10 +67,10 @@
     </a>
 
     {{-- Botão wishlist fora do link --}}
-    <form action="{{ route('lista-desejos.store', $produto->id_produtos) }}" method="POST" class="absolute top-2 right-2 z-50">
+    <form action="{{ route('lista-desejos.store', $produto->id_produtos) }}" method="POST" class="absolute top-3 right-3 z-20">
         @csrf
-        <button type="submit" class="w-10 h-10 flex items-center justify-center bg-[#111] border border-[#d5891b]/50 rounded-lg hover:bg-[#222] transition">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-[#d5891b]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <button type="submit" class="w-8 h-8 flex items-center justify-center bg-[#071a1c] border border-[#d5891b]/30 rounded-lg hover:bg-[#222] transition">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-[#d5891b]/70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                       d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 
                          4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 
