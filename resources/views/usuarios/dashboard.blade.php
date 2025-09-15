@@ -287,19 +287,19 @@
             </div>
         </div>
 
-            <!-- Últimos Produtos -->
-    <div class="container mt-16 mb-5">
-        <hr class="border-t border-[#d5891b]/20 ml-44 my-12">
-        <h2 class="text-2xl pl-12 font-bold">NOVOS NA HYDRAX</h2>
-        <div id="ultimos-produtos-container" 
-     class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-    @forelse($ultimosProdutos ?? [] as $produto)
-        @include('usuarios.partials.card-rec', ['produto' => $produto])
-    @empty
-        <p class="text-gray-400">Nenhum produto adicionado recentemente.</p>
-    @endforelse
-</div>
+<!-- Produtos Recomendados -->
+<div class="container mt-16 mb-5">
+    <hr class="border-t border-[#d5891b]/20 ml-44 my-12">
+    <h2 class="text-2xl pl-12 font-bold">Produtos Recomendados</h2>
+    <div id="produtos-rec-container" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        @forelse($produtos ?? [] as $produto)
+            @include('usuarios.partials.card-rec', compact('produto', 'idsDesejados'))
+        @empty
+            <p class="text-gray-400">Nenhum produto disponível.</p>
+        @endforelse
     </div>
+</div>
+
 
     <!-- Segundo Carrossel -->
     <div id="carousel-2" class="relative w-full pt-12 pb-12">

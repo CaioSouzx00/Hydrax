@@ -156,10 +156,44 @@
                 <span>R$ 15,00</span>
             </div>
 
-            <div class="flex justify-between mt-2 text-lg font-bold border-t border-gray-300 pt-3">
-                <span>Total</span>
-                <span>R$ {{ number_format($total + 15, 2, ',', '.') }}</span>
-            </div>
+            @php
+    $entrega = 15;
+    $totalComEntrega = $total + $entrega;
+    $desconto = 0;
+
+    if(session('cupom_aplicado')) {
+        $cupom = session('cupom_aplicado');
+        if($cupom['tipo'] === 'percentual') {
+            $desconto = $totalComEntrega * ($cupom['valor']/100);
+        } else {
+            $desconto = $cupom['valor'];
+        }
+        $totalComEntrega -= $desconto;
+    }
+@endphp
+
+<div class="flex justify-between mt-2 text-sm border-t border-gray-300 pt-3">
+    <span>Subtotal</span>
+    <span>R$ {{ number_format($total, 2, ',', '.') }}</span>
+</div>
+
+<div class="flex justify-between mt-1 text-sm">
+    <span>Entrega</span>
+    <span>R$ {{ number_format($entrega, 2, ',', '.') }}</span>
+</div>
+
+@if($desconto > 0)
+    <div class="flex justify-between mt-1 text-sm text-green-600">
+        <span>Cupom ({{ $cupom['codigo'] }})</span>
+        <span>- R$ {{ number_format($desconto, 2, ',', '.') }}</span>
+    </div>
+@endif
+
+<div class="flex justify-between mt-2 text-lg font-bold">
+    <span>Total</span>
+    <span>R$ {{ number_format($totalComEntrega, 2, ',', '.') }}</span>
+</div>
+
         </div>
     </div>
 </form>
