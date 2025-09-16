@@ -171,16 +171,32 @@
 
      <div class="flex flex-col gap-2">
 
-         <button class="w-full bg-[#111]/50 border border-[#D5891B]/30 text-white font-bold py-4 rounded-lg hover:bg-[#14ba88]/20 transition"
+<button id="btn-descricao"
+        class="w-full flex items-center justify-between text-white font-bold py-4 transition"
         data-target="descricao">
-    Descrição
+    <span class="text-left">Descrição</span>
+    <svg id="icon-descricao" class="w-5 h-5 transform transition-transform duration-300"
+         fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M19 9l-7 7-7-7"/>
+    </svg>
 </button>
-<div id="descricao" class="hidden w-full bg-gradient-to-br from-[#0b282a]/90 to-[#17110d]/90 border border-[#D5891B]/30 p-6 rounded-xl shadow-md backdrop-blur-sm">
+
+<script>
+    const btnDesc = document.getElementById("btn-descricao");
+    const iconDesc = document.getElementById("icon-descricao");
+
+    btnDesc.addEventListener("click", () => {
+        iconDesc.classList.toggle("rotate-180");
+    });
+</script>
+
+<div id="descricao" class="hidden w-full p-6">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
         <!-- Texto -->
         <div>
             <h2 class="text-xl font-bold text-[#D5891B]/90 border-b border-[#D5891B]/30 pb-1 mb-3">
-                Detalhes do Produto
+                {{ $produto->nome }}
             </h2>
             <p class="text-gray-300 text-base leading-relaxed">
                 {{ $produto->descricao ?? 'Sem descrição disponível.' }}
@@ -218,17 +234,35 @@
     });
 </script>
 
+<hr class="border-t border-[#d5891b]/20 my-12">
 
+<button id="btn-avaliacoes"
+        class="w-full flex items-center justify-between text-white font-bold py-4 rounded-lg transition"
+        data-target="avaliacoes">
+    <span class="text-left">Avaliações({{ $totalAvaliadores }})</span>
+<h3 class="text-right pl-[1000px]">★ ★ ★ ★ ★</h3>
+    <svg id="icon-avaliacoes" class="w-5 h-5 transform transition-transform duration-300"
+         fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M19 9l-7 7-7-7"/>
+    </svg>
+    
+</button>
 
-         <button class="w-full bg-[#111]/50 border border-[#D5891B]/30 text-white font-bold py-4 rounded-lg hover:bg-[#14ba88]/20 transition"
-                 data-target="avaliacoes">
-             Avaliações({{ $totalAvaliadores }})
-         </button>
-         <div id="avaliacoes" class="hidden w-full bg-gradient-to-br from-[#0b282a]/90 to-[#17110d]/90  border border-[#D5891B]/30 p-6 rounded-lg max-h-[70vh] overflow-y-auto custom-scroll">
+<script>
+    const btn = document.getElementById("btn-avaliacoes");
+    const icon = document.getElementById("icon-avaliacoes");
+
+    btn.addEventListener("click", () => {
+        icon.classList.toggle("rotate-180");
+    });
+</script>
+
+         <div id="avaliacoes" class="hidden w-full p-6 rounded-lg max-full overflow-y-auto custom-scroll">
     @if($totalAvaliadores > 0)
         <!-- Resumo geral -->
         <div class="flex flex-col md:flex-row justify-between items-center mb-6">
-            <div class="text-white text-3xl font-bold mb-4 md:mb-0">Avaliações ({{ $totalAvaliadores }})</div>
+            <div class="text-white text-3xl font-bold md:mb-0"></div>
             <div class="flex items-center space-x-2 text-xl md:text-2xl">
                 @for($i = 1; $i <= 5; $i++)
                     @if($i <= floor($notaMedia))
@@ -244,7 +278,7 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
             <!-- Nota média -->
-            <div class="flex items-center gap-4">
+            <div class="flex items-center gap-4 mb-12">
                 <div class="text-6xl font-extrabold text-[#14ba88]">{{ number_format($notaMedia, 1) }}</div>
                 <div class="flex flex-col">
                     <div class="flex text-2xl mb-1">
@@ -306,7 +340,7 @@
         <!-- Lista de avaliações -->
         <div class="space-y-4 avaliacoes-container">
             @foreach($avaliacoes->sortByDesc('created_at') as $avaliacao)
-                <div class="bg-[#111] border border-[#14ba88]/20 p-4 rounded-lg avaliacao-item"
+                <div class="p-4 rounded-lg avaliacao-item bg-black/10 rounded"
                      data-nota="{{ $avaliacao->nota }}"
                      data-timestamp="{{ $avaliacao->created_at->timestamp }}">
                     <div class="flex justify-between items-center mb-2">
@@ -338,7 +372,7 @@
         </div>
     @endif
 </div>
-
+<hr class="border-t border-[#d5891b]/20 my-12">
 <style>
 /* Barra de rolagem dourado escuro e transparente */
 .custom-scroll::-webkit-scrollbar {

@@ -291,8 +291,8 @@
 <div class="container mt-16 mb-5">
     <hr class="border-t border-[#d5891b]/20 ml-44 my-12">
     <h2 class="text-2xl pl-12 font-bold">Produtos Recomendados</h2>
-    <div id="produtos-rec-container" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        @forelse($produtos ?? [] as $produto)
+    <div id="produtos-rec-container" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-96 pr-24 scale-90">
+        @forelse($ultimosProdutos ?? [] as $produto)
             @include('usuarios.partials.card-rec', compact('produto', 'idsDesejados'))
         @empty
             <p class="text-gray-400">Nenhum produto disponível.</p>

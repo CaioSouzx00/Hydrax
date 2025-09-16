@@ -2,7 +2,7 @@
     $isDesejado = in_array($produto->id_produtos, $idsDesejados ?? []);
 @endphp
 
-<div class="relative w-96 mx-auto">
+<div class="relative w-96 mr-12">
 
     {{-- Card clicável --}}
     <a href="{{ route('produtos.detalhes', $produto->id_produtos) }}" class="block w-full h-full relative z-10">
