@@ -151,6 +151,7 @@ class UsuarioController extends Controller
                                ->paginate($perPage)
                                ->withQueryString();
 
+
     // Resposta AJAX
     if ($request->ajax()) {
         return response()->json([
