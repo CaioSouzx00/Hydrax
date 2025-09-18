@@ -142,19 +142,61 @@
          </p>
      </form>
 
-     <form action="{{ route('lista-desejos.store', $produto->id_produtos) }}" method="POST">
-         @csrf
-         <button type="submit" 
-                 class="w-14 h-14 flex items-center justify-center bg-[#042118] border border-[#d5891b]/50 rounded-lg hover:bg-[#14BA88]/10 transition"
-                 title="Adicionar à lista de desejos">
-             <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-[#d5891b]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                       d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 
-                           4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 
-                           4.5 0 00-6.364 0z" />
-             </svg>
-         </button>
-     </form>
+
+<form action="{{ route('lista-desejos.store', $produto->id_produtos) }}" method="POST" class="absolute top-2 right-2 z-50">
+    @csrf
+    <button type="submit" class="wishlist-btn w-10 h-10 flex items-center justify-center bg-[#111] border border-[#d5891b]/50 rounded-lg hover:bg-[#222] transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-[#d5891b]" 
+             fill="{{ $isDesejado ? '#14ba88' : 'none' }}" 
+             viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 
+                      4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 
+                      4.5 0 00-6.364 0z" />
+        </svg>
+    </button>
+</form>
+
+
+
+
+<script>
+document.querySelectorAll('.wishlist-btn').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+        e.preventDefault();
+        const form = btn.closest('form');
+        const heart = btn.querySelector('svg');
+
+        try {
+            const res = await fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                }
+            });
+            const data = await res.json();
+
+            if(data.success){
+                // Atualiza o coração de acordo com a ação retornada
+                heart.setAttribute('fill', data.action === 'adicionado' ? '#14ba88' : 'none');
+            }
+        } catch (err) {
+            console.error('Erro ao salvar na lista de desejos', err);
+            alert('Não foi possível adicionar/remover da lista de desejos.');
+        }
+    });
+});
+</script>
+
+
+
+
+
+
+
+
+
  </div>
 
                  <p id="erroTamanhoPrincipal" class="text-red-500 mt-2 hidden">
@@ -600,6 +642,9 @@
              }
          });
      });
+
+});
+
  </script>
 @include('usuarios.partials.footer')
  </body>

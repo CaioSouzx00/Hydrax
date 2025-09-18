@@ -167,7 +167,7 @@ class UsuarioController extends Controller
     return view('usuarios.dashboard', [
         'produtos'        => $produtosPaginados,
         'ultimosProdutos' => $ultimosProdutos,
-        'idsDesejados'    => $idsDesejados, // <<< adiciona aqui também
+        'idsDesejados'    => $idsDesejados,
     ]);
 }
 

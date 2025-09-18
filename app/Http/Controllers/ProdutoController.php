@@ -67,44 +67,52 @@ class ProdutoController extends Controller
         ]);
     }
 
-    public function detalhes($id)
-    {
-        $usuario = auth()->guard('usuarios')->user();
-        $produto = ProdutoFornecedor::with(['fornecedor', 'avaliacoes.usuario'])->findOrFail($id);
+
+public function detalhes($id)
+{
+    $usuario = auth()->guard('usuarios')->user();
+    
+    $produto = ProdutoFornecedor::with(['fornecedor', 'avaliacoes.usuario'])->findOrFail($id);
+
+    // Verifica se o produto está na lista de desejos do usuário logado
+    $isDesejado = $usuario
+        ? ListaDesejo::where('id_usuarios', $usuario->id)
+                     ->where('id_produtos', $produto->id_produtos)
+                     ->exists()
+        : false;
+
+    // Avaliações
+    $avaliacoes = $produto->avaliacoes;
+    $totalAvaliadores = $avaliacoes->count();
+    $notaMedia = $totalAvaliadores > 0 ? $avaliacoes->avg('nota') : 0;
+
+    $confortoDist = $avaliacoes->whereNotNull('conforto')->avg('conforto') ?? 0;
+    $qualidadeDist = $avaliacoes->whereNotNull('qualidade')->avg('qualidade') ?? 0;
+    $tamanhoDist = $avaliacoes->whereNotNull('tamanho')->avg('tamanho') ?? 0;
+    $larguraDist = $avaliacoes->whereNotNull('largura')->avg('largura') ?? 0;
+
+    // Produtos recomendados
+    $produtosRecomendados = ProdutoFornecedor::where('id_produtos', '!=', $id)
+                                             ->inRandomOrder()
+                                             ->limit(4)
+                                             ->get();
+
+    return view('usuarios.detalhes-produto', compact(
+        'produto',
+        'produtosRecomendados',
+        'avaliacoes',
+        'totalAvaliadores',
+        'notaMedia',
+        'confortoDist',
+        'qualidadeDist',
+        'tamanhoDist',
+        'larguraDist',
+        'isDesejado'
+
+
+
         
-        // ** Lógica para verificar se o produto está na lista de desejos **
-        $isDesejado = false;
-        if ($usuario) {
-            $isDesejado = ListaDesejo::where('id_usuarios', $usuario->id)
-                                    ->where('id_produtos', $produto->id_produtos)
-                                    ->exists();
-        }
+    ));
+}
 
-        $avaliacoes = $produto->avaliacoes;
-        $totalAvaliadores = $avaliacoes->count();
-        $notaMedia = $totalAvaliadores > 0 ? $avaliacoes->avg('nota') : 0;
-        
-        $confortoDist = $avaliacoes->whereNotNull('conforto')->avg('conforto') ?? 0;
-        $qualidadeDist = $avaliacoes->whereNotNull('qualidade')->avg('qualidade') ?? 0;
-        $tamanhoDist = $avaliacoes->whereNotNull('tamanho')->avg('tamanho') ?? 0;
-        $larguraDist = $avaliacoes->whereNotNull('largura')->avg('largura') ?? 0;
-
-        $produtosRecomendados = ProdutoFornecedor::where('id_produtos', '!=', $id)
-            ->inRandomOrder()
-            ->limit(4)
-            ->get();
-
-        return view('usuarios.detalhes-produto', [
-            'produto' => $produto,
-            'produtos' => $produtosRecomendados,
-            'avaliacoes' => $avaliacoes,
-            'totalAvaliadores' => $totalAvaliadores,
-            'notaMedia' => $notaMedia,
-            'confortoDist' => $confortoDist,
-            'qualidadeDist' => $qualidadeDist,
-            'tamanhoDist' => $tamanhoDist,
-            'larguraDist' => $larguraDist,
-            'isDesejado' => $isDesejado, // Adiciona a variável na view
-        ]);
-    }
 }

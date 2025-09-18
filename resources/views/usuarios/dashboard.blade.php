@@ -729,6 +729,21 @@ if (botaoLimpar) {
 </script>
 
 
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const inputBusca = document.getElementById("buscar_produto");
+    const secaoProdutos = document.querySelector("h2.text-2xl.pl-24"); // seu título "PRODUTOS"
+
+    inputBusca.addEventListener("input", function () {
+      if (this.value.length > 0) {
+        secaoProdutos.scrollIntoView({ behavior: "smooth" });
+      }
+    });
+  });
+</script>
+
+
+
 
 </body>
 
