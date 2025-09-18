@@ -71,7 +71,24 @@ public function store($id_produtos, Request $request)
     }
 }
 
+public function show($id)
+{
+    $produto = ProdutoFornecedor::with('fornecedor', 'avaliacoes')->findOrFail($id);
 
+    $idUsuario = Auth::guard('usuarios')->id();
+    
+    $estaNaLista = false;
+
+    if ($idUsuario) {
+        $isDesejado = ListaDesejo::where('id_usuarios', $idUsuario)
+                ->where('id_produtos', $produto->id_produtos)
+                ->exists();
+
+    }
+
+    // aqui você já manda o flag pra view
+    return view('usuarios.produtos.show', compact('produto', 'estaNaLista', 'isDesejado'));
+}
 
 
 public function destroy($id_produtos)
