@@ -643,9 +643,103 @@ document.querySelectorAll('.wishlist-btn').forEach(btn => {
          });
      });
 
-});
 
  </script>
+
+ <!-- Modal Fullscreen -->
+<div id="imagemModal" class="fixed inset-0 bg-black/90 z-50 hidden flex items-center justify-center">
+    <div class="relative w-full h-full flex items-center justify-center overflow-hidden">
+        
+        <!-- Imagem principal -->
+        <img id="modalMainImg" 
+             src="{{ asset('storage/' . ($fotos[0] ?? 'sem-imagem.png')) }}" 
+             class="w-full h-full object-contain cursor-zoom-in transition-transform duration-300 ease-out">
+
+        <!-- Botão fechar -->
+        <button id="closeModal" 
+                class="absolute top-4 right-4 text-white text-4xl font-bold z-50">&times;</button>
+
+        <!-- Miniaturas laterais -->
+        @if(count($estoqueImagens))
+        <div class="absolute left-4 top-1/2 transform -translate-y-1/2 flex flex-col gap-2 max-h-[80%] overflow-y-auto">
+            @foreach($estoqueImagens as $img)
+                <img src="{{ asset('storage/' . $img) }}" 
+                     class="w-20 h-20 object-cover rounded cursor-pointer hover:opacity-80 modal-thumb">
+            @endforeach
+        </div>
+        @endif
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const modal = document.getElementById('imagemModal');
+    const mainImg = document.getElementById('modalMainImg');
+    const thumbs = document.querySelectorAll('.modal-thumb');
+    const closeBtn = document.getElementById('closeModal');
+
+    // Abrir modal ao clicar na imagem principal
+    document.querySelector('.main-image').addEventListener('click', () => {
+        modal.classList.remove('hidden');
+    });
+
+    // Fechar modal
+    closeBtn.addEventListener('click', () => {
+        modal.classList.add('hidden');
+        mainImg.style.transform = 'scale(1)'; // Reset do zoom
+        mainImg.style.transformOrigin = 'center center';
+    });
+
+    // Trocar imagem principal ao clicar nas miniaturas
+    thumbs.forEach(thumb => {
+        thumb.addEventListener('click', () => {
+            mainImg.src = thumb.src;
+        });
+    });
+
+    // Zoom tipo lupa
+    const container = mainImg.parentElement;
+    container.addEventListener('mousemove', e => {
+        const { left, top, width, height } = container.getBoundingClientRect();
+        const x = ((e.clientX - left) / width) * 100;
+        const y = ((e.clientY - top) / height) * 100;
+
+        mainImg.style.transformOrigin = `${x}% ${y}%`;
+        mainImg.style.transform = 'scale(2)';
+    });
+
+    container.addEventListener('mouseleave', () => {
+        mainImg.style.transformOrigin = 'center center';
+        mainImg.style.transform = 'scale(1)';
+    });
+});
+</script>
+
+<style>
+/* Miniaturas laterais */
+#imagemModal .modal-thumb {
+    border: 2px solid transparent;
+    transition: border 0.2s, opacity 0.2s;
+}
+#imagemModal .modal-thumb:hover {
+    border-color: #d5891b;
+    opacity: 0.8;
+}
+
+/* Scroll das miniaturas */
+#imagemModal .flex-col::-webkit-scrollbar {
+    width: 6px;
+}
+#imagemModal .flex-col::-webkit-scrollbar-thumb {
+    background: #d5891b;
+    border-radius: 3px;
+}
+#imagemModal .flex-col::-webkit-scrollbar-track {
+    background: transparent;
+}
+</style>
+
+
 @include('usuarios.partials.footer')
  </body>
  </html>
