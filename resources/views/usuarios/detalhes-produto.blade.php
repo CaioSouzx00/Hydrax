@@ -646,7 +646,7 @@ document.querySelectorAll('.wishlist-btn').forEach(btn => {
         <div class="relative overflow-hidden rounded-2xl border-2 border-[#D5891B] shadow-2xl cursor-zoom-in max-w-[100%] max-h-[100%] bg-[#111]/50">
             <img id="modalMainImg" 
                  src="{{ asset('storage/' . ($fotos[0] ?? 'sem-imagem.png')) }}" 
-                 class="w-full h-auto object-contain transition-transform duration-300 ease-out transform hover:scale-105">
+                 class="w-[700px] h-auto object-contain transition-transform duration-300 ease-out transform hover:scale-105">
             <!-- Glow animado -->
             <div class="absolute inset-0 pointer-events-none rounded-2xl shadow-[0_0_60px_#D5891B] animate-pulse"></div>
         </div>
