@@ -34,7 +34,7 @@
              @endphp
 
              <img src="{{ asset('storage/' . ($fotos[0] ?? 'sem-imagem.png')) }}"
-                  class="w-full h-[480px] object-cover rounded-md border border-[#d5891b]/50 shadow main-image">
+                  class="w-full h-[480px] object-cover rounded-md border border-[#d5891b]/50 shadow main-image cursor-pointer">
                  
              @if(count($fotos) > 1)
              <div class="flex gap-3 mt-4">
@@ -143,7 +143,7 @@
      </form>
 
 
-<form action="{{ route('lista-desejos.store', $produto->id_produtos) }}" method="POST" class="absolute top-2 right-2 z-50">
+<form action="{{ route('lista-desejos.store', $produto->id_produtos) }}" method="POST" class="absolute top-[360px] right-0.5 z-50">
     @csrf
     <button type="submit" class="wishlist-btn w-10 h-10 flex items-center justify-center bg-[#111] border border-[#d5891b]/50 rounded-lg hover:bg-[#222] transition">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-[#d5891b]" 
@@ -188,14 +188,6 @@ document.querySelectorAll('.wishlist-btn').forEach(btn => {
     });
 });
 </script>
-
-
-
-
-
-
-
-
 
  </div>
 
@@ -248,7 +240,7 @@ document.querySelectorAll('.wishlist-btn').forEach(btn => {
             <!-- Imagem com zoom seguindo o mouse -->
             <div class="flex justify-center">
                 <div class="relative overflow-hidden rounded-lg border border-[#D5891B] shadow-lg w-full max-w-sm cursor-zoom-in"> 
-                    <img id="zoom-img"
+                    <img id="zoomimg"
                          src="{{ asset('storage/' . ($fotos[0] ?? 'sem-imagem.png')) }}"
                          alt="{{ $produto->nome }}"
                          class="w-full h-auto object-contain transition-transform duration-300 ease-out">
@@ -258,23 +250,23 @@ document.querySelectorAll('.wishlist-btn').forEach(btn => {
 </div>
 
 <script>
-    const zoomImg = document.getElementById("zoom-img");
-    const container = zoomImg.parentElement;
+    const zoomImg = document.getElementById("zoomimg");
 
-    container.addEventListener("mousemove", (e) => {
-        const { left, top, width, height } = container.getBoundingClientRect();
-        const x = ((e.clientX - left) / width) * 100;
-        const y = ((e.clientY - top) / height) * 100;
+    zoomImg.addEventListener("mousemove", (e) => {
+        const rect = zoomImg.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
 
         zoomImg.style.transformOrigin = `${x}% ${y}%`;
         zoomImg.style.transform = "scale(2)";
     });
 
-    container.addEventListener("mouseleave", () => {
+    zoomImg.addEventListener("mouseleave", () => {
         zoomImg.style.transformOrigin = "center center";
         zoomImg.style.transform = "scale(1)";
     });
 </script>
+
 
 <hr class="border-t border-[#d5891b]/20 my-12">
 
@@ -646,28 +638,38 @@ document.querySelectorAll('.wishlist-btn').forEach(btn => {
 
  </script>
 
- <!-- Modal Fullscreen -->
-<div id="imagemModal" class="fixed inset-0 bg-black/90 z-50 hidden flex items-center justify-center">
+<!-- Modal Fullscreen -->
+<div id="imagemModal" class="fixed inset-0 bg-black/90 z-50 hidden flex items-center justify-center backdrop-blur-md transition-opacity duration-300">
     <div class="relative w-full h-full flex items-center justify-center overflow-hidden">
-        
-        <!-- Imagem principal -->
-        <img id="modalMainImg" 
-             src="{{ asset('storage/' . ($fotos[0] ?? 'sem-imagem.png')) }}" 
-             class="w-full h-full object-contain cursor-zoom-in transition-transform duration-300 ease-out">
 
-        <!-- Botão fechar -->
-        <button id="closeModal" 
-                class="absolute top-4 right-4 text-white text-4xl font-bold z-50">&times;</button>
-
-        <!-- Miniaturas laterais -->
-        @if(count($estoqueImagens))
-        <div class="absolute left-4 top-1/2 transform -translate-y-1/2 flex flex-col gap-2 max-h-[80%] overflow-y-auto">
-            @foreach($estoqueImagens as $img)
-                <img src="{{ asset('storage/' . $img) }}" 
-                     class="w-20 h-20 object-cover rounded cursor-pointer hover:opacity-80 modal-thumb">
-            @endforeach
+        <!-- Imagem principal com zoom interno e efeito glow -->
+        <div class="relative overflow-hidden rounded-2xl border-2 border-[#D5891B] shadow-2xl cursor-zoom-in max-w-[100%] max-h-[100%] bg-[#111]/50">
+            <img id="modalMainImg" 
+                 src="{{ asset('storage/' . ($fotos[0] ?? 'sem-imagem.png')) }}" 
+                 class="w-full h-auto object-contain transition-transform duration-300 ease-out transform hover:scale-105">
+            <!-- Glow animado -->
+            <div class="absolute inset-0 pointer-events-none rounded-2xl shadow-[0_0_60px_#D5891B] animate-pulse"></div>
         </div>
-        @endif
+
+        <!-- Botão fechar com efeito hover -->
+        <button id="closeModal" 
+                class="absolute top-4 right-4 text-white text-4xl font-bold z-50 hover:text-[#D5891B] transition-all duration-200">&times;</button>
+
+<!-- Miniaturas laterais -->
+@if(count($estoqueImagens) || !empty($fotos[0]))
+<div class="absolute left-4 top-1/2 transform -translate-y-1/2 flex flex-col gap-3 max-h-[80%] overflow-y-auto p-2 rounded-lg bg-[#111]/50 border border-[#D5891B] shadow-lg">
+    
+    <!-- Adiciona a imagem principal também -->
+    <img src="{{ asset('storage/' . ($fotos[0] ?? 'sem-imagem.png')) }}" 
+         class="w-20 h-20 object-cover rounded-lg cursor-pointer hover:opacity-70 hover:border-[#D5891B] transition-all duration-200 modal-thumb">
+
+    @foreach($estoqueImagens as $img)
+        <img src="{{ asset('storage/' . $img) }}" 
+             class="w-20 h-20 object-cover rounded-lg cursor-pointer hover:opacity-70 hover:border-[#D5891B] transition-all duration-200 modal-thumb">
+    @endforeach
+</div>
+@endif
+
     </div>
 </div>
 
@@ -678,37 +680,41 @@ document.addEventListener("DOMContentLoaded", function() {
     const thumbs = document.querySelectorAll('.modal-thumb');
     const closeBtn = document.getElementById('closeModal');
 
-    // Abrir modal ao clicar na imagem principal
-    document.querySelector('.main-image').addEventListener('click', () => {
-        modal.classList.remove('hidden');
-    });
+    // Abrir modal
+    const trigger = document.querySelector('.main-image');
+    if (trigger) {
+        trigger.addEventListener('click', () => {
+            modal.classList.remove('hidden');
+        });
+    }
 
     // Fechar modal
     closeBtn.addEventListener('click', () => {
         modal.classList.add('hidden');
-        mainImg.style.transform = 'scale(1)'; // Reset do zoom
+        mainImg.style.transform = 'scale(1)';
         mainImg.style.transformOrigin = 'center center';
     });
 
-    // Trocar imagem principal ao clicar nas miniaturas
+    // Trocar imagem principal
     thumbs.forEach(thumb => {
         thumb.addEventListener('click', () => {
             mainImg.src = thumb.src;
+            mainImg.style.transform = 'scale(1)';
+            mainImg.style.transformOrigin = 'center center';
         });
     });
 
     // Zoom tipo lupa
-    const container = mainImg.parentElement;
-    container.addEventListener('mousemove', e => {
-        const { left, top, width, height } = container.getBoundingClientRect();
-        const x = ((e.clientX - left) / width) * 100;
-        const y = ((e.clientY - top) / height) * 100;
+    mainImg.addEventListener('mousemove', e => {
+        const rect = mainImg.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
 
         mainImg.style.transformOrigin = `${x}% ${y}%`;
         mainImg.style.transform = 'scale(2)';
     });
 
-    container.addEventListener('mouseleave', () => {
+    mainImg.addEventListener('mouseleave', () => {
         mainImg.style.transformOrigin = 'center center';
         mainImg.style.transform = 'scale(1)';
     });
@@ -716,26 +722,25 @@ document.addEventListener("DOMContentLoaded", function() {
 </script>
 
 <style>
-/* Miniaturas laterais */
-#imagemModal .modal-thumb {
-    border: 2px solid transparent;
-    transition: border 0.2s, opacity 0.2s;
-}
-#imagemModal .modal-thumb:hover {
-    border-color: #d5891b;
-    opacity: 0.8;
-}
-
-/* Scroll das miniaturas */
+/* Miniaturas laterais com glow no scroll */
 #imagemModal .flex-col::-webkit-scrollbar {
     width: 6px;
 }
 #imagemModal .flex-col::-webkit-scrollbar-thumb {
-    background: #d5891b;
+    background: #D5891B;
     border-radius: 3px;
 }
 #imagemModal .flex-col::-webkit-scrollbar-track {
     background: transparent;
+}
+
+/* Glow animado no modal */
+@keyframes pulse {
+    0%, 100% { box-shadow: 0 0 30px #D5891B; }
+    50% { box-shadow: 0 0 60px #D5891B; }
+}
+.animate-pulse {
+    animation: pulse 2s infinite;
 }
 </style>
 
