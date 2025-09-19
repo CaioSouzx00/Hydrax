@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{{ $produto->nome }} - Detalhes</title>
 <script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-dN0xQH1a49yD3Vdz/p50ppxg+4dCwFJrQ4Z9qHh7U0djKueZYvExxE8v9+dhuJZQ9sH4Uyh7pX9k5p5x5LwGxA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body class="min-h-screen bg-gradient-to-br from-[#211828] via-[#0b282a] to-[#17110d] text-gray-100 font-sans">
 
@@ -142,22 +143,20 @@
          </p>
      </form>
 
+     <p>Debug: {{ $isDesejado ? 'SIM' : 'NÃO' }}</p>
+
+
 
 <form action="{{ route('lista-desejos.store', $produto->id_produtos) }}" method="POST" class="absolute top-[360px] right-0.5 z-50">
     @csrf
-    <button type="submit" class="wishlist-btn w-10 h-10 flex items-center justify-center bg-[#111] border border-[#d5891b]/50 rounded-lg hover:bg-[#222] transition">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-[#d5891b]" 
-             fill="{{ $isDesejado ? '#14ba88' : 'none' }}" 
-             viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 
-                      4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 
-                      4.5 0 00-6.364 0z" />
-        </svg>
+    <button id="btn-wishlist" class="wishlist-btn" data-produto-id="{{ $produto->id_produtos }}">
+        @if($isDesejado)
+            <i class="fas fa-heart text-red-500"></i> {{-- coração cheio --}}
+        @else
+            <i class="far fa-heart text-gray-400"></i> {{-- coração vazio --}}
+        @endif
     </button>
 </form>
-
-
 
 
 <script>
@@ -165,22 +164,32 @@ document.querySelectorAll('.wishlist-btn').forEach(btn => {
     btn.addEventListener('click', async (e) => {
         e.preventDefault();
         const form = btn.closest('form');
-        const heart = btn.querySelector('svg');
+        const heart = btn.querySelector('i');
 
         try {
+            const formData = new FormData(form);
+
             const res = await fetch(form.action, {
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}',
                     'Accept': 'application/json'
-                }
+                },
+                body: formData
             });
+
             const data = await res.json();
 
-            if(data.success){
-                // Atualiza o coração de acordo com a ação retornada
-                heart.setAttribute('fill', data.action === 'adicionado' ? '#14ba88' : 'none');
+            if (data.success) {
+                if (data.action === 'adicionado') {
+                    heart.classList.remove('far', 'text-gray-400'); // vazio
+                    heart.classList.add('fas', 'text-red-500');     // cheio
+                } else {
+                    heart.classList.remove('fas', 'text-red-500'); 
+                    heart.classList.add('far', 'text-gray-400');    // vazio
+                }
             }
+
         } catch (err) {
             console.error('Erro ao salvar na lista de desejos', err);
             alert('Não foi possível adicionar/remover da lista de desejos.');
@@ -188,6 +197,7 @@ document.querySelectorAll('.wishlist-btn').forEach(btn => {
     });
 });
 </script>
+
 
  </div>
 

@@ -24,18 +24,9 @@ public function index()
 }
 
 
-
 public function store($id_produtos, Request $request)
 {
     $idUsuario = Auth::guard('usuarios')->id();
-
-    if (!$idUsuario) {
-        if ($request->ajax()) {
-            return response()->json(['success' => false, 'action' => null], 401);
-        } else {
-            return redirect()->route('login');
-        }
-    }
 
     $item = ListaDesejo::where('id_usuarios', $idUsuario)
         ->where('id_produtos', $id_produtos)
@@ -45,14 +36,10 @@ public function store($id_produtos, Request $request)
         // Já existe → remover
         $item->delete();
 
-        if ($request->ajax()) {
-            return response()->json([
-                'success' => true,
-                'action' => 'removido',
-            ]);
-        } else {
-            return redirect()->route('lista-desejos.index');
-        }
+        return response()->json([
+            'success' => true,
+            'action' => 'removido',
+        ]);
     } else {
         // Não existe → adicionar
         ListaDesejo::create([
@@ -60,16 +47,13 @@ public function store($id_produtos, Request $request)
             'id_produtos' => $id_produtos,
         ]);
 
-        if ($request->ajax()) {
-            return response()->json([
-                'success' => true,
-                'action' => 'adicionado',
-            ]);
-        } else {
-            return redirect()->route('lista-desejos.index');
-        }
+        return response()->json([
+            'success' => true,
+            'action' => 'adicionado',
+        ]);
     }
 }
+
 
 public function show($id)
 {

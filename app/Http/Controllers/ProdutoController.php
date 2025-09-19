@@ -75,11 +75,13 @@ public function detalhes($id)
     $produto = ProdutoFornecedor::with(['fornecedor', 'avaliacoes.usuario'])->findOrFail($id);
 
     // Verifica se o produto está na lista de desejos do usuário logado
-    $isDesejado = $usuario
-        ? ListaDesejo::where('id_usuarios', $usuario->id)
-                     ->where('id_produtos', $produto->id_produtos)
-                     ->exists()
-        : false;
+  // $usuario = auth()->guard('usuarios')->user();
+
+$isDesejado = $usuario
+    ? ListaDesejo::where('id_usuarios', $usuario->id_usuarios)
+                 ->where('id_produtos', $produto->id_produtos)
+                 ->exists()
+    : false;
 
     // Avaliações
     $avaliacoes = $produto->avaliacoes;
@@ -92,27 +94,30 @@ public function detalhes($id)
     $larguraDist = $avaliacoes->whereNotNull('largura')->avg('largura') ?? 0;
 
     // Produtos recomendados
-    $produtosRecomendados = ProdutoFornecedor::where('id_produtos', '!=', $id)
-                                             ->inRandomOrder()
-                                             ->limit(4)
-                                             ->get();
-
-    return view('usuarios.detalhes-produto', compact(
-        'produto',
-        'produtosRecomendados',
-        'avaliacoes',
-        'totalAvaliadores',
-        'notaMedia',
-        'confortoDist',
-        'qualidadeDist',
-        'tamanhoDist',
-        'larguraDist',
-        'isDesejado'
+            $produtosRecomendados = ProdutoFornecedor::where('id_produtos', '!=', $id)
+            ->inRandomOrder()
+            ->limit(4)
+            ->get();
 
 
 
-        
-    ));
-}
+        return view('usuarios.detalhes-produto', [
+
+            'produto' => $produto,
+            'produtos' => $produtosRecomendados,
+            'avaliacoes' => $avaliacoes,
+            'totalAvaliadores' => $totalAvaliadores,
+            'notaMedia' => $notaMedia,
+            'confortoDist' => $confortoDist,
+            'qualidadeDist' => $qualidadeDist,
+            'tamanhoDist' => $tamanhoDist,
+            'larguraDist' => $larguraDist,
+            'isDesejado' => $isDesejado,
+
+        ]);
+
+
+    }
+
 
 }
