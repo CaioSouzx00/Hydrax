@@ -302,7 +302,7 @@
                 <button id="next" class="bg-black/30 text-white hover:bg-black/80 hover:text-white/30 p-2 rounded-full mx-4">›</button>
             </div>
         </div>
-        
+
 <!-- Produtos Recomendados -->
 <div class="mt-16 mb-5">
     <hr class="border-t border-[#d5891b]/20 ml-44 mr-44 my-12">
@@ -325,7 +325,7 @@
     <div id="carousel-2" class="relative w-full pt-12 pb-12">
         <div class="overflow-hidden relative h-80">
             <div class="flex transition-transform duration-500" id="carousel-slides-2">
-                    <img src="/imagens/hydrax/HYDRA’x (3).png" alt="Nike 1" class="h-full w-full pr-12 pl-12 object-cover">
+                    <img src="/imagens/hydrax/cll2.png" alt="Nike 1" class="h-full w-full pr-12 pl-12 object-cover">
             </div>
 
             <!-- Botões -->
