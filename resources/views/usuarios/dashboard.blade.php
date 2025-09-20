@@ -277,23 +277,23 @@
     <div id="carousel" class="relative w-full pt-32 pb-12">
         <div class="overflow-hidden relative h-80">
             <div class="flex transition-transform duration-500" id="carousel-slides">
-                <div class="flex-shrink-0 w-full h-80 bg-red-500 flex items-center justify-center text-white text-2xl">
-                    <img src="/imagens/hydrax/NIKE.png" alt="Nike 1" class="h-full w-full object-cover">
+                <div class="flex-shrink-0 w-full h-80 bg-black flex items-center justify-center text-white text-2xl">
+                    <img src="/imagens/hydrax/k7.png" alt="KYRIE NIKE" class="h-full w-full object-cover">
                 </div>
                 <div class="flex-shrink-0 w-full h-80 bg-green-500 flex items-center justify-center text-white text-2xl">
                     <img src="/imagens/hydrax/NIKE (2).png" alt="Nike 1" class="h-full w-full object-cover">
                 </div>
                 <div class="flex-shrink-0 w-full h-80 bg-blue-500 flex items-center justify-center text-white text-2xl">
-                    <img src="/imagens/hydrax/NIKE (1).png" alt="Nike 1" class="h-full w-full object-cover">
+                    <img src="/imagens/hydrax/h1.png" alt="Nike 1" class="h-full w-full object-cover">
                 </div>
             </div>
 
             <!-- Botões -->
             <div class="absolute inset-y-0 left-0 flex items-center">
-                <button id="prev" class="bg-black/10 text-white/30 hover:bg-black/30 hover:text-white p-2 rounded-full mx-4">‹</button>
+                <button id="prev" class="bg-black/30 text-white hover:bg-black/80 hover:text-white/30 p-2 rounded-full mx-4">‹</button>
             </div>
             <div class="absolute inset-y-0 right-0 flex items-center">
-                <button id="next" class="bg-black/10 text-white/30 hover:bg-black/30 hover:text-white p-2 rounded-full mx-4">›</button>
+                <button id="next" class="bg-black/30 text-white hover:bg-black/80 hover:text-white/30 p-2 rounded-full mx-4">›</button>
             </div>
         </div>
 
@@ -508,7 +508,7 @@
         document.getElementById('next').addEventListener('click', nextSlide);
         document.getElementById('prev').addEventListener('click', prevSlide);
 
-        setInterval(nextSlide, 5000);
+        setInterval(nextSlide, 7000);
     </script>
 
     <style>
