@@ -278,13 +278,19 @@
         <div class="overflow-hidden relative h-80">
             <div class="flex transition-transform duration-500" id="carousel-slides">
                 <div class="flex-shrink-0 w-full h-80 bg-black flex items-center justify-center text-white text-2xl">
-                    <img src="/imagens/hydrax/k7.png" alt="KYRIE NIKE" class="h-full w-full object-cover">
+                    <img src="/imagens/hydrax/5.png" alt="KYRIE NIKE" class="h-full w-full object-cover">
                 </div>
-                <div class="flex-shrink-0 w-full h-80 bg-green-500 flex items-center justify-center text-white text-2xl">
-                    <img src="/imagens/hydrax/NIKE (2).png" alt="Nike 1" class="h-full w-full object-cover">
+                <div class="flex-shrink-0 w-full h-80 bg-red-900 flex items-center justify-center text-white text-2xl">
+                    <img src="/imagens/hydrax/9.png" alt="HARDEN ADIDAS" class="h-full w-full object-cover">
                 </div>
                 <div class="flex-shrink-0 w-full h-80 bg-blue-500 flex items-center justify-center text-white text-2xl">
-                    <img src="/imagens/hydrax/h1.png" alt="Nike 1" class="h-full w-full object-cover">
+                    <img src="/imagens/hydrax/7.png" alt="HALI PUMA" class="h-full w-full object-cover">
+                </div>
+                <div class="flex-shrink-0 w-full h-80 bg-red-900 flex items-center justify-center text-white text-2xl">
+                    <img src="/imagens/hydrax/6.png" alt="SABRINA NIKE" class="h-full w-full object-cover">
+                </div>
+                <div class="flex-shrink-0 w-full h-80 bg-blue-900 flex items-center justify-center text-white text-2xl">
+                    <img src="/imagens/hydrax/8.png" alt="CURRY UA" class="h-full w-full object-cover">
                 </div>
             </div>
 
@@ -296,7 +302,7 @@
                 <button id="next" class="bg-black/30 text-white hover:bg-black/80 hover:text-white/30 p-2 rounded-full mx-4">›</button>
             </div>
         </div>
-
+        
 <!-- Produtos Recomendados -->
 <div class="mt-16 mb-5">
     <hr class="border-t border-[#d5891b]/20 ml-44 mr-44 my-12">
@@ -508,7 +514,7 @@
         document.getElementById('next').addEventListener('click', nextSlide);
         document.getElementById('prev').addEventListener('click', prevSlide);
 
-        setInterval(nextSlide, 7000);
+        setInterval(nextSlide, 5000);
     </script>
 
     <style>
