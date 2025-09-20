@@ -20,6 +20,8 @@ use App\Http\Controllers\RelatorioController;
 use App\Http\Controllers\ListaDesejoController;
 use App\Http\Controllers\AvaliacaoController;
 use App\Http\Controllers\ProdutosRecomendadosController;
+use App\Http\Controllers\ProdutoImagemRotuloController;
+use App\Http\Controllers\IAController;
 
 
 
@@ -131,6 +133,15 @@ Route::view('/termos-de-uso', 'usuarios.termos-de-uso');
 
 Route::get('/produtos/buscar', [ProdutoController::class, 'buscar'])->name('produtos.buscar');
 
+
+Route::get('/produtos', [ProdutoController::class, 'listar']);
+Route::post('/ia/buscar', [IAController::class, 'buscar'])->name('ia.buscar');
+
+Route::get('/quiz', function () {
+    return view('quiz'); // Laravel procura em resources/views/quiz.blade.php
+});
+
+
 /*
 |--------------------------------------------------------------------------
 | Rotas Protegidas - Administrador (middleware: admin)
@@ -191,5 +202,14 @@ Route::middleware([FornecedorMiddleware::class])->prefix('fornecedores')->name('
 
     Route::patch('/produtos/{id}/toggle', [ProdutoFornecedorController::class, 'toggleProduto'])
     ->name('produtos.toggle');
+
+// Dentro do mesmo grupo que você já tem
+Route::get('/produtos/{id}/rotulos', [ProdutoImagemRotuloController::class, 'create'])
+    ->name('produtos.rotulos.create');
+
+Route::post('/produtos/{id}/rotulos', [ProdutoImagemRotuloController::class, 'store'])
+    ->name('produtos.rotulos.store');
+
+
 
 });

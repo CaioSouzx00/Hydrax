@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -56,6 +58,7 @@
 </head>
 
 <body class="bg-gradient-to-br from-[#211828] via-[#0b282a] to-[#17110d] text-white flex min-h-screen">
+
 
   <!-- Overlay para dropdown usuário -->
   <div id="overlay"></div>
@@ -230,6 +233,8 @@
         $('#conteudo-dinamico').html('<p class="text-red-500">Erro ao carregar conteúdo.</p>');
       });
     });
+
+    
   </script>
 
 </body>

@@ -38,26 +38,44 @@
             <tbody class="divide-y divide-[#d5891b]/30">
                 @foreach($produtos as $produto)
                 @php
-                $tamanhos = is_array($produto->tamanhos_disponiveis)
-                ? $produto->tamanhos_disponiveis
-                : json_decode($produto->tamanhos_disponiveis ?? '[]', true);
+                    $tamanhos = is_array($produto->tamanhos_disponiveis)
+                        ? $produto->tamanhos_disponiveis
+                        : json_decode($produto->tamanhos_disponiveis ?? '[]', true);
 
-                $fotos = is_array($produto->fotos)
-                ? $produto->fotos
-                : json_decode($produto->fotos ?? '[]', true);
+                    $fotos = is_array($produto->fotos)
+                        ? $produto->fotos
+                        : json_decode($produto->fotos ?? '[]', true);
 
-                $estoqueImgs = is_array($produto->estoque_imagem)
-                ? $produto->estoque_imagem
-                : json_decode($produto->estoque_imagem ?? '[]', true);
+                    $estoqueImgs = is_array($produto->estoque_imagem)
+                        ? $produto->estoque_imagem
+                        : json_decode($produto->estoque_imagem ?? '[]', true);
                 @endphp
 
                 <tr class="hover:bg-[#0b282a]/70 transition">
-                    <td class="px-6 py-4">{{ $produto->nome }}</td>
+                    <!-- Nome + Rótulos -->
+                    <td class="px-6 py-4">
+                        <div class="font-medium">{{ $produto->nome }}</div>
+
+                        @if($produto->rotulos->isNotEmpty())
+                        <div class="flex flex-wrap gap-1 mt-1">
+                            @foreach($produto->rotulos as $rotulo)
+                            <span class="bg-[#14ba88] text-black px-2 py-1 text-xs rounded">
+                                {{ $rotulo->categoria ?? '-' }}
+                            </span>
+                            @endforeach
+                        </div>
+                        @endif
+                    </td>
+
+                    <!-- Preço -->
                     <td class="px-6 py-4 text-[#e29b37] font-medium">
                         R$ {{ number_format($produto->preco, 2, ',', '.') }}
                     </td>
+
+                    <!-- Categoria -->
                     <td class="px-6 py-4">{{ ucfirst($produto->categoria) }}</td>
 
+                    <!-- Tamanhos -->
                     <td class="px-6 py-4">
                         @if(!empty($produto->tamanhos_disponiveis))
                         <div class="flex flex-wrap gap-1">
@@ -70,6 +88,7 @@
                         @endif
                     </td>
 
+                    <!-- Fotos -->
                     <td class="px-6 py-4">
                         @if(!empty($produto->fotos))
                         <div class="flex gap-2">
@@ -81,6 +100,8 @@
                         <span class="text-gray-400">-</span>
                         @endif
                     </td>
+
+                    <!-- Estoque (Imagens) -->
                     <td class="px-6 py-4">
                         @if(!empty($produto->estoque_imagem))
                         <div class="flex gap-2">
@@ -101,7 +122,12 @@
                             Editar
                         </a>
 
-                        <!-- Ativar / Desativar -->
+                        <a href="#"
+                            data-url="{{ route('fornecedores.produtos.rotulos.create', $produto->id_produtos) }}"
+                            class="link-ajax text-[#14ba88] hover:underline text-sm">
+                            Labels
+                        </a>
+
                         <form action="{{ route('fornecedores.produtos.toggle', $produto->id_produtos) }}" method="POST" class="inline toggle-form">
                             @csrf
                             @method('PATCH')
@@ -111,7 +137,6 @@
                             </button>
                         </form>
 
-                        <!-- Excluir -->
                         <button
                             class="btn-excluir-produto text-red-400 hover:underline text-sm text-left p-0 bg-transparent border-0 cursor-pointer"
                             data-id="{{ $produto->id_produtos }}">

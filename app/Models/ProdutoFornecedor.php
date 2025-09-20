@@ -57,6 +57,11 @@ public function avaliacoes()
     return $this->hasMany(Avaliacao::class, 'id_produtos', 'id_produtos');
 }
 
+public function rotulos()
+{
+    return $this->hasMany(ProdutoImagemRotulo::class, 'id_produto', 'id_produtos');
+}
+
 
 
 }
