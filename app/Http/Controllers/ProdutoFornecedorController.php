@@ -149,6 +149,9 @@ public function update(Request $request, $id)
     // Busca produtos deste fornecedor
     $produtos = ProdutoFornecedor::where('id_fornecedores', $fornecedor->id_fornecedores)->get();
 
+    $produtos = ProdutoFornecedor::with('rotulos')->where('id_fornecedores', auth()->guard('fornecedores')->id())->get();
+
+
     return view('fornecedores.produtos.index', compact('produtos'));
 }
 
