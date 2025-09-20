@@ -5,12 +5,37 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{{ $produto->nome }} - Detalhes</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-dN0xQH1a49yD3Vdz/p50ppxg+4dCwFJrQ4Z9qHh7U0djKueZYvExxE8v9+dhuJZQ9sH4Uyh7pX9k5p5x5LwGxA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
-<body class="min-h-screen bg-gradient-to-br from-[#211828] via-[#0b282a] to-[#17110d] text-gray-100 font-sans">
 
+<body class="min-h-screen bg-gradient-to-br from-[#211828] via-[#0b282a] to-[#17110d] text-gray-100 font-sans">
+<!-- Navbar -->
+  <header class="fixed top-0 left-0 w-full z-50 backdrop-blur-md bg-gradient-to-br from-[#211828]/90 via-[#0b282a]/90 to-[#17110d]/90ss border-b border-[#7f3a0e] shadow-sm">
+    <div class="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
+
+      <!-- Logo -->
+      <div class="flex items-center gap-3">
+        <img src="/imagens/hydrax/HYDRA’x.png" alt="Hydrax Logo" class="h-14" />
+      </div>
+
+      <!-- Menu principal -->
+      <nav class="hidden md:flex items-center gap-6 text-sm">
+
+<style>
+@keyframes bounce-subtle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+.animate-bounce-subtle {
+  animation: bounce-subtle 1s infinite;
+}
+</style>
+
+
+      </nav>
+    </div>
+  </header>
 <a href="{{ url()->previous() }}"
-   class="group fixed top-4 left-4 z-50 flex h-10 w-10 items-center rounded-full bg-[#14ba88] text-white overflow-hidden transition-all duration-300 ease-in-out hover:w-28 hover:bg-[#117c66]"
+   class="group fixed top-5 right-4 z-50 flex h-10 w-10 items-center rounded-full bg-[#14ba88] text-white overflow-hidden transition-all duration-300 ease-in-out hover:w-28 hover:bg-[#117c66]"
    title="Voltar" aria-label="Botão Voltar">
      <div class="flex items-center justify-center w-10 h-10 shrink-0">
          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -143,53 +168,61 @@
          </p>
      </form>
 
-     <p>Debug: {{ $isDesejado ? 'SIM' : 'NÃO' }}</p>
-
-
 
 <form action="{{ route('lista-desejos.store', $produto->id_produtos) }}" method="POST" class="absolute top-[360px] right-0.5 z-50">
     @csrf
-    <button id="btn-wishlist" class="wishlist-btn" data-produto-id="{{ $produto->id_produtos }}">
-        @if($isDesejado)
-            <i class="fas fa-heart text-red-500"></i> {{-- coração cheio --}}
-        @else
-            <i class="far fa-heart text-gray-400"></i> {{-- coração vazio --}}
-        @endif
+    <button type="submit" class="wishlist-btn w-10 h-10 flex items-center justify-center 
+                                   bg-black/20 border border-[#d5891b]/50 rounded-lg 
+                                   hover:bg-black/30 transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-[#d5891b]" 
+             fill="{{ $isDesejado ? '#d5891b' : 'none' }}" 
+             viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 
+                      4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 
+                      4.5 0 00-6.364 0z" />
+        </svg>
     </button>
 </form>
 
+<!-- Aviso flutuante -->
+<div id="wishlist-toast" 
+     class="fixed top-5 right-5 bg-[#d5891b]/70 border border-white/60 text-white/80 px-3 py-1 rounded-md shadow-lg opacity-0 pointer-events-none transition-opacity duration-300 z-50">
+</div>
 
 <script>
 document.querySelectorAll('.wishlist-btn').forEach(btn => {
     btn.addEventListener('click', async (e) => {
         e.preventDefault();
         const form = btn.closest('form');
-        const heart = btn.querySelector('i');
+        const heart = btn.querySelector('svg');
+        const toast = document.getElementById('wishlist-toast');
 
         try {
-            const formData = new FormData(form);
-
             const res = await fetch(form.action, {
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}',
                     'Accept': 'application/json'
-                },
-                body: formData
+                }
             });
-
             const data = await res.json();
 
-            if (data.success) {
-                if (data.action === 'adicionado') {
-                    heart.classList.remove('far', 'text-gray-400'); // vazio
-                    heart.classList.add('fas', 'text-red-500');     // cheio
-                } else {
-                    heart.classList.remove('fas', 'text-red-500'); 
-                    heart.classList.add('far', 'text-gray-400');    // vazio
-                }
-            }
+            if(data.success){
+                // Atualiza o coração
+                heart.setAttribute('fill', data.action === 'adicionado' ? '#d5891b' : 'none');
 
+                // Mostra o toast
+                toast.textContent = data.action === 'adicionado' ? 'Adicionado à lista de desejos!' : 'Removido da lista de desejos!';
+                toast.classList.remove('opacity-0', 'pointer-events-none');
+                toast.classList.add('opacity-100');
+
+                // Esconde o toast após 5 segundos
+                setTimeout(() => {
+                    toast.classList.remove('opacity-100');
+                    toast.classList.add('opacity-0', 'pointer-events-none');
+                }, 3000);
+            }
         } catch (err) {
             console.error('Erro ao salvar na lista de desejos', err);
             alert('Não foi possível adicionar/remover da lista de desejos.');
@@ -528,74 +561,97 @@ document.querySelectorAll('.wishlist-btn').forEach(btn => {
 </script>
 
 
+@if(isset($produtos) && $produtos->isNotEmpty())
+<div class="mt-16">
+    <div class="mb-8">
+    <h2 class="text-2xl font-bold border-b border-[#d5891b]/80 w-fit text-white">Você também pode gostar</h2>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        @foreach($produtos as $prod)
+            @php
+                $fotosRec = is_array($prod->fotos) ? $prod->fotos : json_decode($prod->fotos, true) ?? [];
+                $estoqueRec = is_array($prod->estoque_imagem) ? $prod->estoque_imagem : json_decode($prod->estoque_imagem, true) ?? [];
+                $tamanhosRec = is_array($prod->tamanhos_disponiveis) ? $prod->tamanhos_disponiveis : json_decode($prod->tamanhos_disponiveis, true) ?? [];
 
- @if(isset($produtos) && $produtos->isNotEmpty())
- <div class="mt-16">
-     <h2 class="text-2xl font-bold mb-8 text-white">Você também pode gostar</h2>
-     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-         @foreach($produtos as $prod)
-             @php
-                 $fotosRec = is_array($prod->fotos) ? $prod->fotos : json_decode($prod->fotos, true) ?? [];
-                 $estoqueRec = is_array($prod->estoque_imagem) ? $prod->estoque_imagem : json_decode($prod->estoque_imagem, true) ?? [];
-                 $tamanhosRec = is_array($prod->tamanhos_disponiveis) ? $prod->tamanhos_disponiveis : json_decode($prod->tamanhos_disponiveis, true) ?? [];
-             @endphp
+                // Inclui a imagem principal no array de miniaturas
+                $miniaturas = $estoqueRec;
+                if($fotosRec[0] ?? false) {
+                    array_unshift($miniaturas, $fotosRec[0]);
+                }
+            @endphp
 
-             <div class="bg-[#1a1a1a]/50 rounded-md border border-[#222] hover:border-[#D5891B]/20 shadow p-4 flex flex-col relative">
-                 <form action="{{ route('lista-desejos.store', $prod->id_produtos) }}" method="POST" class="absolute top-2 right-2 z-50">
-                     @csrf
-                     <button type="submit" class="w-10 h-10 flex items-center justify-center bg-[#111] border border-[#d5891b]/50 rounded-lg hover:bg-[#222] transition">
-                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-[#d5891b]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                     d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 
-                                         4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 
-                                         4.5 0 00-6.364 0z" />
-                         </svg>
-                     </button>
-                 </form>
+            <div class="bg-[#111]/50 rounded-xl border border-[#222]/50 hover:border-[#d5891b]/20 shadow-lg hover:shadow-2xl p-4 flex flex-col relative transition-all duration-300">
+                <!-- Imagem do produto -->
+                <a href="{{ route('produtos.detalhes', $prod->id_produtos) }}" class="block mb-3 rounded-md overflow-hidden">
+                    <img src="{{ asset('storage/' . ($fotosRec[0] ?? 'sem-imagem.png')) }}" 
+                         class="w-full h-52 object-cover rounded-lg mb-3 main-img">
+                    <h3 class="font-semibold text-lg text-white truncate">{{ $prod->nome }}</h3>
+                </a>
 
-                 <a href="{{ route('produtos.detalhes', $prod->id_produtos) }}" class="block mb-3">
-                     <img src="{{ asset('storage/' . ($fotosRec[0] ?? 'sem-imagem.png')) }}" class="w-full h-52 object-cover rounded-md mb-3">
-                     <h3 class="font-semibold text-lg text-white">{{ $prod->nome }}</h3>
-                 </a>
+<!-- Miniaturas (incluindo imagem principal) -->
+@if(count($miniaturas))
+<div class="flex flex-wrap gap-2 mb-3">
+    @foreach(collect($miniaturas)->take(5) as $img)
+        <img src="{{ asset('storage/' . $img) }}" 
+             class="w-10 h-10 rounded-lg border border-[#333] cursor-pointer hover:opacity-80 transition"
+             onclick="this.closest('div.flex.flex-col').querySelector('.main-img').src=this.src">
+    @endforeach
+</div>
+@endif
 
-                 @if(count($estoqueRec))
-                 <div class="flex gap-2 mb-3">
-                     @foreach($estoqueRec as $img)
-                         <img src="{{ asset('storage/' . $img) }}" 
-                               class="w-10 h-10 rounded border border-[#333] cursor-pointer hover:opacity-80"
-                               onclick="this.closest('div.flex.flex-col').querySelector('img').src=this.src">
-                     @endforeach
-                 </div>
-                 @endif
 
-                 <div class="flex items-center gap-2 mb-2">
-                     <span class="text-white font-bold">R$ {{ number_format($prod->preco,2,',','.') }}</span>
-                     <span class="line-through text-gray-500 text-sm">R$ {{ number_format($prod->preco*1.2,2,',','.') }}</span>
-                 </div>
+                <!-- Preço -->
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="text-white font-bold text-lg">R$ {{ number_format($prod->preco,2,',','.') }}</span>
+                    <span class="line-through text-gray-500 text-sm">R$ {{ number_format($prod->preco*1.2,2,',','.') }}</span>
+                </div>
 
-                 @if(count($tamanhosRec))
-                 <div class="flex flex-wrap gap-2 mb-3">
-                     @foreach($tamanhosRec as $tam)
-                         <button type="button" class="tamanho-btn-rec px-3 py-1 border border-gray-600 rounded-md text-sm hover:bg-[#14ba88]/20 transition" data-tamanho="{{ $tam }}">
-                             {{ $tam }}
-                         </button>
-                     @endforeach
-                 </div>
-                 @endif
+                <!-- Tamanhos -->
+                @if(count($tamanhosRec))
+                <div class="flex flex-wrap gap-2 mb-3">
+                    @foreach($tamanhosRec as $tam)
+                        <button type="button" class="tamanho-btn-rec px-3 py-1 border border-gray-600 rounded-md text-sm hover:bg-[#14ba88]/20 transition" data-tamanho="{{ $tam }}">
+                            {{ $tam }}
+                        </button>
+                    @endforeach
+                </div>
+                @endif
 
-                 <form action="{{ route('carrinho.adicionar', $prod->id_produtos) }}" method="POST" class="form-carrinho-rec mt-auto">
-                     @csrf
-                     <input type="hidden" name="tamanho" class="tamanhoSelecionado-rec">
-                     <button type="submit" class="w-full bg-[#14ba88] text-white font-bold py-2 rounded-md hover:bg-[#117c66] transition">
-                         Adicionar
-                     </button>
-                     <p class="text-red-500 mt-2 hidden erroTamanho-rec">Selecione um tamanho.</p>
-                 </form>
-             </div>
-         @endforeach
-     </div>
- </div>
- @endif
+<form action="{{ route('carrinho.adicionar', $prod->id_produtos) }}" method="POST" class="form-carrinho-rec mt-auto">
+    @csrf
+    <input type="hidden" name="tamanho" class="tamanhoSelecionado-rec">
+    
+    <button type="submit" 
+            class="relative w-full px-4 py-2 overflow-hidden font-medium text-gray-600 bg-gray-100 border border-[#14ba88] rounded-lg shadow-inner group text-base">
+
+        <!-- Top border -->
+        <span class="absolute top-0 left-0 w-0 h-0 transition-all duration-200 border-t-2 border-[#14ba88] group-hover:w-full ease"></span>
+
+        <!-- Bottom border -->
+        <span class="absolute bottom-0 right-0 w-0 h-0 transition-all duration-200 border-b-2 border-[#14ba88] group-hover:w-full ease"></span>
+
+        <!-- Top fill -->
+        <span class="absolute top-0 left-0 w-full h-0 transition-all duration-300 delay-200 bg-[#14ba88]/20 group-hover:h-full ease"></span>
+
+        <!-- Bottom fill -->
+        <span class="absolute bottom-0 left-0 w-full h-0 transition-all duration-300 delay-200 bg-[#14ba88]/20 group-hover:h-full ease"></span>
+
+        <!-- Overlay fade -->
+        <span class="absolute inset-0 w-full h-full duration-300 delay-300 bg-[#14ba88] opacity-0 group-hover:opacity-100 rounded-lg"></span>
+
+        <!-- Button text -->
+        <span class="relative transition-colors duration-300 delay-200 group-hover:text-white ease">Adicionar</span>
+    </button>
+    
+    <p class="text-red-500 mt-2 hidden erroTamanho-rec">Selecione um tamanho.</p>
+</form>
+
+            </div>
+        @endforeach
+    </div>
+</div>
+@endif
+
 
  </div>
 
