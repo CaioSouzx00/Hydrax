@@ -2,6 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
+      <link rel="icon" href="/imagens/hydrax/lch.png" type="image/png" />
     <title>Pagamento Pix - Hydrax</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>

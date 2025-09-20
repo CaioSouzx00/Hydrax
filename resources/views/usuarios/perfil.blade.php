@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8" />
-    <link rel="icon" href="/imagens/hydrax/hydrax-perfil.png" type="image/png" />
+  <link rel="icon" href="/imagens/hydrax/lch.png" type="image/png" />
     <title>Meu Perfil - Hydrax</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
