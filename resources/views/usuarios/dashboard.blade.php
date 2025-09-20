@@ -70,25 +70,35 @@
       <!-- Menu principal -->
       <nav class="hidden md:flex items-center gap-6 text-sm">
 
-        <!-- Busca estilizada com campo funcional -->
-        <div
-          class="relative flex items-center bg-gray-200 rounded-xl px-3 py-1.5 text-black focus-within:ring-2 focus-within:ring-[#d5891b] w-44">
-          <input 
-            type="text" 
-            id="buscar_produto"
-            placeholder="Procurar"
-            class="bg-transparent outline-none text-sm placeholder-gray-600 w-full"
-            autocomplete="off"
-            aria-label="Buscar produto"
-          />
-          <button id="botao_buscar" type="button" class="ml-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1010.5 18a7.5 7.5 0 006.15-3.35z" />
-            </svg>
-          </button>
-          <ul id="resultado_busca" role="listbox" aria-label="Resultados da busca"></ul>
-        </div>
+        <!-- Busca estilizada com borda fina e expansão ao focar -->
+<div class="relative flex items-center w-44 transition-all duration-500 ease-in-out
+            focus-within:w-64 bg-white/10 rounded-2xl px-3 py-1.5 text-white
+            ring-0 ring-[#14ba88] focus-within:ring-2 focus-within:ring-[#c87f17]/70
+            shadow-md overflow-hidden">
+
+  <input 
+    type="text" 
+    id="buscar_produto"
+    placeholder="Buscar"
+    class="bg-transparent outline-none text-sm placeholder-white/80 w-full transition-all duration-300
+           focus:placeholder-transparent"
+    autocomplete="off"
+    aria-label="Buscar produto"
+  />
+
+  <button id="botao_buscar" type="button" 
+          class="ml-2 transform transition-transform duration-300 hover:scale-125 hover:text-[#e29b37]">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[#c87f17]" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1010.5 18a7.5 7.5 0 006.15-3.35z" />
+    </svg>
+  </button>
+
+  <ul id="resultado_busca" role="listbox" aria-label="Resultados da busca"
+      class="absolute top-full left-0 mt-1 w-full bg-black/90 rounded-lg shadow-lg text-white max-h-48 overflow-y-auto
+             opacity-0 pointer-events-none transition-all duration-300"></ul>
+</div>
+
 
         @if (!Auth::guard('usuarios')->check())
         <!-- Links para visitante -->
@@ -183,7 +193,7 @@
 
 @if($quantidade > 0)
     <span 
-        class="absolute -top-2 -right-2 bg-black text-white rounded-full w-5 h-5 text-xs flex items-center justify-center animate-bounce-subtle shadow-lg">
+        class="absolute -top-2 -right-2 bg-[#c87f17]/90 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center animate-bounce-subtle shadow-lg">
         {{ $quantidade }}
     </span>
 @endif
@@ -214,7 +224,7 @@
     @endphp
 
     @if($wishlistCount > 0)
-        <span class="absolute -top-2 -right-2 bg-black text-white rounded-full w-5 h-5 text-xs flex items-center justify-center animate-bounce-subtle shadow-lg">
+        <span class="absolute -top-2 -right-2 bg-[#c87f17]/90 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center animate-bounce-subtle shadow-lg">
             {{ $wishlistCount }}
         </span>
     @endif
@@ -240,7 +250,7 @@
 
     @if($pedidosCount > 0)
         <span 
-            class="absolute -top-2 -right-2 bg-black text-white rounded-full w-5 h-5 text-xs flex items-center justify-center animate-bounce-subtle shadow-lg">
+            class="absolute -top-2 -right-2 bg-[#c87f17]/90 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center animate-bounce-subtle shadow-lg">
             {{ $pedidosCount }}
         </span>
     @endif
@@ -288,10 +298,13 @@
         </div>
 
 <!-- Produtos Recomendados -->
-<div class="container mt-16 mb-5">
-    <hr class="border-t border-[#d5891b]/20 ml-44 my-12">
-    <h2 class="text-2xl pl-12 font-bold">Produtos Recomendados</h2>
-    <div id="produtos-rec-container" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-96 pr-24 scale-90">
+<div class="mt-16 mb-5">
+    <hr class="border-t border-[#d5891b]/20 ml-44 mr-44 my-12">
+    <div class="pl-24">
+    <h2 class="text-2xl font-bold border-b border-[#d5891b]/80 w-fit">NOVOS NA HYDRAX</h2>
+    </div>
+    <div id="produtos-rec-container" 
+         class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-[390px] pl-20 pr-16 scale-90 justify-center">
         @forelse($ultimosProdutos ?? [] as $produto)
             @include('usuarios.partials.card-rec', compact('produto', 'idsDesejados'))
         @empty
@@ -299,6 +312,7 @@
         @endforelse
     </div>
 </div>
+
 
 
     <!-- Segundo Carrossel -->
@@ -321,7 +335,11 @@
 
         
     </div>
-<h2 class="text-2xl pl-24 pb-5 font-bold">PRODUTOS</h2>
+    <h2 class="relative text-2xl pl-24 pb-5 font-bold w-fit 
+           after:content-[''] after:block after:absolute after:left-24 after:right-0 after:bottom-0 
+           after:border-b after:border-[#d5891b]/80">
+  CATÁLOGO DE PRODUTOS
+</h2>
     <style>
         body { overflow-x: hidden; }
     </style>
@@ -330,7 +348,7 @@
 <!-- Botão de filtros no fluxo normal -->
 <div class="absolute top-0 right-12">
   <button id="toggle-filtros" 
-          class="text-white hover:text-[#14BA88] px-4 py-2 rounded-md flex items-center gap-2">
+          class="text-white hover:text-[#d5891b]/80 px-4 py-2 rounded-md flex items-center gap-2">
     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
       <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L15 14.414V19a1 1 0 01-1.447.894l-4-2A1 1 0 019 17v-2.586L3.293 6.707A1 1 0 013 6V4z" />
     </svg>
@@ -341,11 +359,11 @@
 
 <!-- SIDEBAR DE FILTROS -->
 <form id="sidebar-filtros" method="GET" action="{{ route('dashboard') }}" 
-      class="w-64 p-5 bg-black/30 backdrop-blur-md text-white border-r border-[#14ba88]/30 
+      class="w-64 p-5 mt-12 bg-black/30 backdrop-blur-md text-white border-r border-[#d5891b]/30 
              absolute h-full z-40 transform -translate-x-full opacity-0 transition-all duration-500 ease-in-out rounded-r-lg">
 
     <!-- Gênero -->
-    <h3 class="font-semibold mb-3 text-[#14ba88]">Gênero</h3>
+    <h3 class="font-semibold mb-3 text-[#d5891b]">Gênero</h3>
     <div class="flex flex-col gap-1">
         @foreach(['MASCULINO', 'FEMININO', 'UNISSEX'] as $g)
             <label class="cursor-pointer">
@@ -353,8 +371,8 @@
                        class="peer hidden" 
                        {{ request('genero') === $g ? 'checked' : '' }}>
                 <span class="flex items-center gap-2 px-2 py-1 border rounded-lg transition
-                            peer-checked:bg-[#14ba88]/30 peer-checked:border-[#14ba88]
-                            bg-black/30 border-[#14ba88]/30 hover:bg-[#14ba88]/20">
+                            peer-checked:bg-[#d5891b]/30 peer-checked:border-[#d5891b]
+                            bg-black/30 border-[#d5891b]/30 hover:bg-[#d5891b]/20">
                     {{ ucfirst(strtolower($g)) }}
                 </span>
             </label>
@@ -362,42 +380,41 @@
     </div>
 
     <!-- Categoria -->
-    <h3 class="font-semibold mt-5 mb-2 text-[#14ba88]">Categoria</h3>
+    <h3 class="font-semibold mt-5 mb-2 text-[#d5891b]">Categoria</h3>
     <select name="categoria" 
-            class="w-full p-2 bg-black/30 text-white border border-[#14ba88]/50 rounded-lg backdrop-blur-sm focus:ring-2 focus:ring-[#14ba88] focus:outline-none">
+            class="w-full p-2 bg-black/30 text-white border border-[#d5891b]/50 rounded-lg backdrop-blur-sm focus:ring-2 focus:ring-[#d5891b] focus:outline-none">
         <option value="">Todas</option>
         <option value="Corrida" {{ request('categoria') === 'Corrida' ? 'selected' : '' }}>Corrida</option>
         <option value="Basquete" {{ request('categoria') === 'Basquete' ? 'selected' : '' }}>Basquete</option>
         <option value="Lifestyle" {{ request('categoria') === 'Lifestyle' ? 'selected' : '' }}>Lifestyle</option>
     </select>
 
-<!-- Tamanho -->
-<h3 class="font-semibold mt-5 mb-2 text-[#14ba88]">Tamanho</h3>
-<div class="grid grid-cols-4 gap-2">
-    @foreach([37,38,39,40,41,42,43,44,45,46] as $t)
-        <label class="cursor-pointer">
-            <input type="radio" name="tamanho" value="{{ $t }}" class="peer hidden" 
-                   {{ request('tamanho') == $t ? 'checked' : '' }}>
-            <span class="flex items-center justify-center w-12 h-12 border rounded-lg transition
-                        peer-checked:bg-[#14ba88]/30 peer-checked:border-[#14ba88]
-                        bg-black/30 border-[#14ba88]/30 hover:bg-[#14ba88]/20 text-white font-bold">
-                {{ $t }}
-            </span>
-        </label>
-    @endforeach
-</div>
-
+    <!-- Tamanho -->
+    <h3 class="font-semibold mt-5 mb-2 text-[#d5891b]">Tamanho</h3>
+    <div class="grid grid-cols-4 gap-2">
+        @foreach([37,38,39,40,41,42,43,44,45,46] as $t)
+            <label class="cursor-pointer">
+                <input type="radio" name="tamanho" value="{{ $t }}" class="peer hidden" 
+                       {{ request('tamanho') == $t ? 'checked' : '' }}>
+                <span class="flex items-center justify-center w-12 h-12 border rounded-lg transition
+                            peer-checked:bg-[#d5891b]/30 peer-checked:border-[#d5891b]
+                            bg-black/30 border-[#d5891b]/30 hover:bg-[#d5891b]/20 text-white font-bold">
+                    {{ $t }}
+                </span>
+            </label>
+        @endforeach
+    </div>
 
     <!-- Preço -->
-    <h3 class="font-semibold mt-5 mb-2 text-[#14ba88]">Preço</h3>
+    <h3 class="font-semibold mt-5 mb-2 text-[#d5891b]">Preço</h3>
     <div class="flex items-center gap-2">
         <input type="number" name="preco_min" placeholder="Mín" 
                value="{{ request('preco_min') ?? '' }}"
-               class="w-20 p-2 bg-black/30 text-white border border-[#14ba88]/50 rounded-lg focus:ring-2 focus:ring-[#14ba88] focus:outline-none">
-        <span class="text-[#14ba88] font-bold">-</span>
+               class="w-20 p-2 bg-black/30 text-white border border-[#d5891b]/50 rounded-lg focus:ring-2 focus:ring-[#d5891b] focus:outline-none">
+        <span class="text-[#d5891b] font-bold">-</span>
         <input type="number" name="preco_max" placeholder="Máx" 
                value="{{ request('preco_max') ?? '' }}"
-               class="w-20 p-2 bg-black/30 text-white border border-[#14ba88]/50 rounded-lg focus:ring-2 focus:ring-[#14ba88] focus:outline-none">
+               class="w-20 p-2 bg-black/30 text-white border border-[#d5891b]/50 rounded-lg focus:ring-2 focus:ring-[#d5891b] focus:outline-none">
     </div>
 
     <!-- Botões do sidebar -->
@@ -406,19 +423,19 @@
         <button type="submit" 
             class="relative inline-flex items-center justify-center px-6 py-3 overflow-hidden font-bold text-white rounded-md shadow-2xl group">
             <span class="absolute inset-0 w-full h-full transition duration-300 ease-out opacity-0 
-                         bg-gradient-to-br from-[#14ba88]/70 via-[#14ba88]/50 to-[#14ba88]/30 
+                         bg-gradient-to-br from-[#d5891b]/70 via-[#e29b37]/50 to-[#7f3a0e]/30 
                          group-hover:opacity-100 rounded-md"></span>
             <span class="absolute top-0 left-0 w-full bg-gradient-to-b from-white to-transparent opacity-5 h-1/3 rounded-t-md"></span>
             <span class="absolute bottom-0 left-0 w-full h-1/3 bg-gradient-to-t from-white to-transparent opacity-5 rounded-b-md"></span>
             <span class="absolute bottom-0 left-0 w-4 h-full bg-gradient-to-r from-white to-transparent opacity-5 rounded-l-md"></span>
             <span class="absolute bottom-0 right-0 w-4 h-full bg-gradient-to-l from-white to-transparent opacity-5 rounded-r-md"></span>
-            <span class="absolute inset-0 w-full h-full border border-[#14ba88]/50 rounded-md opacity-20"></span>
-            <span class="absolute w-0 h-0 transition-all duration-300 ease-out bg-[#14ba88]/20 rounded-full 
+            <span class="absolute inset-0 w-full h-full border border-[#d5891b]/50 rounded-md opacity-20"></span>
+            <span class="absolute w-0 h-0 transition-all duration-300 ease-out bg-[#d5891b]/20 rounded-full 
                          group-hover:w-56 group-hover:h-56 opacity-20"></span>
             <span class="relative">Filtrar</span>
         </button>
 
-        <!-- Botão Limpar filtros (preto/cinza, sem reload) -->
+        <!-- Botão Limpar filtros -->
         <button type="button" id="limpar-filtros" 
             class="relative inline-flex items-center justify-center px-6 py-3 overflow-hidden font-bold text-white rounded-md shadow-2xl group"
             onclick="document.getElementById('sidebar-filtros').reset();">
@@ -436,8 +453,6 @@
         </button>
     </div>
 </form>
-
-
 
         <!-- Grid de produtos (3 colunas centralizadas) -->
         <div id="produtos-container"
