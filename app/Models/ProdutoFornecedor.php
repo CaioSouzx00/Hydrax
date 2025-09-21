@@ -25,6 +25,7 @@ class ProdutoFornecedor extends Model
         'preco',
         'estoque_imagem',
         'caracteristicas',
+        'cor',
         'historico_modelos',
         'tamanhos_disponiveis',
         'genero',
