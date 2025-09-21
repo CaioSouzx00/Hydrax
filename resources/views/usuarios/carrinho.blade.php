@@ -23,21 +23,30 @@
     <div class="lg:col-span-2">
         <!-- Voltar -->
         <div class="mb-6">
-            <a href="{{ route('dashboard') }}" class="text-gray-400 hover:text-[#14ba88] inline-block">
-                &larr; Voltar à Tela Inicial
-            </a>
+        <a href="{{ route('dashboard') }}"
+   class="group fixed top-5 left-4 z-50 flex h-10 w-10 items-center rounded-full bg-[#14ba88] text-white overflow-hidden transition-all duration-300 ease-in-out hover:w-28 hover:bg-[#117c66]"
+   title="Voltar" aria-label="Botão Voltar">
+     <div class="flex items-center justify-center w-10 h-10 shrink-0">
+         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+             <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+         </svg>
+     </div>
+     <span class="ml-2 w-0 group-hover:w-auto opacity-0 group-hover:opacity-100 overflow-hidden whitespace-nowrap transition-all duration-300 ease-in-out">
+         Voltar
+     </span>
+</a>
         </div>
 
         <h1 class="text-3xl font-bold mb-6">SEU CARRINHO</h1>
 
         <!-- Mensagens -->
         @if(session('success'))
-            <div class="bg-green-600/80 border border-green-600 text-white p-3 rounded mb-6">
+            <div class="bg-green-600/60 border border-green-600 text-white p-3 rounded mb-6">
                 {{ session('success') }}
             </div>
         @endif
         @if(session('error'))
-            <div class="bg-red-600/80 border border-red-600 text-white p-3 rounded mb-6">
+            <div class="bg-red-600/60 border border-red-600 text-white p-3 rounded mb-6">
                 {{ session('error') }}
             </div>
         @endif
@@ -83,7 +92,7 @@
     <form action="{{ route('carrinho.remover', [$item->produto_id, $item->tamanho]) }}" method="POST" class="mt-3 md:mt-0">
         @csrf
         @method('DELETE')
-        <button type="submit" class="bg-red-600/50 text-white px-4 py-2 rounded-lg hover:bg-red-700/80 transition">
+        <button type="submit" class="bg-red-600/50 border border-red-700 text-white px-4 py-2 rounded-lg hover:bg-red-700/80 transition">
             Remover
         </button>
     </form>
@@ -96,7 +105,7 @@
     </div>
 
     <!-- COLUNA DIREITA: RESUMO DO PEDIDO -->
-    <div class="bg-black/30 border border-[#333] rounded-xl p-6 mt-24 h-fit shadow-lg">
+    <div class="bg-black/30 border border-[#333] rounded-xl p-6 mt-20 h-fit shadow-lg">
         <h2 class="text-xl font-bold mb-12">RESUMO DO PEDIDO:</h2>
 
         <div class="flex justify-between text-gray-300 mb-2">
@@ -150,11 +159,12 @@
 <!-- RECOMENDAÇÕES -->
      <hr class="border-t ml-12 mr-12 border-[#d5891b]/20 my-12">
 <div class="container mt-16 mb-10">
-
-    <h2 class="text-2xl font-bold mb-2 pl-12">RECOMENDADOS PARA VOCÊ</h2>
+    <div class="pl-12">
+    <h2 class="text-2xl font-bold mb-2 border-b border-[#d5891b]/80 w-fit">RECOMENDADOS PARA VOCÊ</h2>
+    </div>
     <div id="produtos-container" 
-         class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-96 scale-75 pr-12
-                [&>div]:bg-white [&>div]:rounded-xl [&>div]:shadow 
+         class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-[390px] pl-72 pr-16 scale-90 justify-center
+                [&>div]:bg-white/0 [&>div]:rounded-xl [&>div]:shadow 
                 [&>div]:hover:shadow-lg [&>div]:transition 
                 [&>div]:overflow-hidden [&>div]:relative
                 [&>div]:flex [&>div]:flex-col">

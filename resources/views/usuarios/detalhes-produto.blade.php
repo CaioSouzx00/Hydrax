@@ -188,7 +188,7 @@
 
 <!-- Aviso flutuante -->
 <div id="wishlist-toast" 
-     class="fixed top-5 right-5 bg-[#d5891b]/70 border border-white/60 text-white/80 px-3 py-1 rounded-md shadow-lg opacity-0 pointer-events-none transition-opacity duration-300 z-50">
+     class="fixed top-24 right-5 bg-[#d5891b]/70 border border-white/60 text-white/80 px-3 py-1 rounded-md shadow-lg opacity-0 pointer-events-none transition-opacity duration-300 z-50">
 </div>
 
 <script>
