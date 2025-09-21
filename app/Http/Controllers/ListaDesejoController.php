@@ -33,22 +33,25 @@ public function store($id_produtos, Request $request)
         ->first();
 
     if ($item) {
-        // Já existe → remover
         $item->delete();
-
-        return back()->with('success', 'Produto removido da lista de desejos!');
-    } 
-    else {
-        // Não existe → adicionar
+        $action = 'removido';
+    } else {
         ListaDesejo::create([
             'id_usuarios' => $idUsuario,
             'id_produtos' => $id_produtos,
         ]);
-
-            return back()->with('success', 'Produto adicionado da lista de desejos!');
+        $action = 'adicionado';
     }
-}
 
+    if ($request->wantsJson()) {
+        return response()->json([
+            'success' => true,
+            'action' => $action,
+        ]);
+    }
+
+    return back()->with('success', "Produto {$action} da lista de desejos!");
+}
 
 public function show($id)
 {
