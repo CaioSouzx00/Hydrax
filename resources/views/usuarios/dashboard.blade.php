@@ -343,7 +343,7 @@
     </div>
     <h2 class="relative text-2xl pl-24 pb-5 font-bold w-fit 
            after:content-[''] after:block after:absolute after:left-24 after:right-0 after:bottom-0 
-           after:border-b after:border-[#d5891b]/80">
+           after:border-b after:border-[#d5891b]/80" id="catalago">
   CATÁLOGO DE PRODUTOS
 </h2>
     <style>
@@ -764,7 +764,25 @@ if (botaoLimpar) {
 </script>
 
 
+<!--
+<script>
+  // Salva posição do scroll antes de sair da página
+  window.addEventListener("beforeunload", () => {
+    localStorage.setItem("scrollY", window.scrollY);
+  });
 
+  // Recupera posição quando recarregar
+  window.addEventListener("load", () => {
+    const scrollY = localStorage.getItem("scrollY");
+    if (scrollY !== null) {
+      window.scrollTo(0, parseInt(scrollY));
+      localStorage.removeItem("scrollY");
+    }
+  });
+</script>
+
+
+-->
 
 </body>
 

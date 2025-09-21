@@ -50,7 +50,10 @@ public function store($id_produtos, Request $request)
         ]);
     }
 
-    return back()->with('success', "Produto {$action} da lista de desejos!");
+   //return back()->with('success', "Produto {$action} da lista de desejos!");
+    return redirect()->to(url()->previous() . '#catalago')
+    ->with('success', "Produto {$action} da lista de desejos!");
+
 }
 
 public function show($id)
