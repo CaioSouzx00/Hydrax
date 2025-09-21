@@ -67,30 +67,78 @@
     </a>
 
 
-    {{-- Botão wishlist fora do link --}}
-    <form action="{{ route('lista-desejos.store', $produto->id_produtos) }}" method="POST" class="absolute top-3 right-3 z-20">
-        @csrf
+{{-- Botão wishlist fora do link --}}
+<form action="{{ route('lista-desejos.store', $produto->id_produtos) }}" method="POST" 
+      class="wishlist-form absolute top-3 right-3 z-20">
+    @csrf
 
-        {{-- Verifique se o ID do produto atual está na lista de IDs desejados --}}
-        @php
-            $isDesejado = in_array($produto->id_produtos, $idsDesejados);
-        @endphp
-        
-        <button type="submit" class="w-8 h-8 flex items-center justify-center bg-[#071a1c] border border-[#d5891b]/30 rounded-lg hover:bg-[#222] transition">
-            {{-- Mude o atributo `fill` com base na condição --}}
-            <svg 
-                xmlns="http://www.w3.org/2000/svg" 
-                class="w-5 h-5 text-[#d5891b]/70"
-                fill="{{ $isDesejado ? '#d5891b' : 'none' }}" 
-                viewBox="0 0 24 24" 
-                stroke="currentColor"
-            >
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 
-                        4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 
-                        4.5 0 00-6.364 0z" />
-            </svg>
-        </button>
-    </form>
+    @php
+        $isDesejado = in_array($produto->id_produtos, $idsDesejados);
+    @endphp
+    
+    <button type="submit" 
+            class="w-8 h-8 flex items-center justify-center bg-[#071a1c] border border-[#d5891b]/30 rounded-lg hover:bg-[#222] transition">
+        <svg 
+            xmlns="http://www.w3.org/2000/svg" 
+            class="w-5 h-5 text-[#d5891b]/70"
+            fill="{{ $isDesejado ? '#d5891b' : 'none' }}" 
+            viewBox="0 0 24 24" 
+            stroke="currentColor"
+        >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 
+                    4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 
+                    4.5 0 00-6.364 0z" />
+        </svg>
+    </button>
+</form>
 
+
+ <!-- Aviso flutuante -->
+<div id="wishlist-toast" 
+     class="fixed top-5 right-5 bg-[#d5891b]/70 border border-white/60 text-white/80 px-3 py-1 rounded-md shadow-lg opacity-0 pointer-events-none transition-opacity duration-300 z-50">
+</div>
+
+<script>
+document.querySelectorAll('.wishlist-form').forEach(form => {
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault(); // 🔴 impede o navegador de abrir o JSON
+
+        const heart = form.querySelector('svg');
+        const toast = document.getElementById('wishlist-toast');
+
+        try {
+            const res = await fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                }
+            });
+            const data = await res.json();
+
+            if (data.success) {
+                // Atualiza o coração
+                heart.setAttribute('fill', data.action === 'adicionado' ? '#d5891b' : 'none');
+
+                // Mostra o toast
+                toast.textContent = data.action === 'adicionado' 
+                    ? 'Adicionado à lista de desejos!' 
+                    : 'Removido da lista de desejos!';
+                toast.classList.remove('opacity-0', 'pointer-events-none');
+                toast.classList.add('opacity-100');
+
+                // Esconde o toast após 3 segundos
+                setTimeout(() => {
+                    toast.classList.remove('opacity-100');
+                    toast.classList.add('opacity-0', 'pointer-events-none');
+                }, 3000);
+            }
+        } catch (err) {
+            console.error('Erro ao salvar na lista de desejos', err);
+            alert('Não foi possível adicionar/remover da lista de desejos.');
+        }
+    });
+});
+</script>
 </div>
