@@ -107,16 +107,20 @@
                  <span class="text-sm text-[#14ba88]">22% OFF</span>
              </div>
 
-             <div class="mt-4 flex gap-2">
-    @foreach($variantes as $variante)
-        <img 
-            src="{{ asset('storage/' . json_decode($variante->fotos)[0]) }}" 
-            alt="{{ $variante->cor }}" 
-            class="w-12 h-12 border rounded cursor-pointer hover:border-blue-500"
-            onclick="trocarCor('{{ route('produtos.detalhes', $variante->id_produtos) }}')"
-        >
-    @endforeach
+<div class="mt-4">
+    <h3 class="font-semibold text-white mb-2">Cores</h3>
+    <div class="flex gap-3">
+        @foreach($variantes as $variante)
+            <img 
+                src="{{ asset('storage/' . json_decode($variante->fotos)[0]) }}" 
+                alt="{{ $variante->cor }}" 
+                class="w-12 h-12 border rounded cursor-pointer hover:border-blue-500"
+                onclick="trocarCor('{{ route('produtos.detalhes', $variante->id_produtos) }}')"
+            >
+        @endforeach
+    </div>
 </div>
+
 
 <script>
 function trocarCor(url) {
@@ -130,7 +134,7 @@ function trocarCor(url) {
              @endphp
              @if(count($coresComPrincipal))
              <div>
-                 <h3 class="font-semibold text-white">Imagens</h3>
+                 <h3 class="font-semibold text-white mb-2">Imagens</h3>
                  <div class="flex gap-3">
                      @foreach($coresComPrincipal as $img)
                          <img src="{{ asset('storage/' . $img) }}"
@@ -187,7 +191,7 @@ function trocarCor(url) {
      </form>
 
 
-<form action="{{ route('lista-desejos.store', $produto->id_produtos) }}" method="POST" class="absolute top-[360px] right-0.5 z-50">
+<form action="{{ route('lista-desejos.store', $produto->id_produtos) }}" method="POST" class="absolute top-[435px] right-0.5 z-50">
     @csrf
     <button type="submit" class="wishlist-btn w-10 h-10 flex items-center justify-center 
                                    bg-black/20 border border-[#d5891b]/50 rounded-lg 
