@@ -44,11 +44,16 @@
             Essa chave Pix também foi enviada para seu e-mail cadastrado.
         </p>
 
-        <!-- Botão voltar -->
-        <a href="{{ route('carrinho.ver') }}" 
-           class="inline-block bg-[#14ba88]/90 text-black font-bold py-3 px-8 rounded-full hover:bg-[#14ba88]/100 transition-all duration-200 shadow-lg backdrop-blur-sm">
-           Voltar para o carrinho
-        </a>
+<a href="{{ route('carrinho.ver') }}" 
+   class="relative inline-flex items-center px-8 py-3 overflow-hidden text-lg font-bold text-white border-2 border-[#14ba88] rounded-full group hover:text-white transition-all duration-300">
+    
+    <!-- Fundo animado -->
+    <span class="absolute left-0 block w-full h-0 transition-all bg-[#14ba88] opacity-100 group-hover:h-full top-1/2 group-hover:top-0 duration-300 ease"></span>
+    
+    <!-- Texto do botão -->
+    <span class="relative">Voltar para o carrinho</span>
+</a>
+
     </div>
 
 </body>

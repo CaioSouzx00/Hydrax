@@ -8,7 +8,7 @@
 </head>
 <body class="bg-gradient-to-br from-[#211828] via-[#0b282a] to-[#17110d] font-sans text-white">
 
-<a href="{{ url()->previous() }}"
+<a href="{{ route('dashboard') }}"
    class="group fixed top-4 left-4 z-50 flex h-10 w-10 items-center rounded-full bg-[#14ba88] text-white overflow-hidden transition-all duration-300 ease-in-out hover:w-28 hover:bg-[#117c66]"
    title="Voltar" aria-label="Botão Voltar">
     <div class="flex items-center justify-center w-10 h-10 shrink-0">

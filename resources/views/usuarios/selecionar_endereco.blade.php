@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <link rel="icon" href="/imagens/hydrax/lch.png" type="image/png" />
+    <link rel="icon" href="/imagens/hydrax/lch.png" type="image/png" />
     <title>Finalizar Compra - Hydrax</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -38,31 +38,40 @@
     <div class="md:col-span-2 space-y-10">
         <!-- Voltar -->
         <div class="mb-2">
-            <a href="{{ route('dashboard') }}" class="text-gray-400 hover:text-[#14ba88] inline-block">
-                &larr; Voltar à Tela Inicial
-            </a>
+<a href="{{ route('carrinho.ver') }}"
+   class="group fixed top-4 left-4 z-50 flex h-10 w-10 items-center rounded-full bg-[#14ba88] text-white overflow-hidden transition-all duration-300 ease-in-out hover:w-28 hover:bg-[#117c66]"
+   title="Voltar" aria-label="Botão Voltar">
+    <div class="flex items-center justify-center w-10 h-10 shrink-0">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+        </svg>
+    </div>
+    <span class="ml-2 w-0 group-hover:w-auto opacity-0 group-hover:opacity-100 overflow-hidden whitespace-nowrap transition-all duration-300 ease-in-out">
+        Voltar
+    </span>
+</a>
         </div>
         @if(session('error'))
-            <div class="bg-red-700 text-white p-3 rounded mb-6 shadow-md">{{ session('error') }}</div>
+            <div class="bg-red-700/40 border border-red-700 text-white p-3 rounded mb-6 shadow-md">{{ session('error') }}</div>
         @endif
         @if(session('success'))
-            <div class="bg-green-700 text-white p-3 rounded mb-6 shadow-md">{{ session('success') }}</div>
+            <div class="bg-green-700/40 border border-green-700 text-white p-3 rounded mb-6 shadow-md">{{ session('success') }}</div>
         @endif
 
         <!-- Endereço -->
-        <div class="bg-[#1b1b27] p-6 rounded-2xl shadow-md border border-[#14ba88]/20">
-            <h2 class="font-extrabold uppercase mb-4 text-[#14ba88] text-lg">Endereço de entrega</h2>
+        <div class="bg-[#1b1b27] p-6 rounded-2xl shadow-md border border-[#d5891b]/20">
+            <h2 class="font-extrabold uppercase mb-4 text-gray-300 border-b border-[#d5891b]/50 w-fit text-lg">Endereço de entrega</h2>
             @if($enderecos->isEmpty())
                 <form action="{{ route('usuarios.enderecos.store') }}" method="POST" class="space-y-4">
                     @csrf
-                    <input type="text" name="rua" placeholder="Rua *" required class="border border-[#7f3a0e]/50 p-2 rounded w-full bg-[#111] text-white">
+                    <input type="text" name="rua" placeholder="Rua:" required class="border border-[#d5891b]/30 p-2 rounded w-full bg-[#111]/30 text-white">
                     <div class="grid grid-cols-2 gap-4">
-                        <input type="text" name="numero" placeholder="Número *" required class="border border-[#7f3a0e]/50 p-2 rounded bg-[#111] text-white">
-                        <input type="text" name="bairro" placeholder="Bairro *" required class="border border-[#7f3a0e]/50 p-2 rounded bg-[#111] text-white">
+                        <input type="text" name="numero" placeholder="Número:" required class="border border-[#d5891b]/30 p-2 rounded bg-[#111]/30 text-white">
+                        <input type="text" name="bairro" placeholder="Bairro:" required class="border border-[#d5891b]/30 p-2 rounded bg-[#111]/30 text-white">
                     </div>
                     <div class="grid grid-cols-2 gap-4 mt-2">
-                        <input type="text" name="cidade" placeholder="Cidade *" required class="border border-[#7f3a0e]/50 p-2 rounded bg-[#111] text-white">
-                        <select name="estado" required class="border border-[#7f3a0e]/50 p-2 rounded bg-[#111] text-white">
+                        <input type="text" name="cidade" placeholder="Cidade:" required class="border border-[#d5891b]/30 p-2 rounded bg-[#111]/30 text-white">
+                        <select name="estado" required class="border border-[#d5891b]/30 p-2 rounded bg-[#111]/30 text-white">
                             <option value="">Estado</option>
                             <option value="AC">AC</option>
                             <option value="AL">AL</option>
@@ -93,14 +102,23 @@
                             <option value="TO">TO</option>
                         </select>
                     </div>
-                    <input type="text" name="cep" placeholder="CEP *" required class="border border-[#7f3a0e]/50 p-2 rounded w-full mt-2 bg-[#111] text-white">
-                    <button type="submit" class="w-full bg-[#14ba88] text-black font-bold py-3 rounded-lg mt-4 uppercase hover:bg-[#0f8a67] transition">Salvar Endereço</button>
+                    <input type="text" name="cep" placeholder="CEP:" required class="border border-[#d5891b]/30 p-2 rounded w-full bg-[#111]/30 text-white">
+                    <button type="submit" 
+    class="relative w-full rounded px-5 py-3 overflow-hidden group bg-[#14ba88] text-[#0B282A] hover:text-white uppercase font-bold hover:bg-gradient-to-r hover:from-[#14ba88] hover:to-[#0f8a67] hover:ring-2 hover:ring-offset-2 hover:ring-[#14ba88] transition-all ease-out duration-300">
+    
+    <!-- Brilho deslizante -->
+    <span class="absolute right-0 w-8 h-32 -mt-12 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 rotate-12 group-hover:-translate-x-40 ease"></span>
+    
+    <!-- Texto -->
+    <span class="relative">Salvar Endereço</span>
+</button>
+
                 </form>
             @else
                 <form action="{{ route('carrinho.processar') }}" method="POST" class="space-y-4">
                     @csrf
                     @foreach($enderecos as $endereco)
-                        <label class="flex items-start p-4 border border-[#14ba88]/30 rounded-xl cursor-pointer hover:border-[#14ba88] transition">
+                        <label class="flex items-start p-4 border border-[#d5891b]/30 rounded-xl cursor-pointer hover:border-[#d5891b]/50 transition">
                             <input type="radio" name="id_endereco" value="{{ $endereco->id_endereco }}" class="mt-1" required>
                             <div class="ml-3 text-sm leading-6">
                                 <p class="font-medium">{{ $endereco->rua }}, {{ $endereco->numero }}</p>
@@ -109,20 +127,28 @@
                             </div>
                         </label>
                     @endforeach
-                    <button type="submit" class="w-full bg-[#14ba88] text-black font-bold py-4 mt-6 uppercase rounded-xl hover:bg-[#0f8a67] transition">Finalizar Compra</button>
+                                        <button type="submit" 
+    class="relative w-full rounded px-5 py-3 overflow-hidden group bg-[#14ba88] text-[#0B282A] hover:text-white uppercase font-bold hover:bg-gradient-to-r hover:from-[#14ba88] hover:to-[#0f8a67] hover:ring-2 hover:ring-offset-2 hover:ring-[#14ba88] transition-all ease-out duration-300">
+    
+    <!-- Brilho deslizante -->
+    <span class="absolute right-0 w-8 h-32 -mt-12 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 rotate-12 group-hover:-translate-x-40 ease"></span>
+    
+    <!-- Texto -->
+    <span class="relative">Finalizar Compra</span>
+</button>
                 </form>
             @endif
         </div>
 
         <!-- Entrega -->
-        <div class="bg-[#1b1b27]/30 p-6 rounded-2xl shadow-md border border-[#14ba88]/20">
-            <h2 class="font-extrabold uppercase text-[#14ba88]">Opções de entrega</h2>
+        <div class="bg-[#1b1b27]/30 p-6 rounded-2xl shadow-md border border-[#d5891b]/20">
+            <h2 class="font-extrabold uppercase text-gray-300">Opções de entrega</h2>
             <p class="text-sm text-gray-400">Entrega padrão — R$15,00</p>
         </div>
 
         <!-- Pagamento -->
-        <div class="bg-[#1b1b27]/30 p-6 rounded-2xl shadow-md border border-[#14ba88]/20">
-            <h2 class="font-extrabold uppercase text-[#14ba88]">Pagamento</h2>
+        <div class="bg-[#1b1b27]/30 p-6 rounded-2xl shadow-md border border-[#d5891b]/20">
+            <h2 class="font-extrabold uppercase text-gray-300">Pagamento</h2>
             <p class="text-sm text-gray-400">Será gerada uma chave PIX após finalizar.</p>
         </div>
     </div>
@@ -132,11 +158,11 @@
 
         <!-- Cupons -->
         @if($cupons->isNotEmpty())
-            <div class="bg-[#1b1b27]/30 p-4 rounded-2xl shadow-md border border-[#14ba88]/20">
-                <h2 class="font-extrabold uppercase mb-2 text-[#14ba88] text-sm">Cupons disponíveis</h2>
+            <div class="bg-[#1b1b27]/30 mt-10 p-4 rounded-2xl shadow-md border border-[#d5891b]/20">
+                <h2 class="font-extrabold uppercase mb-2 text-gray-300 text-sm border-b border-[#d5891b]/80 w-fit">Cupons disponíveis</h2>
                 <ul class="space-y-2 text-sm text-gray-300">
                     @foreach($cupons as $cupom)
-                        <li class="flex justify-between items-center border border-[#14ba88]/10 p-2 rounded-lg">
+                        <li class="flex justify-between items-center border border-[#d5891b]/20 p-2 rounded-lg">
                             <span>{{ $cupom->codigo }} - 
                                 @if($cupom->tipo === 'percentual')
                                     {{ $cupom->valor }}% off
@@ -144,13 +170,18 @@
                                     R$ {{ number_format($cupom->valor, 2, ',', '.') }} off
                                 @endif
                             </span>
-                            <form action="{{ route('carrinho.aplicarCupom') }}" method="POST">
-                                @csrf
-                                <input type="hidden" name="codigo_cupom" value="{{ $cupom->codigo }}">
-                                <button type="submit" class="bg-[#14ba88] text-black px-3 py-1 rounded uppercase hover:bg-[#0f8a67] transition">
-                                    Aplicar
-                                </button>
-                            </form>
+<form action="{{ route('carrinho.aplicarCupom') }}" method="POST">
+    @csrf
+    <input type="hidden" name="codigo_cupom" value="{{ $cupom->codigo }}">
+    <button type="submit" 
+        class="relative rounded px-3 py-1 overflow-hidden group bg-[#14ba88] text-[#0B282A] hover:text-white uppercase font-bold hover:bg-gradient-to-r hover:from-[#14ba88] hover:to-[#117c66] hover:ring-2 hover:ring-offset-2 hover:ring-[#14ba88] transition-all ease-out duration-300">
+        
+        <span class="absolute right-0 w-8 h-32 -mt-12 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 rotate-12 group-hover:-translate-x-40 ease"></span>
+        
+        <span class="relative">Aplicar</span>
+    </button>
+</form>
+
                         </li>
                     @endforeach
                 </ul>
@@ -158,14 +189,14 @@
         @endif
 
         <!-- Resumo do pedido -->
-        <div class="bg-[#1b1b27]/30 p-6 rounded-2xl shadow-md border border-[#14ba88]/20">
-            <h2 class="font-extrabold uppercase mb-6 text-[#14ba88]">Seu Pedido</h2>
+        <div class="bg-[#1b1b27]/30 p-6 rounded-2xl shadow-md border border-[#d5891b]/20">
+            <h2 class="font-extrabold uppercase mb-6 text-gray-300 border-b border-[#d5891b]/80 w-fit">Seu Pedido</h2>
 
             @foreach($carrinho->itens as $item)
                 @php
                     $itemSubtotal = $item->produto->preco * $item->quantidade;
                 @endphp
-                <div class="flex items-center justify-between border-b border-[#14ba88]/10 py-3">
+                <div class="flex items-center justify-between border-b border-[#d5891b]/10 py-3">
                     <div class="flex items-center space-x-3">
                         @php
                             $foto = is_array(json_decode($item->produto->fotos, true)) 
@@ -179,7 +210,7 @@
                 </div>
             @endforeach
 
-            <div class="flex justify-between mt-2 text-sm border-t border-gray-300 pt-3">
+            <div class="flex justify-between mt-2 text-sm border-t border-[#d5891b]/10 pt-3">
                 <span>Subtotal</span>
                 <span>R$ {{ number_format($subtotal, 2, ',', '.') }}</span>
             </div>
