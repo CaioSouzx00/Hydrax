@@ -35,7 +35,7 @@
       </nav>
     </div>
   </header>
-<a href="{{ url()->previous() }}"
+<a href="javascript:history.back()"
    class="group fixed top-5 right-4 z-50 flex h-10 w-10 items-center rounded-full bg-[#14ba88] text-white overflow-hidden transition-all duration-300 ease-in-out hover:w-28 hover:bg-[#117c66]"
    title="Voltar" aria-label="Botão Voltar">
      <div class="flex items-center justify-center w-10 h-10 shrink-0">
@@ -47,6 +47,7 @@
          Voltar
      </span>
 </a>
+
 
 
 <div class="max-w-7xl mx-auto p-6 mt-20">
@@ -106,7 +107,23 @@
                  <span class="text-sm text-[#14ba88]">22% OFF</span>
              </div>
 
-             <p class="text-gray-300 leading-relaxed">{{ $produto->categoria }}</p>
+             <div class="mt-4 flex gap-2">
+    @foreach($variantes as $variante)
+        <img 
+            src="{{ asset('storage/' . json_decode($variante->fotos)[0]) }}" 
+            alt="{{ $variante->cor }}" 
+            class="w-12 h-12 border rounded cursor-pointer hover:border-blue-500"
+            onclick="trocarCor('{{ route('produtos.detalhes', $variante->id_produtos) }}')"
+        >
+    @endforeach
+</div>
+
+<script>
+function trocarCor(url) {
+    window.location.href = url;
+}
+</script>
+
 
              @php
                  $coresComPrincipal = array_merge([$fotos[0] ?? 'sem-imagem.png'], $estoqueImagens);
@@ -185,6 +202,7 @@
         </svg>
     </button>
 </form>
+
 
 <!-- Aviso flutuante -->
 <div id="wishlist-toast" 

@@ -24,6 +24,7 @@ public function store(Request $request)
         'preco' => 'required|numeric|min:0',
         'estoque_imagem.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048', 
         'caracteristicas' => 'required|string',
+        'cor' => 'required|string|max:50',
         'historico_modelos' => 'nullable|string',
         'tamanhos_disponiveis' => 'nullable|string',
         'genero' => 'required|in:MASCULINO,FEMININO,UNISSEX',
@@ -59,6 +60,7 @@ public function store(Request $request)
         'preco' => $request->preco,
         'estoque_imagem' => !empty($imagensEstoque) ? json_encode($imagensEstoque) : null,
         'caracteristicas' => $request->caracteristicas,
+        'cor' => $request->cor,
         'historico_modelos' => $request->historico_modelos,
         'tamanhos_disponiveis' => $request->tamanhos_disponiveis
         ? array_map('trim', explode(',', $request->tamanhos_disponiveis))
@@ -86,6 +88,7 @@ public function update(Request $request, $id)
         'preco' => 'required|numeric|min:0',
         'estoque_imagem.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         'caracteristicas' => 'required|string',
+        'cor' => 'required|string|max:50',
         'historico_modelos' => 'nullable|string',
         'tamanhos_disponiveis' => 'nullable|string',
         'genero' => 'required|in:MASCULINO,FEMININO,UNISSEX',
@@ -99,6 +102,7 @@ public function update(Request $request, $id)
         'descricao',
         'preco',
         'caracteristicas',
+        'cor',
         'historico_modelos',
         'genero',
         'categoria',

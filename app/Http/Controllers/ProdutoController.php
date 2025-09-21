@@ -100,6 +100,10 @@ $isDesejado = $usuario
             ->get();
 
 
+                // **Variantes do mesmo modelo**
+    $variantes = ProdutoFornecedor::where('historico_modelos', $produto->historico_modelos)
+        ->get(['id_produtos', 'cor', 'slug', 'fotos', 'estoque_imagem']);
+
 
         return view('usuarios.detalhes-produto', [
 
@@ -113,7 +117,7 @@ $isDesejado = $usuario
             'tamanhoDist' => $tamanhoDist,
             'larguraDist' => $larguraDist,
             'isDesejado' => $isDesejado,
-
+            'variantes' => $variantes,
         ]);
 
 

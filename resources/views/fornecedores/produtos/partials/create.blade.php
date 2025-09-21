@@ -18,6 +18,12 @@
     </div>
 
     <div>
+    <label for="cor">Cor do produto:</label>
+    <input type="text" name="cor" id="cor" class="border p-2 rounded" required>
+  e</div>
+
+
+    <div>
       <label for="descricao" class="block text-sm text-[#d5891b] mb-1">Descrição</label>
       <input type="text" id="descricao" name="descricao" placeholder="Descrição"
         class="w-full px-4 py-3 bg-[#17110d] text-white/70 hover:text-white placeholder-white/40 border border-[#d5891b]/40 rounded-lg

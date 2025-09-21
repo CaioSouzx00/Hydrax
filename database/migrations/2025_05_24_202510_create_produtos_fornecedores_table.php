@@ -14,6 +14,7 @@ return new class extends Migration {
     $table->float('preco', 8, 2);
     $table->text('estoque_imagem')->nullable();
     $table->text('caracteristicas');
+    $table->string('cor', 50);
     $table->text('historico_modelos')->nullable();
     $table->json('tamanhos_disponiveis')->nullable();
     $table->enum('genero', ['MASCULINO', 'FEMININO', 'UNISSEX']);
