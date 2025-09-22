@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -8,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Produtos - Fornecedor</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="icon" href="/imagens/hydrax/hydrax-perfil.png" type="image/png" />
+  <link rel="icon" href="/imagens/hydrax/lcf.png" type="image/png" />
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <style>
     body {

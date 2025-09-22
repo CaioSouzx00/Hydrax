@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="icon" href="/imagens/hydrax/hydrax-perfil.png" type="image/png" />
+  <link rel="icon" href="/imagens/hydrax/lcf.png" type="image/png" />
   <title>Dashboard - Fornecedor</title>
 
   <!-- Tailwind CSS -->
