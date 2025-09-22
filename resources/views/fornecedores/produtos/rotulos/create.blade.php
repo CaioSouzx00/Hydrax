@@ -1,48 +1,65 @@
 @if(session('error'))
-<div class="mb-4 p-4 bg-[#0b282a] border border-red-500 rounded text-red-500">
+<div class="mb-6 p-4 bg-[#0b282a]/80 border border-red-600 rounded-lg text-red-500 font-medium">
     {{ session('error') }}
 </div>
 @endif
 
-<h2 class="text-2xl font-bold mb-4">Cadastrar Labels para: {{ $produto->nome }}</h2>
+<div class="bg-gradient-to-br from-[#211828] via-[#0b282a] to-[#17110d] border border-[#d5891b]/50 rounded-xl shadow-lg p-8 max-w-3xl mx-auto">
+    <h2 class="text-2xl font-semibold mb-6 text-[#e29b37]">
+        Cadastrar Labels para: {{ $produto->nome }}
+    </h2>
 
-<form method="POST" action="{{ route('fornecedores.produtos.rotulos.store', $produto->id_produtos) }}">
-    @csrf
+    <form method="POST" action="{{ route('fornecedores.produtos.rotulos.store', $produto->id_produtos) }}">
+        @csrf
 
-    <label class="block mb-2">Imagem</label>
-    <select name="imagem" class="w-full p-2 mb-4 bg-gray-800 text-white rounded">
-        @foreach(json_decode($produto->estoque_imagem, true) as $img)
-            <option value="{{ $img }}">{{ $img }}</option>
-        @endforeach
-    </select>
+        <!-- Imagem -->
+        <div class="mb-4">
+            <label class="block text-sm text-[#d5891b] mb-1">Imagem</label>
+            <select name="imagem" class="w-full px-4 py-3 bg-[#17110d] text-white/70 border border-[#d5891b]/40 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#d5891b] transition">
+                @foreach(json_decode($produto->estoque_imagem, true) as $img)
+                    <option value="{{ $img }}">{{ $img }}</option>
+                @endforeach
+            </select>
+        </div>
 
-    <label class="block mb-2">Categoria</label>
-    <select name="categoria" class="w-full p-2 mb-4 bg-gray-800 text-white rounded">
-        <option value="basquete">Basquete</option>
-        <option value="lifestyle">Lifestyle</option>
-        <option value="volei">Vôlei</option>
-    </select>
+        <!-- Categoria -->
+        <div class="mb-4">
+            <label class="block text-sm text-[#d5891b] mb-1">Categoria</label>
+            <select name="categoria" class="w-full px-4 py-3 bg-[#17110d] text-white/70 border border-[#d5891b]/40 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#d5891b] transition">
+                <option value="basquete">Basquete</option>
+                <option value="lifestyle">Lifestyle</option>
+                <option value="volei">Vôlei</option>
+            </select>
+        </div>
 
-    <label class="block mb-2">Estilo</label>
-    <select name="estilo" class="w-full p-2 mb-4 bg-gray-800 text-white rounded">
-        <option value="casual">Casual</option>
-        <option value="agressivo">Agressivo</option>
-    </select>
+        <!-- Estilo -->
+        <div class="mb-4">
+            <label class="block text-sm text-[#d5891b] mb-1">Estilo</label>
+            <select name="estilo" class="w-full px-4 py-3 bg-[#17110d] text-white/70 border border-[#d5891b]/40 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#d5891b] transition">
+                <option value="casual">Casual</option>
+                <option value="agressivo">Agressivo</option>
+            </select>
+        </div>
 
-    <label class="block mb-2">Gênero</label>
-    <select name="genero" class="w-full p-2 mb-4 bg-gray-800 text-white rounded">
-        <option value="MASCULINO">Masculino</option>
-        <option value="FEMININO">Feminino</option>
-        <option value="UNISSEX">Unissex</option>
-    </select>
+        <!-- Gênero -->
+        <div class="mb-4">
+            <label class="block text-sm text-[#d5891b] mb-1">Gênero</label>
+            <select name="genero" class="w-full px-4 py-3 bg-[#17110d] text-white/70 border border-[#d5891b]/40 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#d5891b] transition">
+                <option value="MASCULINO">Masculino</option>
+                <option value="FEMININO">Feminino</option>
+                <option value="UNISSEX">Unissex</option>
+            </select>
+        </div>
 
-   <div class="mb-4">
-    <label class="block text-sm font-medium text-gray-200">Marca</label>
-    <input type="text" class="w-full rounded bg-gray-800 text-white p-2" value="{{ $fornecedorNome }}" disabled>
+        <!-- Marca -->
+        <div class="mb-6">
+            <label class="block text-sm text-[#d5891b] mb-1">Marca</label>
+            <input type="text" class="w-full px-4 py-3 bg-[#17110d] text-white/70 border border-[#d5891b]/40 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#d5891b]" value="{{ $fornecedorNome }}" disabled>
+        </div>
+
+        <!-- Botão -->
+        <button type="submit" class="w-full py-3 bg-[#14ba88] hover:bg-[#0fa374] rounded-lg font-semibold shadow transition text-black/80">
+            Salvar Label
+        </button>
+    </form>
 </div>
-
-
-    <button type="submit" class="px-5 py-2 bg-green-600 rounded hover:bg-green-700 transition text-white">
-        Salvar Label
-    </button>
-</form>

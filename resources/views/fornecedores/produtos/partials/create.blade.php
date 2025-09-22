@@ -18,10 +18,12 @@
     </div>
 
     <div>
-    <label for="cor">Cor do produto:</label>
-    <input type="text" name="cor" id="cor" class="border p-2 rounded" required>
-  e</div>
-
+      <label for="cor" class="block text-sm text-[#d5891b] mb-1">Cor do Produto</label>
+      <input type="text" id="cor" name="cor" placeholder="Cor do Produto"
+        class="w-full px-4 py-3 bg-[#17110d] text-white/70 hover:text-white placeholder-white/40 
+               border border-[#d5891b]/40 rounded-lg
+               focus:outline-none focus:ring-2 focus:ring-[#d5891b] focus:bg-[#211828] transition" required />
+    </div>
 
     <div>
       <label for="descricao" class="block text-sm text-[#d5891b] mb-1">Descrição</label>
@@ -45,7 +47,7 @@
     </div>
 
     <div>
-      <label for="historico_modelos" class="block text-sm text-[#d5891b] mb-1">Histórico de Modelos</label>
+      <label for="historico_modelos" class="block text-sm text-[#d5891b] mb-1">Código Modelo</label>
       <input type="text" id="historico_modelos" name="historico_modelos" placeholder="Histórico de Modelos"
         class="w-full px-4 py-3 bg-[#17110d] text-white/70 hover:text-white placeholder-white/40 border border-[#d5891b]/40 rounded-lg
                focus:outline-none focus:ring-2 focus:ring-[#d5891b] focus:bg-[#211828] transition" />

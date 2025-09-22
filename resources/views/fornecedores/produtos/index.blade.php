@@ -64,7 +64,7 @@
   <div id="overlay"></div>
 
   <!-- Sidebar -->
-  <aside class="w-64 h-screen bg-black/70 backdrop-blur-md shadow-2xl border-r border-[#d5891b]/30 fixed z-50">
+  <aside class="w-64 h-screen bg-black/40 backdrop-blur-md shadow-2xl border-r border-[#d5891b]/30 fixed z-50">
     <div class="h-40 border-b border-[#d5891b]/40 flex items-center justify-center">
       <img src="/imagens/hydrax/HYDRAX - LOGO1.png" alt="Hydrax Logo" class="h-32 hover:opacity-90 transition" />
     </div>
@@ -88,13 +88,13 @@
   <div class="ml-64 flex-1 flex flex-col min-h-screen">
 
     <!-- Navbar -->
-    <header class="bg-black/50 backdrop-blur-md border-b border-[#d5891b] fixed top-0 left-64 right-0 z-40 h-16 flex items-center justify-between px-6">
+    <header class="bg-black/40 backdrop-blur-md border-b border-[#d5891b] fixed top-0 left-64 right-0 z-40 h-16 flex items-center justify-between px-6">
       <h2 class="text-xl font-semibold">Produtos <span class="text-[#d5891b]">| Fornecedor</span></h2>
 
       <div id="user-dropdown" class="relative group flex items-center space-x-2 cursor-pointer">
         <div class="w-10 h-10 rounded-full flex items-center justify-center transition-colors">
           <!-- Botão voltar -->
-          <a href="{{ url()->previous() }}"
+          <a href="{{ route('fornecedores.login.submit') }}"
             class="group fixed top-4 right-4 z-50 flex h-10 w-10 items-center rounded-full bg-[#d5891b] text-white overflow-hidden transition-all duration-300 ease-in-out hover:w-28 hover:bg-[#895712]"
             title="Voltar para o login" aria-label="Botão Voltar">
             <div class="flex items-center justify-center w-10 h-10 shrink-0">
@@ -156,7 +156,32 @@
     <!-- Conteúdo Dinâmico -->
     <main class="pt-20 px-8 flex-1 overflow-y-auto" id="main-content">
       <div id="conteudo-dinamico">
-        <p class="text-gray-300">Bem-vindo! Use o menu ao lado para gerenciar seus produtos.</p>
+        <div id="conteudo-dinamico" 
+     class="flex flex-col items-center justify-center text-center mt-24">
+       
+  <!-- Ícone -->
+  <div class="w-16 h-16 flex items-center justify-center rounded-full bg-[#d5891b]/10 border border-[#d5891b]/40 mb-6">
+    <svg xmlns="http://www.w3.org/2000/svg" 
+         class="h-8 w-8 text-[#d5891b]" 
+         fill="none" 
+         viewBox="0 0 24 24" 
+         stroke="currentColor">
+      <path stroke-linecap="round" 
+            stroke-linejoin="round" 
+            stroke-width="2" 
+            d="M4 6h16M4 12h16M4 18h16" />
+    </svg>
+  </div>
+
+  <!-- Texto -->
+  <h2 class="text-2xl font-bold text-white">Bem-vindo ao painel</h2>
+  <p class="text-gray-400 mt-3 max-w-xl">
+    Use o menu lateral para <span class="text-[#d5891b] font-semibold">cadastrar</span>, 
+    <span class="text-[#d5891b] font-semibold">editar</span> ou 
+    <span class="text-[#d5891b] font-semibold">gerenciar</span> seus produtos.
+  </p>
+</div>
+
       </div>
     </main>
 
