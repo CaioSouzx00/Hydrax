@@ -118,6 +118,9 @@ Route::post('/lista-desejos/{id_produtos}', [ListaDesejoController::class, 'stor
 Route::delete('/lista-desejos/{id_produtos}', [ListaDesejoController::class, 'destroy'])->name('lista-desejos.destroy');
 Route::get('/avaliacoes/create/{id_produto}', [AvaliacaoController::class, 'create'])->name('avaliacoes.create');
 Route::post('/avaliacoes/store/{id_produto}', [AvaliacaoController::class, 'store'])->name('avaliacoes.store');
+// Rota para visualizar empresa + produtos
+Route::get('/empresa/{id}', [FornecedorController::class, 'mostrarEmpresa'])->name('empresa.mostrar');
+
 
 
 ////////////////////////Rotas de views do FOOTER/////////////////////////////

@@ -74,17 +74,19 @@
              </div>
              @endif
 
-             @if($produto->fornecedor)
-             <div class="flex items-center gap-3 mt-6">
-                 <img src="{{ $produto->fornecedor->foto ? asset('storage/' . $produto->fornecedor->foto) : asset('storage/sem-logo.png') }}" 
-                      alt="Logo {{ $produto->fornecedor->nome_empresa }}"
-                      class="w-12 h-12 rounded-full object-cover border-2 border-[#d5891b]/50">
-                 <div>
-                     <h3 class="font-semibold text-lg text-[#e29b37]">{{ $produto->fornecedor->nome_empresa }}</h3>
-                     <p class="text-sm text-gray-400">Produto vendido por esta empresa</p>
-                 </div>
-             </div>
-             @endif
+@if($produto->fornecedor)
+    <a href="{{ route('empresa.mostrar', $produto->fornecedor->id_fornecedores) }}">
+       class="flex items-center gap-3 mt-6 hover:bg-[#222]/30 p-2 rounded-lg transition">
+        <img src="{{ $produto->fornecedor->foto ? asset('storage/' . $produto->fornecedor->foto) : asset('storage/sem-logo.png') }}" 
+             alt="Logo {{ $produto->fornecedor->nome_empresa }}"
+             class="w-12 h-12 rounded-full object-cover border-2 border-[#d5891b]/50">
+        <div>
+            <h3 class="font-semibold text-lg text-[#e29b37]">{{ $produto->fornecedor->nome_empresa }}</h3>
+            <p class="text-sm text-gray-400">Produto vendido por esta empresa</p>
+        </div>
+    </a>
+@endif
+
          </div>
 
          <div class="flex flex-col gap-6">
