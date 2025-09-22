@@ -89,7 +89,7 @@
 
     <!-- Histórico -->
     <div>
-      <label class="block text-sm font-medium text-[#d5891b]">Histórico de Modelos</label>
+      <label class="block text-sm font-medium text-[#d5891b]">Código Modelo</label>
       <textarea name="historico_modelos" class="custom-scrollbar w-full h-10 resize-none bg-[#17110d] border border-[#d5891b]/40 rounded px-2 text-white/70 hover:text-white">{{ old('historico_modelos', $produto->historico_modelos) }}</textarea>
     </div>
 
