@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Mail\FornecedorAprovadoMail;
 use App\Mail\FornecedorRejeitadoMail;
 use App\Models\ProdutoFornecedor;
+use App\Models\Avaliacao;
 
 class FornecedorController extends Controller
 {
@@ -165,4 +166,49 @@ class FornecedorController extends Controller
             'produto_id' => $id
         ]);
     }
+    
+    public function mostrarEmpresa($id)
+{
+    $fornecedor = Fornecedor::findOrFail($id);
+
+    // Pega os produtos do fornecedor
+    $produtos = ProdutoFornecedor::where('id_fornecedores', $fornecedor->id_fornecedores)
+    ->orderBy('id_produtos', 'desc')
+    ->paginate(12); // número de produtos por página
+
+
+    // IDs dos produtos do fornecedor
+    $idsProdutos = $produtos->pluck('id_produtos');
+
+    // Calcula a média das avaliações de todos os produtos do fornecedor
+    $mediaAvaliacoes = \DB::table('avaliacoes')
+        ->whereIn('id_produtos', $idsProdutos)
+        ->avg('nota') ?? 0;
+
+    // Total de avaliações
+    $totalAvaliacoes = \DB::table('avaliacoes')
+        ->whereIn('id_produtos', $idsProdutos)
+        ->count();
+
+    // Total de produtos e vendidos
+    $totalProdutos = $produtos->count();
+    $totalVendidos = $produtos->sum('vendidos'); // certifique-se de que 'vendidos' existe
+
+    // IDs desejados (wishlist)
+    $idsDesejados = auth()->check() 
+        ? auth()->user()->listaDesejos()->pluck('id_produtos')->toArray()
+        : [];
+
+    return view('usuarios.mostrar', compact(
+        'fornecedor',
+        'produtos',
+        'mediaAvaliacoes',
+        'totalAvaliacoes',
+        'totalProdutos',
+        'totalVendidos',
+        'idsDesejados' // adiciona aqui
+    ));
+}
+
+
 }
