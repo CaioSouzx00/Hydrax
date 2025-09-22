@@ -11,10 +11,21 @@
 
 <div class="container mx-auto p-6 space-y-6">
 
-    <!-- Voltar -->
-    <a href="{{ route('usuarios.pedidos') }}" class="text-gray-400 hover:text-[#14ba88] transition inline-block mb-2">
-        &larr; Voltar para meus pedidos
-    </a>
+        <!-- Botão Voltar -->
+        <div class="mb-5">
+            <a href="{{ route('usuarios.pedidos') }}"
+               class="group fixed top-5 left-4 z-50 flex h-10 w-10 items-center rounded-full bg-[#14ba88] text-white overflow-hidden transition-all duration-300 ease-in-out hover:w-28 hover:bg-[#117c66]"
+               title="Voltar" aria-label="Botão Voltar">
+                <div class="flex items-center justify-center w-10 h-10 shrink-0">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </div>
+                <span class="ml-2 w-0 group-hover:w-auto opacity-0 group-hover:opacity-100 overflow-hidden whitespace-nowrap transition-all duration-300 ease-in-out">
+                    Voltar
+                </span>
+            </a>
+        </div>
 
     <!-- Header do pedido -->
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
@@ -42,10 +53,10 @@
 
 @php
     $etapas = [
-        ['nome' => 'Pedido recebido', 'icone' => '🛒'],
-        ['nome' => 'Separação', 'icone' => '📦'],
-        ['nome' => 'A caminho', 'icone' => '🚚'],
-        ['nome' => 'Entregue', 'icone' => '🏠'],
+        ['nome' => 'Pedido recebido', 'icone' => '<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h18v4H3zM3 7h18v14H3z" /></svg>'],
+        ['nome' => 'Separação', 'icone' => '<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2h-4l-2-2-2 2H6a2 2 0 00-2 2v7" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 13v5a2 2 0 002 2h8a2 2 0 002-2v-5" /></svg>'],
+        ['nome' => 'A caminho', 'icone' => '<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 13h2l2 5h11l2-5h2" /><circle cx="7.5" cy="18.5" r="1.5" /><circle cx="16.5" cy="18.5" r="1.5" /></svg>'],
+        ['nome' => 'Entregue', 'icone' => '<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0h6" /></svg>'],
     ];
     $statusMap = [
         'finalizado' => 3,
@@ -70,7 +81,7 @@
                     @elseif($index == $etapaAtual) bg-[#e29b37] text-black animate-pulse
                     @else bg-gray-700 text-black @endif
                     font-bold text-lg border-2 border-[#14ba88]/40">
-                    {{ $etapa['icone'] }}
+                    {!! $etapa['icone'] !!}
                 </div>
                 <p class="text-center text-sm mt-2 text-gray-300">{{ $etapa['nome'] }}</p>
             </div>
@@ -144,10 +155,18 @@
         <!-- Botão de avaliação -->
         @if($pedido->status === 'finalizado' && !$jaAvaliado)
             <div class="mt-2 md:mt-0">
-                <a href="{{ route('avaliacoes.create', ['id_produto' => $item->produto->id_produtos]) }}"
-                   class="px-4 py-2 bg-[#14ba88] hover:bg-[#0f9e70] text-black font-semibold rounded-lg shadow-md transition">
-                    Avaliar Produto
-                </a>
+<a href="{{ route('avaliacoes.create', ['id_produto' => $item->produto->id_produtos]) }}"
+   class="relative inline-block rounded-lg px-5 py-2.5 overflow-hidden group bg-[#14ba88] hover:bg-gradient-to-r hover:from-[#14ba88] hover:to-[#0f9e70] text-black font-semibold shadow-md hover:ring-2 hover:ring-offset-2 hover:ring-[#14ba88] transition-all duration-300">
+    
+    <!-- faixa de brilho -->
+    <span aria-hidden="true"
+          class="pointer-events-none absolute right-0 top-1/2 -translate-y-1/2 w-10 h-36 transform translate-x-10 rotate-12 bg-white opacity-10 transition-transform duration-700 group-hover:-translate-x-40">
+    </span>
+
+    <!-- texto do botão -->
+    <span class="relative">Avaliar Produto</span>
+</a>
+
             </div>
         @elseif($pedido->status === 'finalizado' && $jaAvaliado)
             <span class="px-4 py-2 bg-gray-600 text-white text-sm rounded-lg">Produto avaliado</span>
@@ -156,7 +175,7 @@
 @endforeach
 
 <!-- Total do pedido -->
-<div class="mt-6 p-6 bg-[#1e1e2a] rounded-2xl shadow-lg text-right border border-[#14ba88]/20">
+<div class="mt-6 p-6 bg-[#1e1e2a]/50 rounded-2xl shadow-lg text-right border border-[#14ba88]/20">
     <p class="text-gray-300 font-semibold text-lg">Total dos itens: 
         <span class="text-white text-xl">R$ {{ number_format($totalItens, 2, ',', '.') }}</span>
     </p>

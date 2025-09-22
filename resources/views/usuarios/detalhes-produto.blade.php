@@ -75,7 +75,7 @@
              @endif
 
 @if($produto->fornecedor)
-    <a href="{{ route('empresa.mostrar', $produto->fornecedor->id_fornecedores) }}">
+    <a href="{{ route('empresa.mostrar', $produto->fornecedor->id_fornecedores) }}"
        class="flex items-center gap-3 mt-6 hover:bg-[#222]/30 p-2 rounded-lg transition">
         <img src="{{ $produto->fornecedor->foto ? asset('storage/' . $produto->fornecedor->foto) : asset('storage/sem-logo.png') }}" 
              alt="Logo {{ $produto->fornecedor->nome_empresa }}"
@@ -116,7 +116,7 @@
             <img 
                 src="{{ asset('storage/' . json_decode($variante->fotos)[0]) }}" 
                 alt="{{ $variante->cor }}" 
-                class="w-12 h-12 border rounded cursor-pointer hover:border-blue-500"
+                class="w-12 h-12 border rounded cursor-pointer hover:opacity-80"
                 onclick="trocarCor('{{ route('produtos.detalhes', $variante->id_produtos) }}')"
             >
         @endforeach
