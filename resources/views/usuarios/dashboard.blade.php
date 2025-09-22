@@ -307,17 +307,28 @@
 <div class="mt-16 mb-5">
     <hr class="border-t border-[#d5891b]/20 ml-44 mr-44 my-12">
     <div class="pl-24">
-    <h2 class="text-2xl font-bold border-b border-[#d5891b]/80 w-fit">NOVOS NA HYDRAX</h2>
+        <h2 class="text-2xl font-bold border-b border-[#d5891b]/80 w-fit">NOVOS NA HYDRAX</h2>
     </div>
     <div id="produtos-rec-container" 
-         class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-[390px] pl-20 pr-16 scale-90 justify-center">
+         class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-[390px] pl-20 pr-16 scale-90 justify-center min-h-[200px]">
         @forelse($ultimosProdutos ?? [] as $produto)
             @include('usuarios.partials.card-rec', compact('produto', 'idsDesejados'))
         @empty
-            <p class="text-gray-400">Nenhum produto disponível.</p>
+        <div class="col-span-full flex flex-col items-center justify-center w-full text-center py-16">
+            <svg class="w-16 h-16 text-[#14ba88]/70 mb-4 animate-bounce-subtle" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+            <p class="text-[#14ba88]/80 text-lg font-semibold">
+                Nenhum produto disponível
+            </p>
+            <p class="text-gray-400 text-sm mt-1">
+                Confira mais tarde ou explore outras categorias.
+            </p>
+        </div>
         @endforelse
     </div>
 </div>
+
 
 
 
@@ -467,7 +478,7 @@
     </div>
 
     <!-- Paginação e texto -->
-    <div class="mt-12 text-center">
+    <div class="mt-12 mb-32 text-center">
         <div id="paginacao-container" class="flex justify-center mb-2"></div>
         <div id="texto-container" class="text-gray-400 text-sm mb-10"></div>
     </div>
