@@ -11,7 +11,7 @@
         }
     </style>
 </head>
-<body class="bg-[#0f0f0f] text-gray-200">
+<body class="bg-gradient-to-br from-[#000000] via-[#211828] to-[#17110D] min-h-screen text-gray-200">
       <!-- Botão voltar -->
   <a href="{{ route('admin.dashboard') }}"
      class="fixed top-4 left-4 z-50 w-9 h-9 flex items-center justify-center rounded-full bg-gray-700 hover:bg-gray-600 transition-colors duration-300 shadow-[0_4px_20px_rgba(0,0,0,0.5)]"
@@ -20,7 +20,7 @@
       <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
     </svg>
   </a>
-    <div class="container mx-auto py-10 px-4">
+    <div class="container mx-auto py-10 px-4 mt-12">
         <h1 class="text-3xl font-bold mb-6 text-white">Todos os Produtos</h1>
 
         @if(session('success'))
@@ -33,7 +33,6 @@
     <input type="text" id="busca" name="busca"
         placeholder="Pesquisar produto ou fornecedor..."
         class="px-4 py-2 rounded-lg bg-[#1a1a1a] border border-gray-700 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full max-w-md">
-    <span class="px-4 py-2 rounded-lg bg-blue-600 text-white">🔍</span>
 </form>
 
 <div id="tabela-produtos" class="overflow-x-auto shadow-lg rounded-lg bg-[#1a1a1a] border border-gray-800">

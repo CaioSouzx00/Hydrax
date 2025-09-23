@@ -6,7 +6,7 @@
     <title>Listagem de Clientes</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-[#111] text-white min-h-screen">
+<body class="bg-gradient-to-br from-[#000000] via-[#211828] to-[#17110D] border border-gray-800 min-h-screen">
 
 <div class="container mx-auto p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
@@ -18,7 +18,7 @@
 
     @foreach($usuarios as $usuario)
         <div class="bg-[#1a1a1a] border border-gray-700 rounded-xl shadow p-4 flex flex-col justify-between">
-            <h2 class="text-lg font-bold mb-1">{{ $usuario->nome_completo }}</h2>
+            <h2 class="text-lg font-bold text-white mb-1">{{ $usuario->nome_completo }}</h2>
             <p class="text-gray-400 text-sm mb-1">Email: {{ $usuario->email }}</p>
             <p class="text-gray-400 text-sm mb-1">CPF: {{ $usuario->cpf }}</p>
             <p class="text-sm mb-2">Status: 
