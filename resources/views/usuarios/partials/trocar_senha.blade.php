@@ -28,9 +28,6 @@
       required
       class="h-11 px-4 pr-10 rounded-lg border border-[#D5891B] bg-[#2a2a2a] text-white placeholder-gray-400 text-sm w-full focus:outline-none focus:ring-2 focus:ring-[#14ba88]"
     >
-    <button type="button" onclick="toggleNovaSenha()" class="absolute right-3 top-2 w-6 h-7" aria-label="Mostrar/ocultar senha nova">
-      <img src="/imagens/Post Jif 2025.png" alt="Mostrar senha" id="icon-nova_senha" class="w-6 h-6 opacity-40 hover:opacity-80 transition-opacity" />
-    </button>
   </div>
 
   <!-- Confirme a nova senha -->
@@ -44,9 +41,6 @@
       required
       class="h-11 px-4 pr-10 rounded-lg border border-[#D5891B] bg-[#2a2a2a] text-white placeholder-gray-400 text-sm w-full focus:outline-none focus:ring-2 focus:ring-[#14ba88]"
     >
-    <button type="button" onclick="toggleNovaSenhaConfirmation()" class="absolute right-3 top-2 w-6 h-7" aria-label="Mostrar/ocultar senha confirmação">
-      <img src="/imagens/Post Jif 2025.png" alt="Mostrar senha" id="icon-nova_senha_confirmation" class="w-6 h-6 opacity-40 hover:opacity-80 transition-opacity" />
-    </button>
   </div>
 
   <div class="flex justify-end"> <!-- container para alinhar o botão à direita -->
