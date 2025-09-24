@@ -212,8 +212,8 @@
       $('#modal-toggle-titulo').text(ativo ? 'Ativar Produto' : 'Destivar Produto');
       $('#modal-toggle-texto').text(
         ativo ?
-        'Você está prestes a ativar este produto. Ele ficará disponível na loja.' :
-        'Você está prestes a desativar este produto. Ele ficará indisponível na loja.'
+        'Você está prestes a desativar este produto. Ele ficará indisponível na loja.' :
+        'Você está prestes a ativar este produto. Ele ficará disponível na loja.'
       );
 
       $('#form-toggle-produto').attr('action', form.attr('action'));
