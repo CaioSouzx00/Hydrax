@@ -2,8 +2,8 @@
     <a href="{{ route('produtos.detalhes', $produto->id_produtos) }}">
         <div
             class="bg-[#111]/50 border border-[#222] rounded-xl shadow-lg p-8 min-h-[580px] cursor-pointer
-                   hover:border-[#D5891B]/40 transition-all duration-300 
-                   hover:shadow-2xl hover:shadow-[#d5891b]/20 hover:-translate-y-2 hover:scale-[1.02]">
+                   hover:border-[#D5891B]/30 transition-all duration-300 
+                   hover:shadow-lg hover:shadow-[#d5891b]/10">
             
             @php
                 $fotos = is_array($produto->fotos) ? $produto->fotos : json_decode($produto->fotos, true);
@@ -16,7 +16,7 @@
                     id="main-image-{{ $produto->id_produtos }}"
                     src="{{ $foto ? asset('storage/' . $foto) : 'https://via.placeholder.com/400x400?text=Produto' }}"
                     alt="Imagem do Produto"
-                    class="w-full h-72 object-cover rounded-lg border border-[#D5891B]/20 shadow-sm transition-transform duration-500 group-hover:scale-105"
+                    class="w-full h-72 object-cover rounded-lg border border-[#D5891B]/20 shadow-sm"
                 />
 
                 <!-- Miniaturas escondidas -->
@@ -29,7 +29,7 @@
                             <img 
                                 src="{{ asset('storage/' . $miniatura) }}"
                                 class="w-12 h-12 object-cover rounded-md border border-[#d5891b]/30 
-                                       cursor-pointer hover:scale-110 transition"
+                                       cursor-pointer hover:opacity-80 transition"
                                 onclick="document.getElementById('main-image-{{ $produto->id_produtos }}').src=this.src"
                             >
                         @endforeach
@@ -38,7 +38,7 @@
             </div>
 
             <!-- Conteúdo -->
-            <div class="flex flex-col space-y-3 transition-all duration-300 group-hover:translate-y-1">
+            <div class="flex flex-col space-y-3">
                 <h3 class="text-base font-semibold text-white truncate" title="{{ $produto->nome }}">
                     {{ $produto->nome }}
                 </h3>
@@ -97,7 +97,7 @@
         
         <button type="submit" 
                 class="w-8 h-8 flex items-center justify-center bg-[#071a1c] border border-[#d5891b]/30 
-                       rounded-lg hover:bg-[#222] transition transform hover:scale-110 active:scale-95">
+                       rounded-lg hover:bg-[#222] transition active:scale-95">
             <svg 
                 xmlns="http://www.w3.org/2000/svg" 
                 class="w-5 h-5 text-[#d5891b]/70 transition-colors duration-300"

@@ -35,7 +35,7 @@
       </nav>
     </div>
   </header>
-<a href="javascript:history.back()"
+<a href="{{ route('dashboard') }}"
    class="group fixed top-5 right-4 z-50 flex h-10 w-10 items-center rounded-full bg-[#14ba88] text-white overflow-hidden transition-all duration-300 ease-in-out hover:w-28 hover:bg-[#117c66]"
    title="Voltar" aria-label="Botão Voltar">
      <div class="flex items-center justify-center w-10 h-10 shrink-0">
