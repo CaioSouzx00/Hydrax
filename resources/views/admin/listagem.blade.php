@@ -25,7 +25,7 @@
         <h1 class="text-3xl font-bold mb-6 text-white">Todos os Produtos</h1>
 
         @if(session('success'))
-            <div class="mb-6 p-3 bg-green-600 text-white rounded shadow">
+            <div class="mb-6 p-3 bg-green-600/50 border border-green-600 text-white rounded shadow">
                 {{ session('success') }}
             </div>
         @endif
