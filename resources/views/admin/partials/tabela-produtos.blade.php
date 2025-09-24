@@ -31,8 +31,8 @@
                                 <button type="submit" 
                                     class="px-3 py-1 rounded font-semibold transition-colors 
                                            {{ $produto->ativo 
-                                                ? 'bg-red-600 text-white hover:bg-red-700' 
-                                                : 'bg-green-600 text-white hover:bg-green-700' }}">
+                                                ? 'bg-red-600/60 border border-red-600 text-white hover:bg-red-700' 
+                                                : 'bg-green-600/60 border border-green-600 text-white hover:bg-green-700' }}">
                                     {{ $produto->ativo ? 'Desativar' : 'Ativar' }}
                                 </button>
                             </form>
