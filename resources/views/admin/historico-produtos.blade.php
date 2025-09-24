@@ -17,7 +17,7 @@
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-[#000000] via-[#211828] to-[#17110D] text-white min-h-screen p-6 text-white min-h-screen p-6">
+<body class="bg-gradient-to-br from-[#000000] via-[#211828] to-[#17110D] text-white min-h-screen p-6">
 
     <!-- Botão voltar redondo -->
     <a href="{{ route('admin.fornecedores') }}"

@@ -4,22 +4,30 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/imagens/hydrax/lca.png" type="image/png" />
 <title>Relatório de Compras por Usuário</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-    /* Barra estilo Adidas em dark mode */
-    .barra-usuario {
-        background: linear-gradient(90deg, #14ba88 0%, #0b282a 100%);
-        transition: width 0.6s ease-in-out;
-    }
-    .barra-usuario:hover {
-        background: linear-gradient(90deg, #1fe0aa 0%, #146b6d 100%);
-    }
+.barra-usuario {
+    background: linear-gradient(90deg, #1e40af 0%, #0b182a 100%);
+    transition: width 0.6s ease-in-out;
+}
+.barra-usuario:hover {
+    background: linear-gradient(90deg, #3b82f6 0%, #1e3a8a 100%);
+}
+
 </style>
 </head>
-<body class="bg-[#0f0f0f] font-sans p-8 text-gray-200">
-
-<h2 class="text-3xl font-bold mb-10 text-center text-white">
+<body class="bg-gradient-to-br from-[#000000] via-[#211828] to-[#17110D] text-white min-h-screen p-10 relative">
+<!-- Botão voltar redondo -->
+<a href="{{ route('admin.dashboard') }}"
+   class="fixed top-4 left-4 z-50 w-10 h-10 flex items-center justify-center rounded-full bg-gray-700 hover:bg-gray-600 transition-colors duration-300 shadow-lg"
+   title="Voltar">
+    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+    </svg>
+</a>
+<h2 class="text-2xl font-bold mb-10 mt-10 border-b border-gray-700/80 w-fit text-white">
     Relatório de Compras por Usuário (Últimos 6 Meses)
 </h2>
 
@@ -58,7 +66,7 @@
 
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
     @foreach($usuariosDados as $usuario)
-        <div class="bg-[#1a1a1a] rounded-2xl p-6 shadow-lg border border-gray-800 hover:shadow-xl transition">
+        <div class="bg-[#1a1a1a]/30 rounded-2xl p-6 shadow-lg border border-gray-800 hover:shadow-xl transition">
             <h3 class="font-bold text-lg mb-4 text-white border-b border-gray-700 pb-2">
                 {{ $usuario['nome'] }}
             </h3>
@@ -77,7 +85,7 @@
                 </div>
             @endforeach
 
-            <p class="text-right font-semibold mt-4 text-green-400">
+            <p class="text-right font-semibold mt-4 text-blue-400">
                 Total: {{ $usuario['total'] }}
             </p>
         </div>
