@@ -128,13 +128,13 @@
     </div>
   </div>
 
-  <div class="flex justify-between gap-4 h-[35%]">
+  <div class="flex justify-center gap-12 h-[35%]">
     <div class="w-1/5 bg-black/30 rounded-xl border border-white/30 shadow-inner p-4">
       <div class="w-full h-full aspect-square rounded-xl relative overflow-hidden">
-        <div class="relative w-full h-full rounded-lg overflow-hidden group">
+        <div class="relative rounded-lg overflow-hidden group">
           <img src="/imagens/hydrax/HYDRAX - LOGO1.png"
                alt="Logo"
-               class="h-full w-full object-cover transition-opacity duration-500 group-hover:opacity-0"/>
+               class="h-40 w-40 pl-4 pb-2 object-cover transition-opacity duration-500 group-hover:opacity-0"/>
           <div class="absolute inset-0 bg-gray-900/10 bg-opacity-80 text-white flex flex-col items-center justify-center px-4 text-center opacity-0 transition-opacity duration-500 group-hover:opacity-100">
             <h4 class="text-lg font-bold mb-1 border-b-4 border-[#B0B0B0] inline-block">Hydrax</h4>
             <p class="text-xs leading-tight">Este é o painel de Admins.</p>
