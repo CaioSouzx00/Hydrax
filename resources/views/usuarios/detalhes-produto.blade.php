@@ -503,6 +503,23 @@ document.querySelectorAll('.wishlist-btn').forEach(btn => {
 }
 </style>
 
+<!-- Detalhes -->
+@php
+    // separa por quebra de linha ou ponto e vírgula, conforme o fornecedor digitar
+    $detalhes = preg_split("/\r\n|\n|\r|;/", $produto->caracteristicas);
+@endphp
+
+<div class="mt-6">
+    <h3 class="text-2xl font-bold text-white mb-4">Detalhes</h3>
+    <ul class="list-disc list-inside space-y-1 text-gray-300">
+        @foreach ($detalhes as $detalhe)
+            @if(trim($detalhe) !== '')
+                <li>{{ trim($detalhe) }}</li>
+            @endif
+        @endforeach
+    </ul>
+</div>
+
 
      </div>
  </div>
