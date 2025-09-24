@@ -504,14 +504,36 @@ document.querySelectorAll('.wishlist-btn').forEach(btn => {
 </style>
 
 <!-- Detalhes -->
+<button id="btn-detalhes"
+        class="w-full flex items-center justify-between text-white font-bold py-4 transition"
+        data-target="detalhes">
+    <span class="text-left">Detalhes</span>
+    <svg id="icon-detalhes" class="w-5 h-5 transform transition-transform duration-300"
+         fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M19 9l-7 7-7-7"/>
+    </svg>
+</button>
+
+<script>
+    const btnDet = document.getElementById("btn-detalhes");
+    const iconDet = document.getElementById("icon-detalhes");
+
+    btnDet.addEventListener("click", () => {
+        iconDet.classList.toggle("rotate-180");
+    });
+</script>
+
 @php
-    // separa por quebra de linha ou ponto e vírgula, conforme o fornecedor digitar
+    // separa por quebra de linha ou ponto e vírgula
     $detalhes = preg_split("/\r\n|\n|\r|;/", $produto->caracteristicas);
 @endphp
 
-<div class="mt-6">
-    <h3 class="text-2xl font-bold text-white mb-4">Detalhes</h3>
-    <ul class="list-disc list-inside space-y-1 text-gray-300">
+<div id="detalhes" class="hidden w-full p-6">
+    <h3 class="text-xl font-bold text-[#D5891B]/90 border-b border-[#D5891B]/30 pb-1 mb-3">
+        Detalhes do Produto
+    </h3>
+    <ul class="list-disc list-inside space-y-1 text-gray-300 text-base leading-relaxed">
         @foreach ($detalhes as $detalhe)
             @if(trim($detalhe) !== '')
                 <li>{{ trim($detalhe) }}</li>
@@ -519,7 +541,6 @@ document.querySelectorAll('.wishlist-btn').forEach(btn => {
         @endforeach
     </ul>
 </div>
-
 
      </div>
  </div>
