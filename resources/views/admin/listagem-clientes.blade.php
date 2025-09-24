@@ -32,7 +32,7 @@
         @endif
 
         @foreach($usuarios as $usuario)
-            <div class="bg-[#1a1a1a] border border-gray-700 rounded-xl p-5 flex flex-col justify-between
+            <div class="bg-[#1a1a1a]/50 border border-gray-700 rounded-xl p-5 flex flex-col justify-between
                         hover:border-gray-500 transition-colors duration-300">
                 
                 <!-- Nome -->
