@@ -167,20 +167,25 @@ class FornecedorController extends Controller
         ]);
     }
     
-    public function mostrarEmpresa($id)
+   public function mostrarEmpresa($id)
 {
     $fornecedor = Fornecedor::findOrFail($id);
 
-    // Pega os produtos do fornecedor
+    // Produtos do fornecedor
     $produtos = ProdutoFornecedor::where('id_fornecedores', $fornecedor->id_fornecedores)
-    ->orderBy('id_produtos', 'desc')
-    ->paginate(12); // número de produtos por página
+        ->orderBy('id_produtos', 'desc')
+        ->get();
 
-
-    // IDs dos produtos do fornecedor
+    // IDs dos produtos
     $idsProdutos = $produtos->pluck('id_produtos');
 
-    // Calcula a média das avaliações de todos os produtos do fornecedor
+    // IDs dos produtos que o usuário colocou na lista de desejos
+$idsDesejados = \DB::table('lista_desejos')
+    ->where('id_usuarios', auth()->id())
+    ->pluck('id_produtos')
+    ->toArray();
+
+    // Média de avaliações do fornecedor
     $mediaAvaliacoes = \DB::table('avaliacoes')
         ->whereIn('id_produtos', $idsProdutos)
         ->avg('nota') ?? 0;
@@ -190,14 +195,15 @@ class FornecedorController extends Controller
         ->whereIn('id_produtos', $idsProdutos)
         ->count();
 
-    // Total de produtos e vendidos
-    $totalProdutos = $produtos->count();
-    $totalVendidos = $produtos->sum('vendidos'); // certifique-se de que 'vendidos' existe
+    // Média de cada produto (para o card)
+    $mediasProdutos = \DB::table('avaliacoes')
+        ->select('id_produtos', \DB::raw('AVG(nota) as media'))
+        ->whereIn('id_produtos', $idsProdutos)
+        ->groupBy('id_produtos')
+        ->pluck('media', 'id_produtos');
 
-    // IDs desejados (wishlist)
-    $idsDesejados = auth()->check() 
-        ? auth()->user()->listaDesejos()->pluck('id_produtos')->toArray()
-        : [];
+    $totalProdutos = $produtos->count();
+    $totalVendidos = $produtos->sum('vendidos');
 
     return view('usuarios.mostrar', compact(
         'fornecedor',
@@ -206,9 +212,11 @@ class FornecedorController extends Controller
         'totalAvaliacoes',
         'totalProdutos',
         'totalVendidos',
-        'idsDesejados' // adiciona aqui
+        'mediasProdutos',
+        'idsDesejados'
     ));
 }
+
 
 
 }

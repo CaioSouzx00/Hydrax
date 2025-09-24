@@ -145,11 +145,30 @@ class UsuarioController extends Controller
         $query->whereRaw('JSON_CONTAINS(tamanhos_disponiveis, ?)', ['"'.$t.'"']);
     }
 
-    // ordena e pagina
+// depois dos filtros
+  // --- RANDOM (estável por sessão) ---
     $perPage = 21;
-    $produtosPaginados = $query->orderBy('id_produtos', 'desc')
-                               ->paginate($perPage)
-                               ->withQueryString();
+    $filterFingerprint = md5(json_encode($request->only(['genero','categoria','preco_min','preco_max','tamanho'])));
+    $sessionKey = "produtos_random_seed_{$filterFingerprint}";
+
+    // forçar novo embaralhamento via ?random=1
+    if ($request->filled('random')) {
+        $request->session()->forget($sessionKey);
+    }
+
+    $seed = $request->session()->get($sessionKey);
+    if (!$seed) {
+        $seed = mt_rand();
+        $request->session()->put($sessionKey, $seed);
+    }
+
+    // remove qualquer orderBy anterior e aplica RAND(seed) — funciona no MySQL
+    $produtosPaginados = $query
+        ->reorder()
+        ->orderByRaw('RAND(?)', [$seed])
+        ->paginate($perPage)
+        ->withQueryString();
+
 
 
     // Resposta AJAX
@@ -163,11 +182,20 @@ class UsuarioController extends Controller
         ]);
     }
 
+$primeiroProduto = $produtosPaginados->first();
+
+$variantes = $primeiroProduto
+    ? ProdutoFornecedor::where('historico_modelos', $primeiroProduto->historico_modelos)
+        ->get(['id_produtos', 'cor', 'slug', 'fotos', 'estoque_imagem'])
+    : collect();
+
+
     // Retorno normal
     return view('usuarios.dashboard', [
         'produtos'        => $produtosPaginados,
         'ultimosProdutos' => $ultimosProdutos,
-        'idsDesejados'    => $idsDesejados,
+        'idsDesejados'    => $idsDesejados, 
+        'variantes' => $variantes,
     ]);
 }
 

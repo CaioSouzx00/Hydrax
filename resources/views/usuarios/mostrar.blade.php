@@ -65,14 +65,9 @@
     <!-- Container para produtos -->
     <div id="produtos-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 justify-center gap-8 mt-12 px-6 md:px-36 transition-all duration-300">
     @foreach($produtos as $produto)
-        @include('usuarios.partials.card-produto', ['produto' => $produto, 'idsDesejados' => $idsDesejados])
+    @include('usuarios.partials.card-produto', ['produto' => $produto])
     @endforeach
-</div>
 
-
-    <!-- Container para paginação -->
-    <div class="mt-8">
-    {{ $produtos->links() }}
 </div>
 
 
