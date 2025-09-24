@@ -1,4 +1,4 @@
-<div class="bg-gradient-to-br from-[#211828] via-[#0b282a] to-[#17110d] border border-[#d5891b]/50 rounded-xl shadow p-8 max-w-7xl mx-auto text-white">
+<div class="bg-gradient-to-br from-[#211828] via-[#0b282a] to-[#17110d] border border-[#d5891b]/50 rounded-xl mb-12 shadow p-8 max-w-7xl mx-auto text-white">
     <h3 class="text-[#e29b37] text-2xl mb-6 font-semibold">Lista de Produtos</h3>
 
     <!-- Lupa / Campo de pesquisa -->
