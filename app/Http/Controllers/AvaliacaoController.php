@@ -44,8 +44,7 @@ class AvaliacaoController extends Controller
         ]);
 
         // Redireciona para a página anterior
-    //return redirect($request->input('redirect_to'))->with('success', 'Avaliação enviada!');
-    return redirect()->back()->with('success', 'Avaliação enviada!')->withHeaders(['Cache-Control' => 'no-cache, must-revalidate']);
-
+    return redirect($request->input('redirect_to'))->with('success', 'Avaliação enviada!');
+   
     }
 }

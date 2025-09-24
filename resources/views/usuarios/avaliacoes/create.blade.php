@@ -100,6 +100,9 @@
             <textarea name="comentario" class="ring-1 ring-[#e29b37]/30 w-full p-3 rounded bg-[#2d2d2d]/70 text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#d5891b]/70" placeholder="Escreva seu comentário aqui..." rows="4"></textarea>
         </div>
 
+        
+    <input type="hidden" name="redirect_to" value="{{ url()->previous() }}">
+
         <!-- Botão -->
         <div class="text-center">
             <button type="submit" class="relative inline-block rounded-full px-8 py-3 overflow-hidden group bg-[#d5891b] hover:bg-gradient-to-r hover:from-[#d5891b] hover:to-[#e29b37] text-black font-bold text-lg shadow-lg hover:ring-2 hover:ring-offset-2 hover:ring-[#d5891b] transition-all duration-300">
@@ -163,7 +166,10 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             alert('Por favor, preencha todas as avaliações antes de enviar.');
         } else {
-            setTimeout(() => history.back(), 900);
+setTimeout(() => {
+    window.location.href = form.querySelector('input[name="redirect_to"]').value;
+}, 900);
+
         }
     });
 });
