@@ -207,7 +207,7 @@ function trocarCor(url) {
      </form>
 
 
-<form action="{{ route('lista-desejos.store', $produto->id_produtos) }}" method="POST" class="absolute top-[435px] right-0.5 z-50">
+<form action="{{ route('lista-desejos.store', $produto->id_produtos) }}" method="POST" class="absolute top-[435px] right-0.5 z-20">
     @csrf
     <button type="submit" class="wishlist-btn w-10 h-10 flex items-center justify-center 
                                    bg-black/20 border border-[#d5891b]/50 rounded-lg 
@@ -884,6 +884,64 @@ document.addEventListener("DOMContentLoaded", function() {
 }
 .animate-pulse {
     animation: pulse 2s infinite;
+}
+</style>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const navbar = document.querySelector('header');
+    let lastScroll = 0;
+    const delta = 5;
+    let ticking = false;
+
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            window.requestAnimationFrame(() => {
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+                if (Math.abs(scrollTop - lastScroll) > delta) {
+                    if (scrollTop > lastScroll && scrollTop > 100) {
+                        // Scroll para baixo: "desintegrar"
+                        navbar.classList.add('disintegrate');
+                        navbar.classList.remove('reappear');
+                    } else {
+                        // Scroll para cima: reaparecer
+                        navbar.classList.add('reappear');
+                        navbar.classList.remove('disintegrate');
+                    }
+                    lastScroll = scrollTop;
+                }
+
+                ticking = false;
+            });
+            ticking = true;
+        }
+    });
+});
+</script>
+
+<style>
+header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: #0b282a;
+    color: white;
+    z-index: 50;
+    transition: transform 0.3s ease-in-out, opacity 0.6s ease, clip-path 0.6s ease;
+}
+
+/* efeito desintegrando */
+.disintegrate {
+    opacity: 0;
+    transform: translateY(-50px);
+    clip-path: polygon(0 0, 100% 0, 100% 70%, 0 100%);
+}
+
+/* reaparecer suavemente */
+.reappear {
+    opacity: 1;
+    transform: translateY(0);
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
 }
 </style>
 
