@@ -91,19 +91,20 @@
 
       <div id="user-dropdown" class="relative group flex items-center space-x-2 cursor-pointer">
         <div class="w-10 h-10 rounded-full flex items-center justify-center transition-colors">
-          <!-- Botão voltar -->
-          <a href="{{ route('fornecedores.login.submit') }}"
-            class="group fixed top-4 right-4 z-50 flex h-10 w-10 items-center rounded-full bg-[#d5891b] text-white overflow-hidden transition-all duration-300 ease-in-out hover:w-28 hover:bg-[#895712]"
-            title="Voltar para o login" aria-label="Botão Voltar">
-            <div class="flex items-center justify-center w-10 h-10 shrink-0">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-              </svg>
-            </div>
-            <span class="ml-2 w-0 group-hover:w-auto opacity-0 group-hover:opacity-100 overflow-hidden whitespace-nowrap transition-all duration-300 ease-in-out">
-              Voltar
-            </span>
-          </a>
+<button 
+    onclick="window.history.back()" 
+    class="group fixed top-3 right-4 z-50 flex h-10 w-10 items-center rounded-full bg-[#14ba88] text-white overflow-hidden transition-all duration-300 ease-in-out hover:w-28 hover:bg-[#117c66]"
+    title="Voltar" aria-label="Botão Voltar">
+    
+    <div class="flex items-center justify-center w-10 h-10 shrink-0">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+        </svg>
+    </div>
+    <span class="ml-2 w-0 group-hover:w-auto opacity-0 group-hover:opacity-100 overflow-hidden whitespace-nowrap transition-all duration-300 ease-in-out">
+        Voltar
+    </span>
+</button>
         </div>
         <form method="POST" action="{{ route('fornecedores.logout') }}">
           @csrf
