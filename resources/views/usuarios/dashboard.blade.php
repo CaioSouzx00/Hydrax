@@ -691,17 +691,51 @@
       });
   }
 
-  // Paginação AJAX com event delegation
-  paginacaoContainer.addEventListener('click', function(e) {
+// Paginação AJAX com event delegation
+paginacaoContainer.addEventListener('click', function(e) {
     if(e.target.tagName === 'A') {
-      e.preventDefault();
-      const page = new URL(e.target.href).searchParams.get('page');
-      carregarProdutos({ page });
+        e.preventDefault();
+        const page = new URL(e.target.href).searchParams.get('page');
+
+        carregarProdutos({ page }).then(() => {
+            // Role suavemente até o topo do catálogo
+            const catalogo = document.getElementById('produtos-container');
+            const offset = 120; // caso queira deixar um pouco abaixo da navbar
+            const top = catalogo.getBoundingClientRect().top + window.scrollY - offset;
+
+            window.scrollTo({ top: top, behavior: 'smooth' });
+        });
     }
+});
 
-    const formFiltros = document.getElementById('sidebar-filtros');
+function carregarProdutos(params = {}) {
+    const termo = inputBuscar.value.trim();
+    const genero = document.querySelector('input[name="genero"]:checked')?.value || '';
+    const categoria = document.querySelector('select[name="categoria"]')?.value || '';
+    const tamanho = document.querySelector('input[name="tamanho"]:checked')?.value || '';
+    const preco_min = document.querySelector('input[name="preco_min"]')?.value || '';
+    const preco_max = document.querySelector('input[name="preco_max"]')?.value || '';
 
-  });
+    const queryParams = new URLSearchParams({
+      q: termo,
+      genero,
+      categoria,
+      tamanho,
+      preco_min,
+      preco_max,
+      page: params.page || 1
+    });
+
+    // Retorna a Promise
+    return fetch(`${buscarUrl}?${queryParams.toString()}`)
+      .then(res => res.json())
+      .then(data => {
+        produtosContainer.innerHTML = data.html;
+        paginacaoContainer.innerHTML = data.pagination;
+        textoContainer.innerHTML = data.texto;
+      });
+}
+
 
   // Busca com debounce
   function realizarBusca() {
