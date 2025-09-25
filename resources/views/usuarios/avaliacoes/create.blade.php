@@ -38,10 +38,11 @@
     </style>
 </head>
 <body class="bg-gradient-to-br from-[#211828] via-[#0b282a] to-[#17110d] text-gray-100 font-sans min-h-screen flex items-center justify-center p-4">
-<!-- Botão voltar -->
-<a href="{{ url()->previous() }}"
-   class="group fixed top-4 left-4 z-50 flex h-10 w-10 items-center rounded-full bg-[#d5891b] text-white overflow-hidden transition-all duration-300 ease-in-out hover:w-28 hover:bg-[#b4751c]"
-   title="Voltar" aria-label="Botão Voltar">
+<button 
+    onclick="window.history.back()" 
+    class="group fixed top-5 left-4 z-50 flex h-10 w-10 items-center rounded-full bg-[#14ba88] text-white overflow-hidden transition-all duration-300 ease-in-out hover:w-28 hover:bg-[#117c66]"
+    title="Voltar" aria-label="Botão Voltar">
+    
     <div class="flex items-center justify-center w-10 h-10 shrink-0">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
@@ -50,7 +51,7 @@
     <span class="ml-2 w-0 group-hover:w-auto opacity-0 group-hover:opacity-100 overflow-hidden whitespace-nowrap transition-all duration-300 ease-in-out">
         Voltar
     </span>
-</a>
+</button>
 <div class="bg-[#1a1a22]/50 p-8 rounded-2xl shadow-lg border border-[#d5891b]/30 w-full max-w-lg">
     <h1 class="text-3xl font-bold mb-6 text-white text-center border-b border-[#d5891b]/80 ">Avaliar Produto</h1>
     <p class="text-sm text-gray-400 text-center mb-8">Por favor, classifique o produto nas categorias abaixo.</p>
