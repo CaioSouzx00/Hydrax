@@ -67,15 +67,26 @@
              <img src="{{ asset('storage/' . ($fotos[0] ?? 'sem-imagem.png')) }}"
                   class="w-full h-[480px] object-cover rounded-md border border-[#d5891b]/50 shadow main-image cursor-pointer">
                  
-             @if(count($fotos) > 1)
-             <div class="flex gap-3 mt-4">
-                 @foreach(array_slice($fotos, 1) as $foto)
-                     <img src="{{ asset('storage/' . $foto) }}"
-                          class="w-20 h-20 rounded-md border border-[#333] cursor-pointer hover:opacity-80"
-                          onclick="document.querySelector('.main-image').src=this.src">
-                 @endforeach
-             </div>
-             @endif
+@if(count($fotos) > 1)
+    <div class="grid grid-cols-4 gap-3 mt-4">
+        @foreach(array_slice($fotos, 1, 4) as $foto)
+            <img src="{{ asset('storage/' . $foto) }}"
+                 class="w-20 h-20 rounded-md border border-[#333] cursor-pointer hover:opacity-80"
+                 onclick="document.querySelector('.main-image').src=this.src">
+        @endforeach
+    </div>
+
+    @if(count($fotos) > 5)
+        <div class="flex flex-wrap gap-3 mt-4">
+            @foreach(array_slice($fotos, 5) as $foto)
+                <img src="{{ asset('storage/' . $foto) }}"
+                     class="w-20 h-20 rounded-md border border-[#333] cursor-pointer hover:opacity-80"
+                     onclick="document.querySelector('.main-image').src=this.src">
+            @endforeach
+        </div>
+    @endif
+@endif
+
 
 @if($produto->fornecedor)
     <a href="{{ route('empresa.mostrar', $produto->fornecedor->id_fornecedores) }}"

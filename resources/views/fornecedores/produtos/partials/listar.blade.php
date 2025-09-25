@@ -101,18 +101,25 @@
                         @endif
                     </td>
 
-                    <!-- Estoque (Imagens) -->
-                    <td class="px-6 py-4">
-                        @if(!empty($produto->estoque_imagem))
-                        <div class="flex gap-2">
-                            @foreach($produto->estoque_imagem as $img)
-                            <img src="{{ asset('storage/' . $img) }}" class="w-10 h-10 rounded shadow border border-[#e29b37]/40" alt="Imagem Estoque">
-                            @endforeach
-                        </div>
-                        @else
-                        <span class="text-gray-400">-</span>
-                        @endif
-                    </td>
+<!-- Estoque (Imagens) -->
+<td class="px-6 py-4">
+    @if(!empty($produto->estoque_imagem))
+        <div class="flex gap-2">
+            @foreach(array_slice($produto->estoque_imagem, 0, 4) as $img)
+                <img src="{{ asset('storage/' . $img) }}" 
+                     class="w-10 h-10 rounded shadow border border-[#e29b37]/40" 
+                     alt="Imagem Estoque">
+            @endforeach
+
+            @if(count($produto->estoque_imagem) > 5)
+                <span class="text-gray-400 text-xs self-center">+{{ count($produto->estoque_imagem) - 4 }}</span>
+            @endif
+        </div>
+    @else
+        <span class="text-gray-400">-</span>
+    @endif
+</td>
+
 
                     <!-- Ações -->
                     <td class="px-6 py-4 flex flex-col pl-10 gap-1">
