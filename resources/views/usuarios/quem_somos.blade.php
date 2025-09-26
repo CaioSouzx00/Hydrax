@@ -211,14 +211,10 @@
       <!-- Lado direito: imagem com degradê -->
       <div class="relative w-full md:w-[320px] h-[200px] rounded-lg overflow-hidden flex-shrink-0">
         <img
-          src="/imagens/hydrax/Lv.jpg"
+          src="/imagens/hydrax/elgato.jpg"
           alt="Imagem representativa"
           class="w-full h-full object-cover"
         />
-        <div
-          class="absolute inset-0"
-          style="background: linear-gradient(to right, rgba(213,137,27,0.85), transparent);"
-        ></div>
       </div>
     </div>
 
