@@ -38,6 +38,13 @@
       <input type="number" step="0.01" name="preco" value="{{ old('preco', $produto->preco) }}" class="w-full h-10 bg-[#17110d] border border-[#d5891b]/40 rounded px-2 text-white/70 hover:text-white">
     </div>
 
+    <div>
+  <label class="block text-sm font-medium text-[#d5891b]">Cor</label>
+  <input name="cor" value="{{ old('cor', $produto->cor) }}" 
+         class="w-full h-10 bg-[#17110d] border border-[#d5891b]/40 rounded px-2 text-white/70 hover:text-white">
+</div>
+
+
     <!-- Categoria -->
     <div>
       <label class="block text-sm font-medium text-[#d5891b]">Categoria</label>
