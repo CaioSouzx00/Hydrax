@@ -211,7 +211,7 @@
       <!-- Lado direito: imagem com degradê -->
       <div class="relative w-full md:w-[320px] h-[200px] rounded-lg overflow-hidden flex-shrink-0">
         <img
-          src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80"
+          src="/imagens/hydrax/Lv.jpg"
           alt="Imagem representativa"
           class="w-full h-full object-cover"
         />
