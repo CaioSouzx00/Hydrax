@@ -96,7 +96,7 @@
       
       <!-- Membro 3 -->
       <div class="bg-[#1a1a1a] p-6 rounded-xl shadow-lg hover:scale-105 transition-transform flex flex-col items-center">
-        <img src="https://i.pravatar.cc/150?img=23" 
+        <img src="/imagens/hydrax/gabriel.jpeg" 
              onclick="openModal(this.src)" 
              class="w-24 h-24 rounded-full border-2 border-[#8b5cf6] object-cover mb-4 cursor-pointer hover:opacity-80 transition" />
         <h4 class="text-xl font-semibold" style="background: linear-gradient(90deg, #8b5cf6, #5c2cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Gabriel Aparecido</h4>
@@ -117,7 +117,7 @@
         
         <!-- Membro 5 -->
         <div class="bg-[#1a1a1a] p-6 rounded-xl shadow-lg hover:scale-105 transition-transform w-[280px] flex flex-col items-center">
-          <img src="https://i.pravatar.cc/150?img=25" 
+          <img src="/imagens/hydrax/kaio.jpg" 
                onclick="openModal(this.src)" 
                class="w-24 h-24 rounded-full border-2 border-[#8b5cf6] object-cover mb-4 cursor-pointer hover:opacity-80 transition" />
           <h4 class="text-xl font-semibold" style="background: linear-gradient(90deg, #8b5cf6, #5c2cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Kaio Yushf</h4>
@@ -182,7 +182,7 @@
     <h2 class="text-3xl font-semibold text-center mb-8">SURA - CGKRY</h2>
     <div class="flex justify-center">
       <img 
-        src="https://i.pravatar.cc/1200?img=65" 
+        src="/imagens/hydrax/CGKRY.jpg" 
         alt="Foto da equipe Sura" 
         class="rounded-xl shadow-lg border-2 border-gold hover:opacity-90 transition"
         style="width: 80%; height: auto; max-height: 380px; object-fit: cover;"
