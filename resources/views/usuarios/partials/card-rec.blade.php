@@ -33,11 +33,12 @@
 
                 {{-- Fornecedor --}}
                 <div class="flex items-center space-x-2 mt-2">
-                    <img 
-                        src="{{ $produto->fornecedor->foto ? asset('storage/' . $produto->fornecedor->foto) : 'https://via.placeholder.com/40x40?text=F' }}" 
-                        alt="Foto do fornecedor"
-                        class="w-8 h-8 rounded-full object-cover border border-[#D5891B]/20"
-                    >
+<img 
+    src="{{ $produto->fornecedor?->foto 
+            ? asset('storage/' . $produto->fornecedor->foto) 
+            : 'https://via.placeholder.com/40x40?text=F' }}" 
+    alt="Foto do fornecedor"
+/>
                     <span class="text-xs text-gray-400">
                         {{ $produto->fornecedor->nome_empresa ?? 'Fornecedor não informado' }}
                     </span>

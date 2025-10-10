@@ -11,6 +11,7 @@ use App\Models\Cupom;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Cache;
 use App\Jobs\EnviarCarrinhoAbandonadoJob;
 
 class CarrinhoController extends Controller
@@ -43,8 +44,7 @@ class CarrinhoController extends Controller
             ->first();
 
         if ($item) {
-            $item->quantidade += $quantidade;
-            $item->save();
+            $item->increment('quantidade', $quantidade);
         } else {
             CarrinhoItem::create([
                 'carrinho_id' => $carrinho->id,
@@ -60,38 +60,40 @@ class CarrinhoController extends Controller
     }
 
     // 2️⃣ Visualizar carrinho
-// 2️⃣ Visualizar carrinho
-public function verCarrinho()
-{
-    $usuario = Auth::guard('usuarios')->user();
+    public function verCarrinho()
+    {
+        $usuario = Auth::guard('usuarios')->user();
 
-    $carrinho = $usuario->carrinhoAtivo ?? Carrinho::create([
-        'id_usuarios' => $usuario->id_usuarios,
-        'status' => 'ativo',
-    ]);
+        $carrinho = $usuario->carrinhoAtivo ?? Carrinho::create([
+            'id_usuarios' => $usuario->id_usuarios,
+            'status' => 'ativo',
+        ]);
 
-    $carrinho->load(['itens.produto']);
+        // Carrega itens e produtos relacionados de forma otimizada
+        $carrinho->load(['itens.produto' => fn($q) => $q->select('id_produtos', 'preco', 'nome', 'slug', 'fotos')]);
 
-    $enderecos = EnderecoUsuario::where('id_usuarios', $usuario->id_usuarios)->get();
-    $total = $carrinho->itens->sum(fn($item) => $item->produto->preco * $item->quantidade);
+        $enderecos = EnderecoUsuario::where('id_usuarios', $usuario->id_usuarios)->get();
 
-    $cupons = Cupom::where('ativo', 1)
-        ->where(fn($q) => $q->whereNull('validade')->orWhere('validade', '>=', now()))
-        ->get();
+        // Calcula total no PHP (pode ser feito via sum no banco se for muito grande)
+        $total = $carrinho->itens->sum(fn($item) => $item->produto->preco * $item->quantidade);
 
-    $cupomAplicado = session('cupom_aplicado');
+        $cupons = Cupom::where('ativo', 1)
+            ->where(fn($q) => $q->whereNull('validade')->orWhere('validade', '>=', now()))
+            ->get();
 
-    // 🔥 Buscar 4 produtos aleatórios para recomendação
-    $produtos = ProdutoFornecedor::ativos()
-        ->inRandomOrder()
-        ->take(4)
-        ->get();
+        $cupomAplicado = session('cupom_aplicado');
 
-    return view('usuarios.carrinho', compact(
-        'carrinho', 'total', 'enderecos', 'cupons', 'cupomAplicado', 'produtos'
-    ));
-}
+        $produtos = ProdutoFornecedor::ativos()
+    ->with(['fornecedor:id_fornecedores,nome_empresa,foto']) // só campos necessários
+    ->inRandomOrder()
+    ->take(4)
+    ->get(['id_produtos', 'nome', 'slug', 'fotos', 'preco', 'id_fornecedores']);
 
+
+        return view('usuarios.carrinho', compact(
+            'carrinho', 'total', 'enderecos', 'cupons', 'cupomAplicado', 'produtos'
+        ));
+    }
 
     // 3️⃣ Remover produto do carrinho
     public function removerProduto($produtoId, $tamanho)
@@ -118,7 +120,7 @@ public function verCarrinho()
 
         $carrinho = Carrinho::where('id_usuarios', $usuario->id_usuarios)
             ->where('status', 'ativo')
-            ->with(['itens.produto' => fn($q) => $q->ativos()])
+            ->with(['itens.produto' => fn($q) => $q->ativos()->select('id_produtos', 'preco', 'nome')])
             ->first();
 
         if (!$carrinho || $carrinho->itens->isEmpty()) {
@@ -137,11 +139,9 @@ public function verCarrinho()
         $desconto = 0;
 
         if ($cupomAplicado) {
-            if ($cupomAplicado['tipo'] === 'percentual') {
-                $desconto = $totalComEntrega * ($cupomAplicado['valor']/100);
-            } else {
-                $desconto = $cupomAplicado['valor'];
-            }
+            $desconto = $cupomAplicado['tipo'] === 'percentual'
+                ? $totalComEntrega * ($cupomAplicado['valor']/100)
+                : $cupomAplicado['valor'];
             $totalComEntrega -= $desconto;
         }
 
@@ -171,18 +171,14 @@ public function verCarrinho()
             return redirect()->route('carrinho.ver')->with('error', 'Carrinho vazio.');
         }
 
-        $total = $carrinho->itens->sum(fn($item) => $item->produto->preco * $item->quantidade);
-        $entrega = 15;
-        $total += $entrega;
-
+        $total = $carrinho->itens->sum(fn($item) => $item->produto->preco * $item->quantidade) + 15;
         $cupomAplicado = session('cupom_aplicado');
         $desconto = 0;
+
         if ($cupomAplicado) {
-            if ($cupomAplicado['tipo'] === 'percentual') {
-                $desconto = $total * ($cupomAplicado['valor']/100);
-            } else {
-                $desconto = $cupomAplicado['valor'];
-            }
+            $desconto = $cupomAplicado['tipo'] === 'percentual'
+                ? $total * ($cupomAplicado['valor']/100)
+                : $cupomAplicado['valor'];
             $total -= $desconto;
         }
 
@@ -194,7 +190,6 @@ public function verCarrinho()
         Mail::to($usuario->email)->send(new \App\Mail\ChavePixMail($chavePix, $total));
 
         Carrinho::create(['id_usuarios' => $usuario->id_usuarios, 'status' => 'ativo']);
-
         session()->forget('cupom_aplicado');
 
         return view('usuarios.pix', compact('chavePix', 'total', 'enderecoSelecionado', 'desconto', 'cupomAplicado'));
@@ -208,7 +203,7 @@ public function verCarrinho()
         $pedidos = Carrinho::where('id_usuarios', $usuario->id_usuarios)
             ->where('status', 'finalizado')
             ->with([
-                'itens' => fn($q) => $q->whereHas('produto', fn($q2) => $q2->ativos())->with('produto'),
+                'itens' => fn($q) => $q->whereHas('produto', fn($q2) => $q2->ativos())->with('produto:id_produtos,nome,preco'),
                 'endereco'
             ])
             ->orderBy('created_at', 'desc')
@@ -217,31 +212,28 @@ public function verCarrinho()
         return view('usuarios.pedidos', compact('pedidos'));
     }
 
-public function detalhePedido($pedidoId)
-{
-    $usuario = Auth::guard('usuarios')->user();
-    $pedido = Carrinho::where('id_usuarios', $usuario->id_usuarios)
-        ->where('status', 'finalizado')
-        ->with('itens.produto', 'endereco')
-        ->findOrFail($pedidoId);
+    public function detalhePedido($pedidoId)
+    {
+        $usuario = Auth::guard('usuarios')->user();
 
-    // Pega o cupom aplicado, caso esteja na sessão ou gravado no pedido
-    $cupomAplicado = $pedido->cupom_aplicado ?? null;
+        $pedido = Carrinho::where('id_usuarios', $usuario->id_usuarios)
+            ->where('status', 'finalizado')
+            ->with('itens.produto:id_produtos,nome,preco', 'endereco')
+            ->findOrFail($pedidoId);
 
-    return view('usuarios.pedido_detalhe', compact('pedido', 'cupomAplicado'));
-}
+        $cupomAplicado = $pedido->cupom_aplicado ?? null;
 
+        return view('usuarios.pedido_detalhe', compact('pedido', 'cupomAplicado'));
+    }
 
     // 6️⃣ Aplicar cupom
     public function aplicarCupom(Request $request)
     {
         $cupom = Cupom::where('codigo', $request->codigo_cupom)
-                        ->where('ativo', 1)
-                        ->first();
+            ->where('ativo', 1)
+            ->first();
 
-        if(!$cupom) {
-            return back()->with('error', 'Cupom inválido.');
-        }
+        if (!$cupom) return back()->with('error', 'Cupom inválido.');
 
         session(['cupom_aplicado' => [
             'codigo' => $cupom->codigo,
