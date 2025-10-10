@@ -6,122 +6,137 @@ use App\Models\ListaDesejo;
 use App\Models\ProdutoFornecedor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+
 
 class ProdutoController extends Controller
 {
     public function buscar(Request $request)
-    {
-        $query = trim($request->input('q'));
-        $genero = $request->input('genero');
-        $categoria = $request->input('categoria');
-        $tamanho = $request->input('tamanho');
-        $preco_min = $request->input('preco_min');
-        $preco_max = $request->input('preco_max');
+{
+    $query = trim($request->input('q'));
+    $genero = $request->input('genero');
+    $categoria = $request->input('categoria');
+    $tamanho = $request->input('tamanho');
+    $preco_min = $request->input('preco_min');
+    $preco_max = $request->input('preco_max');
+    $cor = $request->input('cor'); // 👈 Novo filtro
 
-        $produtosQuery = ProdutoFornecedor::ativos()
-            ->with('avaliacoes')
-            ->withAvg('avaliacoes', 'nota');
+    $produtosQuery = ProdutoFornecedor::ativos()
+        ->with('avaliacoes')
+        ->withAvg('avaliacoes', 'nota');
 
-        if ($query !== '') {
-            $produtosQuery->where(function ($q) use ($query) {
-                $q->where('nome', 'LIKE', "%{$query}%")
-                    ->orWhere('descricao', 'LIKE', "%{$query}%");
-            });
-        }
-
-        if (!empty($genero)) $produtosQuery->where('genero', $genero);
-        if (!empty($categoria)) $produtosQuery->where('categoria', $categoria);
-        if (!empty($tamanho)) {
-            $produtosQuery->whereJsonContains('tamanhos_disponiveis', (string)$tamanho);
-        }
-        if (!empty($preco_min)) $produtosQuery->where('preco', '>=', $preco_min);
-        if (!empty($preco_max)) $produtosQuery->where('preco', '<=', $preco_max);
-
-        $produtos = $produtosQuery->paginate(21)->withQueryString();
-
-        // ** Lógica para verificar a lista de desejos **
-        $idsDesejados = [];
-        if (Auth::guard('usuarios')->check()) {
-            $idUsuario = Auth::guard('usuarios')->id();
-            $idsDesejados = ListaDesejo::where('id_usuarios', $idUsuario)->pluck('id_produtos')->toArray();
-        }
-
-        if ($produtos->isEmpty()) {
-            $html = '<p class="text-white p-6 pt-24">Nenhum produto encontrado.</p>';
-        } else {
-            $html = $produtos->map(function ($produto) use ($idsDesejados) {
-                $produto->fotos = json_decode($produto->fotos, true) ?: [];
-                // Passa a lista de IDs desejados para a view parcial
-                return view('usuarios.partials.card-produto', compact('produto', 'idsDesejados'))->render();
-            })->implode('');
-        }
-
-        $pagination = view('vendor.pagination.custom', ['paginator' => $produtos])->render();
-        
-        $texto = "Mostrando {$produtos->firstItem()} a {$produtos->lastItem()} de {$produtos->total()} resultados";
-
-        return response()->json([
-            'html' => $html,
-            'pagination' => $pagination,
-            'texto' => $texto
-        ]);
+    if ($query !== '') { 
+        $produtosQuery->where(function ($q) use ($query) {
+            $q->where('nome', 'LIKE', "%{$query}%")
+              ->orWhere('descricao', 'LIKE', "%{$query}%");
+        });
     }
+
+    if (!empty($genero)) $produtosQuery->where('genero', $genero);
+    if (!empty($categoria)) $produtosQuery->where('categoria', $categoria);
+    if (!empty($tamanho)) {
+        $produtosQuery->whereJsonContains('tamanhos_disponiveis', (string)$tamanho);
+    }
+    if (!empty($preco_min)) $produtosQuery->where('preco', '>=', $preco_min);
+    if (!empty($preco_max)) $produtosQuery->where('preco', '<=', $preco_max);
+    if (!empty($cor)) $produtosQuery->where('cor', $cor);
+
+    $produtos = $produtosQuery->paginate(21)->withQueryString();
+
+    // 🔥 Aqui você pega apenas as cores que realmente existem
+    $coresDisponiveis = ProdutoFornecedor::ativos()
+    ->selectRaw('TRIM(cor) as cor')
+    ->distinct()
+    ->pluck('cor')
+    ->filter()
+    ->values();
+
+    // ** Lista de desejos **
+    $idsDesejados = [];
+    if (Auth::guard('usuarios')->check()) {
+        $idUsuario = Auth::guard('usuarios')->id();
+        $idsDesejados = ListaDesejo::where('id_usuarios', $idUsuario)->pluck('id_produtos')->toArray();
+    }
+
+    if ($produtos->isEmpty()) {
+        $html = '<p class="text-white p-6 pt-24">Nenhum produto encontrado.</p>';
+    } else {
+        $html = $produtos->map(function ($produto) use ($idsDesejados) {
+            $produto->fotos = json_decode($produto->fotos, true) ?: [];
+            return view('usuarios.partials.card-produto', compact('produto', 'idsDesejados'))->render();
+        })->implode('');
+    }
+
+    $pagination = view('vendor.pagination.custom', ['paginator' => $produtos])->render();
+    $texto = "Mostrando {$produtos->firstItem()} a {$produtos->lastItem()} de {$produtos->total()} resultados";
+
+
+    return response()->json([
+        'html' => $html,
+        'pagination' => $pagination,
+        'texto' => $texto,
+        'cores' => $coresDisponiveis
+    ]);
+}
 
 
 public function detalhes($id)
 {
     $usuario = auth()->guard('usuarios')->user();
-    
-    $produto = ProdutoFornecedor::with(['fornecedor', 'avaliacoes.usuario'])->findOrFail($id);
 
-    // Verifica se o produto está na lista de desejos do usuário logado
-  // $usuario = auth()->guard('usuarios')->user();
+    // ✅ Cache leve do produto com relações (1 min)
+    $produto = Cache::remember("produto_detalhe_{$id}", 60, function () use ($id) {
+        return ProdutoFornecedor::with([
+            'fornecedor:id_fornecedores,nome_empresa', 
+            'avaliacoes' => function ($q) {
+                $q->with('usuario:id,nome'); // só o necessário
+            }
+        ])->findOrFail($id);
+    });
 
-$isDesejado = $usuario
-    ? ListaDesejo::where('id_usuarios', $usuario->id_usuarios)
-                 ->where('id_produtos', $produto->id_produtos)
-                 ->exists()
-    : false;
+    // ✅ Verifica se está na lista de desejos (consulta indexada)
+    $isDesejado = $usuario
+        ? ListaDesejo::where('id_usuarios', $usuario->id_usuarios)
+            ->where('id_produtos', $produto->id_produtos)
+            ->exists()
+        : false;
 
-    // Avaliações
-    $avaliacoes = $produto->avaliacoes;
-    $totalAvaliadores = $avaliacoes->count();
-    $notaMedia = $totalAvaliadores > 0 ? $avaliacoes->avg('nota') : 0;
+    // ✅ Cálculos no banco (evita percorrer coleções grandes no PHP)
+    $avaliacoesQuery = $produto->avaliacoes();
+    $totalAvaliadores = $avaliacoesQuery->count();
+    $notaMedia = $totalAvaliadores > 0 ? $avaliacoesQuery->avg('nota') : 0;
+    $confortoDist = $avaliacoesQuery->avg('conforto') ?? 0;
+    $qualidadeDist = $avaliacoesQuery->avg('qualidade') ?? 0;
+    $tamanhoDist = $avaliacoesQuery->avg('tamanho') ?? 0;
+    $larguraDist = $avaliacoesQuery->avg('largura') ?? 0;
 
-    $confortoDist = $avaliacoes->whereNotNull('conforto')->avg('conforto') ?? 0;
-    $qualidadeDist = $avaliacoes->whereNotNull('qualidade')->avg('qualidade') ?? 0;
-    $tamanhoDist = $avaliacoes->whereNotNull('tamanho')->avg('tamanho') ?? 0;
-    $larguraDist = $avaliacoes->whereNotNull('largura')->avg('largura') ?? 0;
-
-    // Produtos recomendados
-            $produtosRecomendados = ProdutoFornecedor::where('id_produtos', '!=', $id)
+    // ✅ Produtos recomendados com cache de 5 min (evita RAND() pesado toda vez)
+    $produtosRecomendados = Cache::remember("recomendados_{$id}", 300, function () use ($id) {
+        return ProdutoFornecedor::where('id_produtos', '!=', $id)
             ->inRandomOrder()
             ->limit(4)
-            ->get();
+            ->get(['id_produtos', 'nome', 'slug', 'fotos']);
+    });
 
-
-                // **Variantes do mesmo modelo**
+    // ✅ Variantes otimizadas (somente campos necessários)
     $variantes = ProdutoFornecedor::where('historico_modelos', $produto->historico_modelos)
         ->get(['id_produtos', 'cor', 'slug', 'fotos', 'estoque_imagem']);
 
+    return view('usuarios.detalhes-produto', [
+        'produto' => $produto,
+        'produtos' => $produtosRecomendados,
+        'avaliacoes' => $produto->avaliacoes, // mantém compatibilidade
+        'totalAvaliadores' => $totalAvaliadores,
+        'notaMedia' => $notaMedia,
+        'confortoDist' => $confortoDist,
+        'qualidadeDist' => $qualidadeDist,
+        'tamanhoDist' => $tamanhoDist,
+        'larguraDist' => $larguraDist,
+        'isDesejado' => $isDesejado,
+        'variantes' => $variantes,
+    ]);
+}
 
-        return view('usuarios.detalhes-produto', [
-
-            'produto' => $produto,
-            'produtos' => $produtosRecomendados,
-            'avaliacoes' => $avaliacoes,
-            'totalAvaliadores' => $totalAvaliadores,
-            'notaMedia' => $notaMedia,
-            'confortoDist' => $confortoDist,
-            'qualidadeDist' => $qualidadeDist,
-            'tamanhoDist' => $tamanhoDist,
-            'larguraDist' => $larguraDist,
-            'isDesejado' => $isDesejado,
-            'variantes' => $variantes,
-        ]);
-
-
-    }
 
 
 }

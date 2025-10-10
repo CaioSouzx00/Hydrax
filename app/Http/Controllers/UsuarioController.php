@@ -113,6 +113,7 @@ class UsuarioController extends Controller
                         ->take(4)
                         ->get();
 
+
     // IDs dos produtos já na lista de desejos do usuário
     $idsDesejados = [];
     if ($usuario) {

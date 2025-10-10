@@ -422,6 +422,24 @@
         @endforeach
     </div>
 
+    <!-- Cor -->
+<h3 class="font-semibold mt-5 mb-2 text-[#d5891b]">Cor</h3>
+<div class="flex flex-wrap gap-2">
+    @isset($cores)
+        @foreach($cores as $c)
+            <label class="cursor-pointer">
+                <input type="radio" name="cor" value="{{ $c }}" class="peer hidden"
+                       {{ request('cor') == $c ? 'checked' : '' }}>
+                <span class="flex items-center gap-2 px-3 py-1 border rounded-lg transition
+                            peer-checked:bg-[#d5891b]/30 peer-checked:border-[#d5891b]
+                            bg-black/30 border-[#d5891b]/30 hover:bg-[#d5891b]/20">
+                    {{ ucfirst($c) }}
+                </span>
+            </label>
+        @endforeach
+    @endisset
+</div>
+
     <!-- Preço -->
     <h3 class="font-semibold mt-5 mb-2 text-[#d5891b]">Preço</h3>
     <div class="flex items-center gap-2">
