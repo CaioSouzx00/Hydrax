@@ -1,6 +1,40 @@
 🌟 Hydrax - O E-commerce de Tênis Definitivo
 <p align="center"> <img src="https://via.placeholder.com/600x200?text=Hydrax+-+Seu+E-commerce+de+T%C3%AAnis" alt="Banner Hydrax" /> </p>
 🛍️ Sobre o Projeto
+## Otimizações de Performance (rápido)
+
+Seguem comandos e ações recomendadas para melhorar performance sem alterar a lógica do projeto:
+
+- Gerar cache de configuração, rotas e views (produção):
+
+```bash
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+composer dump-autoload -o
+```
+
+- Variável de TTL para cache de respostas (opcional): adicione em `.env`:
+
+```env
+RESPONSE_CACHE_TTL=60
+```
+
+- Observações:
+	- O middleware `ResponseCache` foi adicionado para cachear respostas públicas (GET, não autenticadas, HTML) por `RESPONSE_CACHE_TTL` segundos.
+	- Não use `route:cache` durante desenvolvimento, porque altera como closures em rotas funcionam.
+	- Para limpar caches:
+
+```bash
+php artisan cache:clear
+php artisan config:clear
+php artisan route:clear
+php artisan view:clear
+```
+
+🌟 Hydrax - O E-commerce de Tênis Definitivo
+<p align="center"> <img src="https://via.placeholder.com/600x200?text=Hydrax+-+Seu+E-commerce+de+T%C3%AAnis" alt="Banner Hydrax" /> </p>
+🛍️ Sobre o Projeto
 
 O Hydrax é um sistema web feito em Laravel, voltado para a compra e venda de tênis, oferecendo uma experiência completa, moderna e segura tanto para usuários quanto para fornecedores.
 
