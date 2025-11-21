@@ -77,16 +77,6 @@ call php artisan key:generate || (
 echo ✅ Chave gerada.
 echo.
 
-REM ---- Executa migrations e seeders ----
-echo Executando migrations...
-call php artisan migrate --seed || (
-    echo ❌ Erro ao rodar migrations!
-    pause
-    exit /b
-)
-echo ✅ Banco de dados configurado.
-echo.
-
 REM ---- Exibição de imagens de produtos ----
 echo Iniciando a exibição das imagens...
 start cmd /k "php artisan storage:link"

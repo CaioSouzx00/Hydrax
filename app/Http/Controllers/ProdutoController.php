@@ -89,7 +89,7 @@ public function detalhes($id)
         return ProdutoFornecedor::with([
             'fornecedor:id_fornecedores,nome_empresa', 
             'avaliacoes' => function ($q) {
-                $q->with('usuario:id,nome'); // só o necessário
+                $q->with('usuario:id_usuarios,nome_completo');
             }
         ])->findOrFail($id);
     });
