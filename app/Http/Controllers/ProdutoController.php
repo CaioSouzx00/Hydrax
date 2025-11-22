@@ -111,12 +111,25 @@ public function detalhes($id)
     $larguraDist = $avaliacoesQuery->avg('largura') ?? 0;
 
     // ✅ Produtos recomendados com cache de 5 min (evita RAND() pesado toda vez)
-    $produtosRecomendados = Cache::remember("recomendados_{$id}", 300, function () use ($id) {
-        return ProdutoFornecedor::where('id_produtos', '!=', $id)
-            ->inRandomOrder()
-            ->limit(4)
-            ->get(['id_produtos', 'nome', 'slug', 'fotos']);
-    });
+$produtosRecomendados = Cache::remember("recomendados_{$id}", 300, function () use ($id) {
+    return ProdutoFornecedor::with([
+        'fornecedor:id_fornecedores,nome_empresa,foto',
+    ])
+    ->withAvg('avaliacoes', 'nota')
+    ->withCount('avaliacoes')
+    ->where('id_produtos', '!=', $id)
+    ->inRandomOrder()
+    ->limit(4)
+    ->get([
+        'id_produtos',
+        'nome',
+        'categoria',
+        'preco',
+        'fotos',
+        'id_fornecedores',
+    ]);
+});
+
 
     // ✅ Variantes otimizadas (somente campos necessários)
     $variantes = ProdutoFornecedor::where('historico_modelos', $produto->historico_modelos)
