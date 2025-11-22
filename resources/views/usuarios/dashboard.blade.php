@@ -147,6 +147,7 @@
           <!-- Menu logout -->
           <div id="logout-menu"
             class="absolute right-0 hidden bg-[#211828]/80 border border-[#7f3a0e] rounded-md shadow-lg mt-2 py-2 min-w-[140px] z-50">
+            <!-- perfil -->
             <a href="{{ route('usuario.painel') }}"
               class="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-white hover:bg-[#d5891b]/30  transition-colors">
                   <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24"
@@ -156,7 +157,17 @@
     </svg>
               <span>Perfil</span>
             </a>
+            <!-- ia -->
+<a href="#"
+  class="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-white hover:bg-[#d5891b]/30 transition-colors">
+  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+      d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 7h10v10H7V7z" />
+  </svg>
+  <span>IA</span>
+</a>
 
+            <!-- logout -->
             <form id="logoutForm" method="POST" action="{{ route('logout') }}">
               @csrf
               <button type="submit"
