@@ -85,6 +85,9 @@ Route::middleware([UsuarioMiddleware::class])->group(function () {
 Route::get('/dashboard', [UsuarioController::class, 'dashboard'])->name('dashboard');
 Route::post('/logout', [UsuarioController::class, 'logout'])->name('logout'); 
 Route::get('/painel', [UsuarioController::class, 'painel'])->name('usuario.painel');
+
+Route::get('/IA', [UsuarioController::class, 'pesquisaProdutos'])->name('usuario.ia');
+
 Route::get('/usuarios/perfil', [UsuarioController::class, 'edit'])->name('usuario.perfil');
 Route::put('/usuarios/perfil', [UsuarioController::class, 'update'])->name('usuario.update');
 Route::get('/usuarios/enderecos/create', [EnderecoUsuarioController::class, 'create'])->name('usuarios.enderecos.create');

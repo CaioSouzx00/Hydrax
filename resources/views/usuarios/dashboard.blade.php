@@ -158,7 +158,7 @@
               <span>Perfil</span>
             </a>
             <!-- ia -->
-<a href="#"
+<a href="{{ route('usuario.ia') }}"
   class="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-white hover:bg-[#d5891b]/30 transition-colors">
   <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
