@@ -287,4 +287,122 @@ public function showEmailForm()
 }
 
 
+
+public function pesquisaProdutos(Request $request)
+{
+    $prompt = strtolower(trim($request->input('prompt', '')));
+
+    // ====== SE O USUÁRIO NÃO DIGITA NADA =============
+    if ($prompt === '') {
+        return view('usuarios.produtos.resultados', [
+            'produtos' => collect(),
+            'prompt' => ''
+        ]);
+    }
+
+    // ===============================
+    // 1. LISTA DE SINÔNIMOS INTELIGENTES
+    // ===============================
+    $sinonimos = [
+        'corrida' => ['running', 'run', 'correr', 'esporte'],
+        'casual' => ['dia a dia', 'lifestyle', 'street'],
+        'preto' => ['black', 'escuro'],
+        'branco' => ['white', 'claro'],
+        'masculino' => ['homem', 'macho', 'men'],
+        'feminino' => ['mulher', 'women'],
+        'unissex' => ['uni', 'ambos'],
+        'adidas' => ['adi', 'adiads', 'addidas'],
+        'nike' => ['naike', 'nk'],
+        'puma' => ['pma'],
+    ];
+
+    // ===============================
+    // 2. NORMALIZA TEXTO + ADICIONA SINÔNIMOS
+    // ===============================
+    $tokens = array_filter(explode(' ', $prompt)); // REMOVE STRINGS VAZIAS
+    $expandidos = [];
+
+    foreach ($tokens as $t) {
+        $expandidos[] = $t;
+
+        foreach ($sinonimos as $chave => $lista) {
+            if (in_array($t, $lista)) {
+                $expandidos[] = $chave;
+            }
+        }
+    }
+
+    $expandidos = array_unique(array_filter($expandidos)); // SEGURANÇA DUPLA
+
+    // ===============================
+    // 3. BUSCA SEMÂNTICA INTELIGENTE
+    // ===============================
+    $query = ProdutoFornecedor::query()
+        ->with('rotulos')
+        ->where('ativo', true);
+
+    $query->where(function ($q) use ($expandidos) {
+        foreach ($expandidos as $t) {
+
+            if (strlen($t) < 2) continue; // IGNORA COISAS COMO "a", "e", "de"
+
+            $like = "%{$t}%";
+
+            // BUSCA PRINCIPAL
+            $q->orWhere('nome', 'LIKE', $like)
+              ->orWhere('descricao', 'LIKE', $like)
+              ->orWhere('caracteristicas', 'LIKE', $like)
+              ->orWhere('cor', 'LIKE', $like)
+              ->orWhere('categoria', 'LIKE', $like)
+              ->orWhere('genero', 'LIKE', $like);
+
+            // RÓTULOS (PESO MAIOR)
+            $q->orWhereHas('rotulos', function ($qr) use ($like) {
+                $qr->where('marca', 'LIKE', $like)
+                   ->orWhere('categoria', 'LIKE', $like)
+                   ->orWhere('estilo', 'LIKE', $like)
+                   ->orWhere('genero', 'LIKE', $like);
+            });
+        }
+    });
+
+    $resultados = $query->get();
+
+    // ===============================
+    // 4. RANKING DOS PRODUTOS (IA fake)
+    // ===============================
+    $ranked = $resultados->map(function ($produto) use ($expandidos) {
+
+        $score = 0;
+
+        foreach ($expandidos as $t) {
+
+            if ($t === '' || strlen($t) < 2) continue;
+
+            $score += substr_count(strtolower($produto->nome), $t) * 4;
+            $score += substr_count(strtolower($produto->descricao), $t) * 2;
+            $score += substr_count(strtolower($produto->caracteristicas), $t) * 2;
+            $score += substr_count(strtolower($produto->cor), $t);
+
+            foreach ($produto->rotulos as $r) {
+                $campos = strtolower(
+                    $r->marca . ' ' .
+                    $r->categoria . ' ' .
+                    $r->estilo . ' ' .
+                    $r->genero
+                );
+                $score += substr_count($campos, $t) * 6;
+            }
+        }
+
+        $produto->score = $score;
+        return $produto;
+
+    })->sortByDesc('score')->values();
+
+    return view('usuarios.produtos.resultados', [
+        'produtos' => $ranked,
+        'prompt' => $prompt
+    ]);
+}
 }
