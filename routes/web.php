@@ -22,6 +22,7 @@ use App\Http\Controllers\AvaliacaoController;
 use App\Http\Controllers\ProdutosRecomendadosController;
 use App\Http\Controllers\ProdutoImagemRotuloController;
 use App\Http\Controllers\IAController;
+use App\Http\Controllers\SocialiteController;
 
 
 
@@ -125,7 +126,6 @@ Route::post('/avaliacoes/store/{id_produto}', [AvaliacaoController::class, 'stor
 Route::get('/empresa/{id}', [FornecedorController::class, 'mostrarEmpresa'])->name('empresa.mostrar');
 
 
-
 ////////////////////////Rotas de views do FOOTER/////////////////////////////
 
 Route::view('/quem-somos', 'usuarios.quem_somos');
@@ -136,6 +136,14 @@ Route::view('/termos-de-uso', 'usuarios.termos-de-uso');
 
 
 });
+
+Route::get('/completar-cadastro', [UsuarioController::class, 'completarCadastroForm']);
+Route::post('/completar-cadastro', [UsuarioController::class, 'salvarCadastro']);
+
+
+
+Route::get('/auth/google', [SocialiteController::class, 'redirectToGoogle']);
+Route::get('/auth/google/callback', [SocialiteController::class, 'handleGoogleCallback']);
 
 Route::get('/produtos/buscar', [ProdutoController::class, 'buscar'])->name('produtos.buscar');
 
