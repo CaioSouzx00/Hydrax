@@ -113,3 +113,9 @@ composer dump-autoload -o
 
 Explicação: Recarrega todas as classes e arquivos registrados no
 projeto. Útil quando o Laravel não reconhece novos arquivos.
+
+
+
+
+
+composer require laravel/socialite

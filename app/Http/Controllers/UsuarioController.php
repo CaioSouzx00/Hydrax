@@ -405,4 +405,28 @@ public function pesquisaProdutos(Request $request)
         'prompt' => $prompt
     ]);
 }
+
+public function completarCadastroForm()
+{
+    $user = Auth::guard('usuarios')->user();
+    return view('usuarios.completar-cadastro', compact('user'));
+}
+
+public function salvarCadastro(Request $request)
+{
+    $request->validate([
+        'sexo' => 'required|in:M,F,O',
+        'cpf' => 'required|digits:11|unique:usuarios,cpf,' . Auth::guard('usuarios')->id() . ',id_usuarios',
+        'data_nascimento' => 'required|date',
+        'telefone' => 'required',
+    ]);
+
+    $user = Auth::guard('usuarios')->user();
+    $user->update($request->only('sexo', 'cpf', 'data_nascimento', 'telefone'));
+
+    return redirect()->route('dashboard')->with('success', 'Cadastro atualizado!');
+}
+
+
+
 }
