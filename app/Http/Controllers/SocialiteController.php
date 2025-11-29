@@ -15,7 +15,7 @@ class SocialiteController extends Controller
         return Socialite::driver('google')->redirect();
     }
 
-   public function handleGoogleCallback()
+  public function handleGoogleCallback()
 {
     try {
         $googleUser = Socialite::driver('google')->stateless()->user();
@@ -23,14 +23,14 @@ class SocialiteController extends Controller
         return redirect('/login')->with('error', 'Erro ao logar com Google.');
     }
 
-    // Verificar se já existe usuário com este email
+    // Buscar usuário por email
     $user = Usuario::where('email', $googleUser->email)->first();
 
     if (!$user) {
-        // Criar usuário mínimo necessário para logar
+        // Criar usuário mínimo
         $user = Usuario::create([
             'email' => $googleUser->email,
-            'nome_completo' => $googleUser->name,
+            'nome_completo' => $googleUser->name ?? 'Sem Nome',
             'password' => bcrypt(Str::random(16)),
             'sexo' => null,
             'cpf' => null,
@@ -40,20 +40,21 @@ class SocialiteController extends Controller
         ]);
     }
 
+    $user->refresh();
+
+    // Autenticar
     Auth::guard('usuarios')->login($user);
 
-    // Se faltam dados obrigatórios → mandar completar perfil
     if (
-        !$user->cpf ||
-        !$user->telefone ||
-        !$user->sexo ||
-        !$user->data_nascimento
+        empty($user->cpf) ||
+        empty($user->telefone) ||
+        empty($user->sexo) ||
+        empty($user->data_nascimento)
     ) {
-        return redirect('/completar-cadastro');
+        return redirect()->route('completarCadastroForm');
     }
 
-    // Se já tem tudo → dashboard direto
-    return redirect('/dashboard');
+    return redirect()->route('dashboard');
 }
 
 
