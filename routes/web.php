@@ -137,13 +137,19 @@ Route::view('/termos-de-uso', 'usuarios.termos-de-uso');
 
 });
 
-Route::get('/completar-cadastro', [UsuarioController::class, 'completarCadastroForm']);
-Route::post('/completar-cadastro', [UsuarioController::class, 'salvarCadastro']);
+// FORMULÁRIO
+Route::get('/completar-cadastro', [UsuarioController::class, 'completarCadastroForm'])
+    ->name('completarCadastroForm');
+
+// SALVAR
+Route::post('/completar-cadastro', [UsuarioController::class, 'salvarCadastro'])
+    ->name('usuarios.salvarCadastro');
 
 
 
 Route::get('/auth/google', [SocialiteController::class, 'redirectToGoogle']);
 Route::get('/auth/google/callback', [SocialiteController::class, 'handleGoogleCallback']);
+
 
 Route::get('/produtos/buscar', [ProdutoController::class, 'buscar'])->name('produtos.buscar');
 
