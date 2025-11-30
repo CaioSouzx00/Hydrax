@@ -94,16 +94,25 @@
           </div>
         </form>
 
-        <a href="/auth/google"
-   class="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl border border-gray-300 bg-white shadow hover:shadow-md transition-all duration-200">
+<a href="/auth/google"
+   class="relative w-full flex items-center justify-center gap-3 py-3 px-4 mt-2
+          rounded-xl border border-[#ffffff30] bg-[#ffffff10] backdrop-blur-md
+          text-white font-semibold
+          hover:bg-[#ffffff15]
+          transition-all duration-300">
+
+    <!-- Glow interno suave -->
+    <span class="absolute inset-0 rounded-xl pointer-events-none
+                 bg-gradient-to-r from-[#ffffff15] to-transparent"></span>
 
     <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
-         class="w-5 h-5" alt="Google">
+         class="w-5 h-5 drop-shadow-[0_0_2px_#000]" alt="Google">
 
-    <span class="text-gray-700 font-medium">
+    <span class="text-white tracking-wide">
         Entrar com Google
     </span>
 </a>
+
 
 
         <div class="mt-4 text-sm text-center">
