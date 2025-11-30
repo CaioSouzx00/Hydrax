@@ -33,7 +33,7 @@
 
                 {{-- Fornecedor --}}
                 <div class="flex items-center space-x-2 mt-2">
-<img 
+<img class="rounded-full w-12 h-12" 
     src="{{ $produto->fornecedor?->foto 
             ? asset('storage/' . $produto->fornecedor->foto) 
             : 'https://via.placeholder.com/40x40?text=F' }}" 
