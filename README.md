@@ -69,27 +69,28 @@ O projeto foi desenvolvido como **Trabalho de Conclusão de Curso (TCC)**, simul
 
 ---
 
-## 📊 Dashboard e Visualização de Dados
+## 👥 Contribuição da Equipe
 
-O Hydrax possui um **dashboard administrativo completo**, permitindo a análise visual dos dados do sistema.
-
-### 📈 Gráficos Implementados
-
-- 📊 **Vendas por período (linha)**
-- 📦 **Produtos mais vendidos (barra)**
-- 🏷️ **Categorias mais populares (pizza / donut)**
-- 🧮 **Pedidos por status**
-- 💰 **Faturamento mensal e total**
+As contribuições abaixo são baseadas **exclusivamente nos commits reais registrados no GitHub**, garantindo transparência e rastreabilidade do desenvolvimento do projeto.
 
 <p align="center">
-  <img src="https://via.placeholder.com/480x300?text=Gr%C3%A1fico+de+Vendas" />
-  <img src="https://via.placeholder.com/480x300?text=Produtos+Mais+Vendidos" />
+  <img src="https://contrib.rocks/image?repo=CaioSouzx00/Hydrax" />
 </p>
 
 <p align="center">
-  <img src="https://via.placeholder.com/480x300?text=Categorias+Mais+Vendidas" />
-  <img src="https://via.placeholder.com/480x300?text=Pedidos+por+Status" />
+  🔗 <a href="https://github.com/CaioSouzx00/Hydrax/graphs/contributors">
+    Ver gráfico oficial de commits por integrante
+  </a>
 </p>
+
+### 👤 Integrantes do Projeto
+- **CaioSouzx00**
+- **YagoPaulino**
+- **rayjhonatann**
+- **Yushf1218**
+
+> 📌 A ordem e o destaque visual são definidos automaticamente com base na quantidade de commits realizados por cada integrante.
+
 
 ---
 
