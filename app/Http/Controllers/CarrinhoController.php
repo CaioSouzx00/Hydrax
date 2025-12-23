@@ -2,64 +2,80 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\Carrinho\AdicionarProdutoRequest;
+use App\Http\Requests\Carrinho\ProcessarFinalizacaoRequest;
+use App\Services\Carrinho\CarrinhoService;
 use App\Models\Carrinho;
-use App\Models\CarrinhoItem;
 use App\Models\ProdutoFornecedor;
 use App\Models\EnderecoUsuario;
 use App\Models\Cupom;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Cache;
-use App\Jobs\EnviarCarrinhoAbandonadoJob;
 
+/**
+ * Controller responsável pelas operações relacionadas ao carrinho de compras.
+ * 
+ * Refatorado seguindo Clean Code e SOLID:
+ * - Validações movidas para Form Requests
+ * - Lógica de negócio extraída para CarrinhoService
+ * - Controller mantém apenas orquestração e respostas HTTP
+ */
 class CarrinhoController extends Controller
 {
-    // 1️⃣ Adicionar produto ao carrinho
-    public function adicionarProduto(Request $request, $produtoId)
+    /**
+     * Service de carrinho injetado via construtor.
+     *
+     * @var CarrinhoService
+     */
+    protected CarrinhoService $carrinhoService;
+
+    /**
+     * Construtor com injeção de dependência do Service.
+     *
+     * @param CarrinhoService $carrinhoService
+     */
+    public function __construct(CarrinhoService $carrinhoService)
+    {
+        $this->carrinhoService = $carrinhoService;
+    }
+
+    /**
+     * Adiciona um produto ao carrinho.
+     * 
+     * Validação via AdicionarProdutoRequest.
+     * Lógica de negócio delegada ao CarrinhoService.
+     *
+     * @param AdicionarProdutoRequest $request
+     * @param int $produtoId ID do produto
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function adicionarProduto(AdicionarProdutoRequest $request, $produtoId)
     {
         $usuario = Auth::guard('usuarios')->user();
-
         $produto = ProdutoFornecedor::ativos()->find($produtoId);
+
         if (!$produto) {
             return redirect()->back()->with('error', 'Este produto não está disponível.');
         }
 
-        $request->validate([
-            'tamanho' => 'required|string',
-            'quantidade' => 'nullable|integer|min:1',
-        ]);
+        $dados = $request->validated();
+        $quantidade = $dados['quantidade'] ?? 1;
 
-        $quantidade = $request->input('quantidade', 1);
-
-        $carrinho = $usuario->carrinhoAtivo ?? Carrinho::create([
-            'id_usuarios' => $usuario->id_usuarios,
-            'status' => 'ativo',
-        ]);
-
-        $item = CarrinhoItem::where('carrinho_id', $carrinho->id)
-            ->where('produto_id', $produtoId)
-            ->where('tamanho', $request->tamanho)
-            ->first();
-
-        if ($item) {
-            $item->increment('quantidade', $quantidade);
-        } else {
-            CarrinhoItem::create([
-                'carrinho_id' => $carrinho->id,
-                'produto_id' => $produtoId,
-                'tamanho' => $request->tamanho,
-                'quantidade' => $quantidade,
-            ]);
-        }
-
-        EnviarCarrinhoAbandonadoJob::dispatch($carrinho->id)->delay(now()->addMinutes(1));
+        $this->carrinhoService->adicionarProduto(
+            $usuario->id_usuarios,
+            $produtoId,
+            $dados['tamanho'],
+            $quantidade
+        );
 
         return redirect()->route('carrinho.ver')->with('success', 'Produto adicionado ao carrinho!');
     }
 
-    // 2️⃣ Visualizar carrinho
+    /**
+     * Visualiza o carrinho do usuário.
+     *
+     * @return \Illuminate\View\View
+     */
     public function verCarrinho()
     {
         $usuario = Auth::guard('usuarios')->user();
@@ -74,8 +90,8 @@ class CarrinhoController extends Controller
 
         $enderecos = EnderecoUsuario::where('id_usuarios', $usuario->id_usuarios)->get();
 
-        // Calcula total no PHP (pode ser feito via sum no banco se for muito grande)
-        $total = $carrinho->itens->sum(fn($item) => $item->produto->preco * $item->quantidade);
+        // Calcula total usando o service
+        $totais = $this->carrinhoService->calcularTotal($carrinho);
 
         $cupons = Cupom::where('ativo', 1)
             ->where(fn($q) => $q->whereNull('validade')->orWhere('validade', '>=', now()))
@@ -84,18 +100,32 @@ class CarrinhoController extends Controller
         $cupomAplicado = session('cupom_aplicado');
 
         $produtos = ProdutoFornecedor::ativos()
-    ->with(['fornecedor:id_fornecedores,nome_empresa,foto']) // só campos necessários
-    ->inRandomOrder()
-    ->take(4)
-    ->get(['id_produtos', 'nome', 'slug', 'fotos', 'preco', 'id_fornecedores']);
+            ->with(['fornecedor:id_fornecedores,nome_empresa,foto'])
+            ->inRandomOrder()
+            ->take(4)
+            ->get(['id_produtos', 'nome', 'slug', 'fotos', 'preco', 'id_fornecedores']);
 
+        // Manter compatibilidade com views que esperam 'total'
+        $total = $totais['total'];
 
         return view('usuarios.carrinho', compact(
-            'carrinho', 'total', 'enderecos', 'cupons', 'cupomAplicado', 'produtos'
+            'carrinho',
+            'total',
+            'totais',
+            'enderecos',
+            'cupons',
+            'cupomAplicado',
+            'produtos'
         ));
     }
 
-    // 3️⃣ Remover produto do carrinho
+    /**
+     * Remove um produto do carrinho.
+     *
+     * @param int $produtoId ID do produto
+     * @param string $tamanho Tamanho do produto
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function removerProduto($produtoId, $tamanho)
     {
         $usuario = Auth::guard('usuarios')->user();
@@ -111,11 +141,14 @@ class CarrinhoController extends Controller
         return redirect()->back()->with('success', 'Produto removido do carrinho!');
     }
 
-    // 4️⃣ Finalizar compra
+    /**
+     * Exibe a página de finalização de compra.
+     *
+     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
+     */
     public function finalizarCompra()
     {
         $usuario = Auth::guard('usuarios')->user();
-
         $enderecos = EnderecoUsuario::where('id_usuarios', $usuario->id_usuarios)->get();
 
         $carrinho = Carrinho::where('id_usuarios', $usuario->id_usuarios)
@@ -131,36 +164,30 @@ class CarrinhoController extends Controller
             ->where(fn($q) => $q->whereNull('validade')->orWhere('validade', '>=', now()))
             ->get();
 
-        $total = $carrinho->itens->sum(fn($item) => $item->produto->preco * $item->quantidade);
-        $entrega = 15;
-        $totalComEntrega = $total + $entrega;
-
+        $totais = $this->carrinhoService->calcularTotal($carrinho);
         $cupomAplicado = session('cupom_aplicado');
-        $desconto = 0;
-
-        if ($cupomAplicado) {
-            $desconto = $cupomAplicado['tipo'] === 'percentual'
-                ? $totalComEntrega * ($cupomAplicado['valor']/100)
-                : $cupomAplicado['valor'];
-            $totalComEntrega -= $desconto;
-        }
 
         return view('usuarios.selecionar_endereco', compact(
-            'enderecos', 'carrinho', 'cupons', 'totalComEntrega', 'desconto', 'cupomAplicado'
+            'enderecos',
+            'carrinho',
+            'cupons',
+            'totais',
+            'cupomAplicado'
         ));
     }
 
-    public function processarFinalizacao(Request $request)
+    /**
+     * Processa a finalização da compra.
+     * 
+     * Validação via ProcessarFinalizacaoRequest.
+     * Lógica de negócio delegada ao CarrinhoService.
+     *
+     * @param ProcessarFinalizacaoRequest $request
+     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
+     */
+    public function processarFinalizacao(ProcessarFinalizacaoRequest $request)
     {
         $usuario = Auth::guard('usuarios')->user();
-
-        $request->validate([
-            'id_endereco' => 'required|exists:endereco_usuarios,id_endereco',
-        ], [
-            'id_endereco.required' => 'Você precisa selecionar um endereço para finalizar a compra.',
-        ]);
-
-        $enderecoSelecionado = EnderecoUsuario::find($request->id_endereco);
 
         $carrinho = Carrinho::where('id_usuarios', $usuario->id_usuarios)
             ->where('status', 'ativo')
@@ -171,31 +198,28 @@ class CarrinhoController extends Controller
             return redirect()->route('carrinho.ver')->with('error', 'Carrinho vazio.');
         }
 
-        $total = $carrinho->itens->sum(fn($item) => $item->produto->preco * $item->quantidade) + 15;
+        $dados = $this->carrinhoService->finalizarCompra(
+            $carrinho,
+            $request->validated()['id_endereco'],
+            $usuario->email
+        );
+
         $cupomAplicado = session('cupom_aplicado');
-        $desconto = 0;
 
-        if ($cupomAplicado) {
-            $desconto = $cupomAplicado['tipo'] === 'percentual'
-                ? $total * ($cupomAplicado['valor']/100)
-                : $cupomAplicado['valor'];
-            $total -= $desconto;
-        }
-
-        $carrinho->id_endereco = $enderecoSelecionado->id_endereco;
-        $carrinho->status = 'finalizado';
-        $carrinho->save();
-
-        $chavePix = 'hydrax-pix-' . strtoupper(Str::random(10));
-        Mail::to($usuario->email)->send(new \App\Mail\ChavePixMail($chavePix, $total));
-
-        Carrinho::create(['id_usuarios' => $usuario->id_usuarios, 'status' => 'ativo']);
-        session()->forget('cupom_aplicado');
-
-        return view('usuarios.pix', compact('chavePix', 'total', 'enderecoSelecionado', 'desconto', 'cupomAplicado'));
+        return view('usuarios.pix', [
+            'chavePix' => $dados['chavePix'],
+            'total' => $dados['total'],
+            'enderecoSelecionado' => $dados['endereco'],
+            'desconto' => $dados['desconto'],
+            'cupomAplicado' => $cupomAplicado
+        ]);
     }
 
-    // 5️⃣ Meus pedidos
+    /**
+     * Lista os pedidos do usuário.
+     *
+     * @return \Illuminate\View\View
+     */
     public function meusPedidos()
     {
         $usuario = Auth::guard('usuarios')->user();
@@ -212,6 +236,12 @@ class CarrinhoController extends Controller
         return view('usuarios.pedidos', compact('pedidos'));
     }
 
+    /**
+     * Exibe os detalhes de um pedido específico.
+     *
+     * @param int $pedidoId ID do pedido
+     * @return \Illuminate\View\View
+     */
     public function detalhePedido($pedidoId)
     {
         $usuario = Auth::guard('usuarios')->user();
@@ -226,21 +256,26 @@ class CarrinhoController extends Controller
         return view('usuarios.pedido_detalhe', compact('pedido', 'cupomAplicado'));
     }
 
-    // 6️⃣ Aplicar cupom
+    /**
+     * Aplica um cupom ao carrinho.
+     * 
+     * Lógica de negócio delegada ao CarrinhoService.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function aplicarCupom(Request $request)
     {
-        $cupom = Cupom::where('codigo', $request->codigo_cupom)
-            ->where('ativo', 1)
-            ->first();
+        $request->validate([
+            'codigo_cupom' => 'required|string'
+        ]);
 
-        if (!$cupom) return back()->with('error', 'Cupom inválido.');
+        $resultado = $this->carrinhoService->aplicarCupom($request->codigo_cupom);
 
-        session(['cupom_aplicado' => [
-            'codigo' => $cupom->codigo,
-            'tipo' => $cupom->tipo,
-            'valor' => $cupom->valor
-        ]]);
+        if ($resultado['success']) {
+            return back()->with('success', $resultado['message']);
+        }
 
-        return back()->with('success', 'Cupom aplicado com sucesso!');
+        return back()->with('error', $resultado['message']);
     }
 }

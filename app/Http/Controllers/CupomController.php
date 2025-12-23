@@ -2,72 +2,99 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\Cupom\StoreCupomRequest;
+use App\Http\Requests\Cupom\UpdateCupomRequest;
 use App\Models\Cupom;
+use Illuminate\Http\Request;
 
+/**
+ * Controller responsável pelas operações relacionadas a cupons.
+ * 
+ * Refatorado seguindo Clean Code e SOLID:
+ * - Validações movidas para Form Requests
+ * - Controller mantém apenas orquestração e respostas HTTP
+ */
 class CupomController extends Controller
 {
-    // Listar todos os cupons
+    /**
+     * Lista todos os cupons.
+     *
+     * @return \Illuminate\View\View
+     */
     public function index()
     {
         $cupons = Cupom::orderBy('created_at', 'desc')->get();
         return view('admin.cupons.index', compact('cupons'));
     }
 
-    // Formulário de criação
+    /**
+     * Exibe o formulário de criação de cupom.
+     *
+     * @return \Illuminate\View\View
+     */
     public function create()
     {
         return view('admin.cupons.create');
     }
 
-    // Salvar cupom
-    public function store(Request $request)
+    /**
+     * Armazena um novo cupom.
+     * 
+     * Validação via StoreCupomRequest.
+     *
+     * @param StoreCupomRequest $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function store(StoreCupomRequest $request)
     {
-        $request->validate([
-            'codigo' => 'required|unique:cupons,codigo',
-            'tipo' => 'required|in:percentual,valor',
-            'valor' => 'required|numeric|min:0.01',
-            'validade' => 'nullable|date|after_or_equal:today',
-            'uso_maximo' => 'nullable|integer|min:1',
-        ]);
+        Cupom::create($request->validated());
 
-        Cupom::create($request->all());
-
-        return redirect()->route('admin.cupons.index')->with('success', 'Cupom criado com sucesso!');
+        return redirect()->route('admin.cupons.index')
+            ->with('success', 'Cupom criado com sucesso!');
     }
 
-    // Formulário de edição
+    /**
+     * Exibe o formulário de edição de cupom.
+     *
+     * @param int $id ID do cupom
+     * @return \Illuminate\View\View
+     */
     public function edit($id)
     {
         $cupom = Cupom::findOrFail($id);
         return view('admin.cupons.edit', compact('cupom'));
     }
 
-    // Atualizar cupom
-    public function update(Request $request, $id)
+    /**
+     * Atualiza um cupom existente.
+     * 
+     * Validação via UpdateCupomRequest.
+     *
+     * @param UpdateCupomRequest $request
+     * @param int $id ID do cupom
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function update(UpdateCupomRequest $request, $id)
     {
         $cupom = Cupom::findOrFail($id);
+        $cupom->update($request->validated());
 
-        $request->validate([
-            'codigo' => 'required|unique:cupons,codigo,'.$cupom->id_cupom.',id_cupom',
-            'tipo' => 'required|in:percentual,valor',
-            'valor' => 'required|numeric|min:0.01',
-            'validade' => 'nullable|date|after_or_equal:today',
-            'uso_maximo' => 'nullable|integer|min:1',
-        ]);
-
-        $cupom->update($request->all());
-
-        return redirect()->route('admin.cupons.index')->with('success', 'Cupom atualizado com sucesso!');
+        return redirect()->route('admin.cupons.index')
+            ->with('success', 'Cupom atualizado com sucesso!');
     }
 
-    // Deletar cupom
+    /**
+     * Exclui um cupom.
+     *
+     * @param int $id ID do cupom
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function destroy($id)
     {
         $cupom = Cupom::findOrFail($id);
         $cupom->delete();
 
-        return redirect()->route('admin.cupons.index')->with('success', 'Cupom deletado com sucesso!');
+        return redirect()->route('admin.cupons.index')
+            ->with('success', 'Cupom deletado com sucesso!');
     }
 }
