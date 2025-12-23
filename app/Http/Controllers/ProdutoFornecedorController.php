@@ -2,141 +2,113 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProdutoFornecedor\StoreProdutoFornecedorRequest;
+use App\Http\Requests\ProdutoFornecedor\UpdateProdutoFornecedorRequest;
+use App\Services\Produto\ProdutoService;
 use App\Models\ProdutoFornecedor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Storage;
 
+/**
+ * Controller responsável pelas operações relacionadas a produtos do fornecedor.
+ * 
+ * Refatorado seguindo Clean Code e SOLID:
+ * - Validações movidas para Form Requests
+ * - Lógica de negócio extraída para ProdutoService
+ * - Controller mantém apenas orquestração e respostas HTTP
+ */
 class ProdutoFornecedorController extends Controller
 {
+    /**
+     * Service de produto injetado via construtor.
+     *
+     * @var ProdutoService
+     */
+    protected ProdutoService $produtoService;
+
+    /**
+     * Construtor com injeção de dependência do Service.
+     *
+     * @param ProdutoService $produtoService
+     */
+    public function __construct(ProdutoService $produtoService)
+    {
+        $this->produtoService = $produtoService;
+    }
+
+    /**
+     * Exibe o formulário de criação de produto.
+     *
+     * @return \Illuminate\View\View
+     */
     public function create()
     {
         return view('fornecedores.produtos.partials.create');
     }
 
-    public function store(Request $request)
+    /**
+     * Armazena um novo produto.
+     * 
+     * Validação via StoreProdutoFornecedorRequest.
+     * Lógica de negócio delegada ao ProdutoService.
+     *
+     * @param StoreProdutoFornecedorRequest $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function store(StoreProdutoFornecedorRequest $request)
     {
         $fornecedor = Auth::guard('fornecedores')->user();
+        $dados = $request->validated();
 
-        $request->validate([
-            'nome' => 'required|string|max:255',
-            'descricao' => 'required|string',
-            'preco' => 'required|numeric|min:0',
-            'estoque_imagem.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048', 
-            'caracteristicas' => 'required|string',
-            'cor' => 'required|string|max:50',
-            'historico_modelos' => 'nullable|string',
-            'tamanhos_disponiveis' => 'nullable|string',
-            'genero' => 'required|in:MASCULINO,FEMININO,UNISSEX',
-            'categoria' => 'required|string|max:100',
-            'fotos.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-            'ativo' => 'required|boolean',
-        ]);
-
-        // Salvar imagens estoque
-        $imagensEstoque = [];
-        if ($request->hasFile('estoque_imagem')) {
-            foreach ($request->file('estoque_imagem') as $file) {
-                $imagensEstoque[] = $file->store('produtos/estoque', 'public');
-            }
-        }
-
-        // Salvar imagens fotos
-        $imagens = [];
+        // Incluir arquivos de imagem se existirem
         if ($request->hasFile('fotos')) {
-            foreach ($request->file('fotos') as $file) {
-                $imagens[] = $file->store('produtos', 'public');
-            }
+            $dados['fotos'] = $request->file('fotos');
         }
 
-        ProdutoFornecedor::create([
-            'nome' => $request->nome,
-            'descricao' => $request->descricao,
-            'preco' => $request->preco,
-            'estoque_imagem' => !empty($imagensEstoque) ? json_encode($imagensEstoque) : null,
-            'caracteristicas' => $request->caracteristicas,
-            'cor' => $request->cor,
-            'historico_modelos' => $request->historico_modelos,
-            'tamanhos_disponiveis' => $request->tamanhos_disponiveis
-                ? array_map('trim', explode(',', $request->tamanhos_disponiveis))
-                : null,
-            'genero' => $request->genero,
-            'categoria' => $request->categoria,
-            'fotos' => !empty($imagens) ? json_encode($imagens) : null,
-            'ativo' => $request->ativo,
-            'slug' => Str::slug($request->nome) . '-' . uniqid(),
-            'id_fornecedores' => $fornecedor->id_fornecedores,
-        ]);
+        if ($request->hasFile('estoque_imagem')) {
+            $dados['estoque_imagem'] = $request->file('estoque_imagem');
+        }
+
+        $this->produtoService->criarProduto($dados, $fornecedor->id_fornecedores);
 
         return redirect()->route('fornecedores.produtos.index')
-                         ->with('success', 'Produto cadastrado com sucesso!');
+            ->with('success', 'Produto cadastrado com sucesso!');
     }
 
-    public function update(Request $request, $id)
+    /**
+     * Atualiza um produto existente.
+     * 
+     * Validação via UpdateProdutoFornecedorRequest.
+     * Lógica de negócio delegada ao ProdutoService.
+     *
+     * @param UpdateProdutoFornecedorRequest $request
+     * @param int $id ID do produto
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function update(UpdateProdutoFornecedorRequest $request, $id)
     {
         $produto = ProdutoFornecedor::findOrFail($id);
+        $dados = $request->validated();
 
-        $request->validate([
-            'nome' => 'required|string|max:255',
-            'descricao' => 'required|string',
-            'preco' => 'required|numeric|min:0',
-            'estoque_imagem.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-            'caracteristicas' => 'required|string',
-            'cor' => 'required|string|max:50',
-            'historico_modelos' => 'nullable|string',
-            'tamanhos_disponiveis' => 'nullable|string',
-            'genero' => 'required|in:MASCULINO,FEMININO,UNISSEX',
-            'categoria' => 'required|string|max:100',
-            'fotos.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-            'ativo' => 'required|boolean',
-        ]);
-
-        $data = $request->only([
-            'nome',
-            'descricao',
-            'preco',
-            'caracteristicas',
-            'cor',
-            'historico_modelos',
-            'genero',
-            'categoria',
-            'ativo',
-        ]);
-
-        // Atualiza tamanhos disponíveis
-        $data['tamanhos_disponiveis'] = $request->tamanhos_disponiveis
-            ? array_map('trim', explode(',', $request->tamanhos_disponiveis))
-            : null;
-
-        // Atualiza fotos se enviar
+        // Incluir arquivos de imagem se existirem
         if ($request->hasFile('fotos')) {
-            $fotosPaths = [];
-            foreach ($request->file('fotos') as $foto) {
-                $fotosPaths[] = $foto->store('produtos', 'public');
-            }
-            $data['fotos'] = json_encode($fotosPaths);
+            $dados['fotos'] = $request->file('fotos');
         }
 
-        // Atualiza estoque_imagem se enviar
         if ($request->hasFile('estoque_imagem')) {
-            $estoquePaths = [];
-            foreach ($request->file('estoque_imagem') as $img) {
-                $estoquePaths[] = $img->store('produtos/estoque', 'public');
-            }
-            $data['estoque_imagem'] = json_encode($estoquePaths);
+            $dados['estoque_imagem'] = $request->file('estoque_imagem');
         }
 
-        // Atualiza slug somente se o nome mudou
-        if ($produto->nome !== $request->nome) {
-            $data['slug'] = Str::slug($request->nome) . '-' . uniqid();
-        }
-
-        $produto->update($data);
+        $this->produtoService->atualizarProduto($produto, $dados);
 
         return redirect()->back()->with('success', 'Produto atualizado com sucesso!');
     }
 
+    /**
+     * Lista todos os produtos do fornecedor logado.
+     *
+     * @return \Illuminate\View\View
+     */
     public function index()
     {
         $fornecedor = Auth::guard('fornecedores')->user();
@@ -148,12 +120,18 @@ class ProdutoFornecedorController extends Controller
         return view('fornecedores.produtos.index', compact('produtos'));
     }
 
+    /**
+     * Lista produtos em formato JSON para AJAX.
+     *
+     * @return \Illuminate\View\View
+     */
     public function listar()
     {
         $fornecedor = Auth::guard('fornecedores')->user();
 
         $produtos = ProdutoFornecedor::where('id_fornecedores', $fornecedor->id_fornecedores)->get();
 
+        // Decodificar JSONs para exibição
         foreach ($produtos as $produto) {
             $produto->tamanhos_disponiveis = is_array($produto->tamanhos_disponiveis)
                 ? $produto->tamanhos_disponiveis
@@ -171,6 +149,12 @@ class ProdutoFornecedorController extends Controller
         return view('fornecedores.produtos.partials.listar', compact('produtos'));
     }
 
+    /**
+     * Exibe o formulário de edição de produto.
+     *
+     * @param int $id ID do produto
+     * @return \Illuminate\View\View
+     */
     public function edit($id)
     {
         $produto = ProdutoFornecedor::findOrFail($id);
@@ -191,35 +175,34 @@ class ProdutoFornecedorController extends Controller
         return view('fornecedores.produtos.partials.edit', compact('produto'));
     }
 
+    /**
+     * Exclui um produto.
+     * 
+     * Lógica de negócio delegada ao ProdutoService.
+     *
+     * @param int $id ID do produto
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function destroy($id)
     {
         $produto = ProdutoFornecedor::findOrFail($id);
-
-        if (!empty($produto->fotos)) {
-            $fotos = json_decode($produto->fotos, true);
-            foreach ($fotos as $foto) {
-                Storage::disk('public')->delete($foto);
-            }
-        }
-
-        if (!empty($produto->estoque_imagem)) {
-            $estoqueImgs = json_decode($produto->estoque_imagem, true);
-            foreach ($estoqueImgs as $img) {
-                Storage::disk('public')->delete($img);
-            }
-        }
-
-        $produto->delete();
+        $this->produtoService->excluirProduto($produto);
 
         return redirect()->back()->with('success', 'Produto excluído com sucesso!');
     }
 
+    /**
+     * Alterna o status ativo/inativo de um produto.
+     * 
+     * Lógica de negócio delegada ao ProdutoService.
+     *
+     * @param int $id ID do produto
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function toggleProduto($id)
     {
         $produto = ProdutoFornecedor::findOrFail($id);
-
-        $produto->ativo = $produto->ativo ? 0 : 1;
-        $produto->save();
+        $this->produtoService->toggleStatus($produto);
 
         $statusTexto = $produto->ativo ? 'ATIVO' : 'INATIVO';
 

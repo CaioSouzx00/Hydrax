@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Fornecedor\StoreFornecedorRequest;
 use App\Models\FornecedorPendente;
 use App\Models\Fornecedor;
 use Illuminate\Http\Request;
@@ -14,28 +15,46 @@ use App\Mail\FornecedorRejeitadoMail;
 use App\Models\ProdutoFornecedor;
 use App\Models\Avaliacao;
 
+/**
+ * Controller responsável pelas operações relacionadas a fornecedores.
+ * 
+ * Refatorado seguindo Clean Code e SOLID:
+ * - Validações movidas para Form Requests
+ * - Controller mantém apenas orquestração e respostas HTTP
+ */
 class FornecedorController extends Controller
 {
+    /**
+     * Exibe o formulário de login.
+     *
+     * @return \Illuminate\View\View
+     */
     public function showLoginForm()
     {
         return view('fornecedores.login');
     }
 
+    /**
+     * Exibe o formulário de cadastro.
+     *
+     * @return \Illuminate\View\View
+     */
     public function create()
     {
         return view('fornecedores.create');
     }
 
-    public function store(Request $request)
+    /**
+     * Armazena um novo fornecedor pendente.
+     * 
+     * Validação via StoreFornecedorRequest.
+     *
+     * @param StoreFornecedorRequest $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function store(StoreFornecedorRequest $request)
     {
-        $validated = $request->validate([
-            'nome_empresa' => 'required|string|max:255',
-            'cnpj' => 'required|string|min:14|unique:fornecedores_pendentes,cnpj',
-            'email' => 'required|email|unique:fornecedores_pendentes,email',
-            'telefone' => 'required|string|max:20',
-            'password' => 'required|string|min:6|confirmed',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        ]);
+        $dados = $request->validated();
 
         $path = null;
         if ($request->hasFile('foto')) {
@@ -43,11 +62,11 @@ class FornecedorController extends Controller
         }
 
         FornecedorPendente::create([
-            'nome_empresa' => $validated['nome_empresa'],
-            'cnpj' => $validated['cnpj'],
-            'email' => $validated['email'],
-            'telefone' => $validated['telefone'],
-            'password' => $validated['password'], // ainda não usa Hash
+            'nome_empresa' => $dados['nome_empresa'],
+            'cnpj' => $dados['cnpj'],
+            'email' => $dados['email'],
+            'telefone' => $dados['telefone'],
+            'password' => $dados['password'], // ainda não usa Hash
             'status' => 'pendente',
             'foto' => $path,
         ]);
