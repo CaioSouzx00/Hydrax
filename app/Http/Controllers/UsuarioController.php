@@ -13,15 +13,9 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Usuario;
 use App\Models\ProdutoFornecedor;
 use App\Models\ListaDesejo;
+use OpenApi\Attributes as OA;
 
-/**
- * Controller responsável pelas operações relacionadas a usuários.
- * 
- * Refatorado seguindo Clean Code e SOLID:
- * - Validações movidas para Form Requests
- * - Lógica de negócio extraída para Services
- * - Controller mantém apenas orquestração e respostas HTTP
- */
+#[OA\Tag(name: "Usuários", description: "Operações relacionadas aos usuários finais")]
 class UsuarioController extends Controller
 {
     /**
@@ -51,15 +45,27 @@ class UsuarioController extends Controller
         return view('usuarios.create');
     }
 
-    /**
-     * Armazena um novo usuário.
-     * 
-     * Validação via StoreUsuarioRequest.
-     * Lógica de negócio delegada ao UsuarioService.
-     *
-     * @param StoreUsuarioRequest $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
+    #[OA\Post(path: "/usuarios", summary: "Cadastra um novo usuário", tags: ["Usuários"])]
+    #[OA\RequestBody(
+        required: true,
+        content: new OA\MediaType(
+            mediaType: "multipart/form-data",
+            schema: new OA\Schema(
+                required: ["nome", "email", "password", "password_confirmation", "cpf", "data_nascimento"],
+                properties: [
+                    new OA\Property(property: "nome", type: "string"),
+                    new OA\Property(property: "email", type: "string", format: "email"),
+                    new OA\Property(property: "password", type: "string", format: "password"),
+                    new OA\Property(property: "password_confirmation", type: "string", format: "password"),
+                    new OA\Property(property: "cpf", type: "string"),
+                    new OA\Property(property: "data_nascimento", type: "string", format: "date"),
+                    new OA\Property(property: "foto", type: "string", format: "binary"),
+                ]
+            )
+        )
+    )]
+    #[OA\Response(response: 302, description: "Redireciona para o login em caso de sucesso")]
+    #[OA\Response(response: 422, description: "Erro de validação")]
     public function store(StoreUsuarioRequest $request)
     {
         $dados = $request->validated();
@@ -92,14 +98,19 @@ class UsuarioController extends Controller
         return view('usuarios.login');
     }
 
-    /**
-     * Processa o login do usuário.
-     * 
-     * Validação via LoginUsuarioRequest.
-     *
-     * @param LoginUsuarioRequest $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
+    #[OA\Post(path: "/login", summary: "Realiza o login do usuário", tags: ["Usuários"])]
+    #[OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            required: ["email", "password"],
+            properties: [
+                new OA\Property(property: "email", type: "string", format: "email"),
+                new OA\Property(property: "password", type: "string", format: "password"),
+            ]
+        )
+    )]
+    #[OA\Response(response: 302, description: "Redireciona para o dashboard em caso de sucesso")]
+    #[OA\Response(response: 401, description: "Credenciais inválidas")]
     public function login(LoginUsuarioRequest $request)
     {
         $credentials = $request->validated();
@@ -127,12 +138,13 @@ class UsuarioController extends Controller
         return redirect()->route('login.form')->with('success', 'Você saiu do sistema.');
     }
 
-    /**
-     * Exibe o dashboard com produtos.
-     *
-     * @param Request $request
-     * @return \Illuminate\View\View|\Illuminate\Http\JsonResponse
-     */
+    #[OA\Get(path: "/dashboard", summary: "Exibe o dashboard do usuário com produtos", tags: ["Usuários"])]
+    #[OA\Parameter(name: "genero", in: "query", required: false, schema: new OA\Schema(type: "string"))]
+    #[OA\Parameter(name: "categoria", in: "query", required: false, schema: new OA\Schema(type: "string"))]
+    #[OA\Parameter(name: "preco_min", in: "query", required: false, schema: new OA\Schema(type: "string"))]
+    #[OA\Parameter(name: "preco_max", in: "query", required: false, schema: new OA\Schema(type: "string"))]
+    #[OA\Response(response: 200, description: "Sucesso")]
+    #[OA\Response(response: 401, description: "Não autenticado")]
     public function dashboard(Request $request)
     {
         $usuario = auth()->guard('usuarios')->user();

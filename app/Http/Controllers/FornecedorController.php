@@ -14,14 +14,9 @@ use App\Mail\FornecedorAprovadoMail;
 use App\Mail\FornecedorRejeitadoMail;
 use App\Models\ProdutoFornecedor;
 use App\Models\Avaliacao;
+use OpenApi\Attributes as OA;
 
-/**
- * Controller responsável pelas operações relacionadas a fornecedores.
- * 
- * Refatorado seguindo Clean Code e SOLID:
- * - Validações movidas para Form Requests
- * - Controller mantém apenas orquestração e respostas HTTP
- */
+#[OA\Tag(name: "Fornecedores", description: "Operações relacionadas aos fornecedores (parceiros)")]
 class FornecedorController extends Controller
 {
     /**
@@ -44,14 +39,25 @@ class FornecedorController extends Controller
         return view('fornecedores.create');
     }
 
-    /**
-     * Armazena um novo fornecedor pendente.
-     * 
-     * Validação via StoreFornecedorRequest.
-     *
-     * @param StoreFornecedorRequest $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
+    #[OA\Post(path: "/fornecedores", summary: "Cadastra um novo fornecedor (aguarda aprovação)", tags: ["Fornecedores"])]
+    #[OA\RequestBody(
+        required: true,
+        content: new OA\MediaType(
+            mediaType: "multipart/form-data",
+            schema: new OA\Schema(
+                required: ["nome_empresa", "cnpj", "email", "telefone", "password"],
+                properties: [
+                    new OA\Property(property: "nome_empresa", type: "string"),
+                    new OA\Property(property: "cnpj", type: "string"),
+                    new OA\Property(property: "email", type: "string", format: "email"),
+                    new OA\Property(property: "telefone", type: "string"),
+                    new OA\Property(property: "password", type: "string", format: "password"),
+                    new OA\Property(property: "foto", type: "string", format: "binary"),
+                ]
+            )
+        )
+    )]
+    #[OA\Response(response: 302, description: "Redireciona para o login de fornecedores")]
     public function store(StoreFornecedorRequest $request)
     {
         $dados = $request->validated();
@@ -74,6 +80,19 @@ class FornecedorController extends Controller
         return redirect()->route('fornecedores.login')->with('success', 'Cadastro enviado para análise.');
     }
 
+    #[OA\Post(path: "/fornecedores/login", summary: "Realiza o login do fornecedor", tags: ["Fornecedores"])]
+    #[OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            required: ["email", "password"],
+            properties: [
+                new OA\Property(property: "email", type: "string", format: "email"),
+                new OA\Property(property: "password", type: "string", format: "password"),
+            ]
+        )
+    )]
+    #[OA\Response(response: 302, description: "Redireciona para o dashboard do fornecedor")]
+    #[OA\Response(response: 401, description: "Credenciais inválidas")]
     public function login(Request $request)
     {
         $credentials = [

@@ -1,0 +1,355 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Hydrax API Documentation",
+        "description": "Swagger documentation for the Hydrax project routes.",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/admin/login": {
+            "post": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Realiza o login do administrador",
+                "operationId": "5a44a85b9dc2cd4c50f1adf5b9b1095a",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nome_usuario",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "nome_usuario": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "302": {
+                        "description": "Redireciona para o dashboard admin"
+                    },
+                    "401": {
+                        "description": "Credenciais inválidas"
+                    }
+                }
+            }
+        },
+        "/dashboard/dados-graficos": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Retorna os dados para os gráficos do dashboard admin",
+                "operationId": "81c244fbf97a420d4dbbb1db8e6baf3c",
+                "responses": {
+                    "200": {
+                        "description": "Dados dos gráficos",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "labels": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "integer"
+                                            }
+                                        },
+                                        "usuarios": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "integer"
+                                            }
+                                        },
+                                        "fornecedores": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "integer"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/fornecedores": {
+            "post": {
+                "tags": [
+                    "Fornecedores"
+                ],
+                "summary": "Cadastra um novo fornecedor (aguarda aprovação)",
+                "operationId": "7c0a75f3bcd80c4d63d7d6904fb94c52",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "nome_empresa",
+                                    "cnpj",
+                                    "email",
+                                    "telefone",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "nome_empresa": {
+                                        "type": "string"
+                                    },
+                                    "cnpj": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email"
+                                    },
+                                    "telefone": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password"
+                                    },
+                                    "foto": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "302": {
+                        "description": "Redireciona para o login de fornecedores"
+                    }
+                }
+            }
+        },
+        "/fornecedores/login": {
+            "post": {
+                "tags": [
+                    "Fornecedores"
+                ],
+                "summary": "Realiza o login do fornecedor",
+                "operationId": "73d79febd6bf4dfef678fb1cb4f304f6",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "302": {
+                        "description": "Redireciona para o dashboard do fornecedor"
+                    },
+                    "401": {
+                        "description": "Credenciais inválidas"
+                    }
+                }
+            }
+        },
+        "/usuarios": {
+            "post": {
+                "tags": [
+                    "Usuários"
+                ],
+                "summary": "Cadastra um novo usuário",
+                "operationId": "649b8ee4cb315de3c09d4f93fcc64588",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "nome",
+                                    "email",
+                                    "password",
+                                    "password_confirmation",
+                                    "cpf",
+                                    "data_nascimento"
+                                ],
+                                "properties": {
+                                    "nome": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "format": "password"
+                                    },
+                                    "cpf": {
+                                        "type": "string"
+                                    },
+                                    "data_nascimento": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "foto": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "302": {
+                        "description": "Redireciona para o login em caso de sucesso"
+                    },
+                    "422": {
+                        "description": "Erro de validação"
+                    }
+                }
+            }
+        },
+        "/login": {
+            "post": {
+                "tags": [
+                    "Usuários"
+                ],
+                "summary": "Realiza o login do usuário",
+                "operationId": "e8c53dec7a99697063f337ac03268dfe",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "302": {
+                        "description": "Redireciona para o dashboard em caso de sucesso"
+                    },
+                    "401": {
+                        "description": "Credenciais inválidas"
+                    }
+                }
+            }
+        },
+        "/dashboard": {
+            "get": {
+                "tags": [
+                    "Usuários"
+                ],
+                "summary": "Exibe o dashboard do usuário com produtos",
+                "operationId": "466e446ccdd3d22be63af14716c25c5f",
+                "parameters": [
+                    {
+                        "name": "genero",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "categoria",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "preco_min",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "preco_max",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Sucesso"
+                    },
+                    "401": {
+                        "description": "Não autenticado"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Admin",
+            "description": "Operações administrativas do sistema"
+        },
+        {
+            "name": "Fornecedores",
+            "description": "Operações relacionadas aos fornecedores (parceiros)"
+        },
+        {
+            "name": "Usuários",
+            "description": "Operações relacionadas aos usuários finais"
+        }
+    ]
+}

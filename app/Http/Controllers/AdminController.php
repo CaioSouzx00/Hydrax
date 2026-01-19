@@ -9,7 +9,9 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Administrador;
 use App\Models\ProdutoFornecedor;
 use App\Models\Usuario;
+use OpenApi\Attributes as OA;
 
+#[OA\Tag(name: "Admin", description: "Operações administrativas do sistema")]
 class AdminController extends Controller
 {
     // Mostrar formulário de cadastro do administrador
@@ -41,7 +43,20 @@ class AdminController extends Controller
         return view('admin.login');
     }
 
-public function login(Request $request)
+    #[OA\Post(path: "/admin/login", summary: "Realiza o login do administrador", tags: ["Admin"])]
+    #[OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            required: ["nome_usuario", "password"],
+            properties: [
+                new OA\Property(property: "nome_usuario", type: "string"),
+                new OA\Property(property: "password", type: "string", format: "password"),
+            ]
+        )
+    )]
+    #[OA\Response(response: 302, description: "Redireciona para o dashboard admin")]
+    #[OA\Response(response: 401, description: "Credenciais inválidas")]
+    public function login(Request $request)
 {
     $credentials = $request->only('nome_usuario', 'password');
 
@@ -77,7 +92,19 @@ public function login(Request $request)
         return view('admin.dashboard', compact('admin'));
     }
 
-      public function dadosGraficos()
+    #[OA\Get(path: "/dashboard/dados-graficos", summary: "Retorna os dados para os gráficos do dashboard admin", tags: ["Admin"])]
+    #[OA\Response(
+        response: 200,
+        description: "Dados dos gráficos",
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: "labels", type: "array", items: new OA\Items(type: "integer")),
+                new OA\Property(property: "usuarios", type: "array", items: new OA\Items(type: "integer")),
+                new OA\Property(property: "fornecedores", type: "array", items: new OA\Items(type: "integer")),
+            ]
+        )
+    )]
+    public function dadosGraficos()
 {
     $anoAtual = date('Y');
 
