@@ -1,0 +1,257 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\UsuarioController;
+use App\Http\Controllers\EnderecoUsuarioController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Auth\PasswordResetController;
+use \App\Http\Middleware\UsuarioMiddleware;
+use App\Http\Middleware\AdministradorMiddleware;
+use App\Http\Middleware\FornecedorMiddleware;
+use App\Http\Controllers\FornecedorController;
+use App\Http\Controllers\Auth\FornecedorPasswordResetController;
+use App\Http\Controllers\ProdutoFornecedorController;
+use App\Http\Controllers\SenhaUsuarioController;
+use App\Http\Controllers\PrivacidadeController;
+use App\Http\Controllers\ProdutoController;
+use App\Http\Controllers\CarrinhoController;
+use App\Http\Controllers\RelatorioController;
+use App\Http\Controllers\ListaDesejoController;
+use App\Http\Controllers\AvaliacaoController;
+use App\Http\Controllers\ProdutosRecomendadosController;
+use App\Http\Controllers\ProdutoImagemRotuloController;
+use App\Http\Controllers\ProdutoEstoqueController;
+use App\Http\Controllers\IAController;
+use App\Http\Controllers\SocialiteController;
+
+
+
+Route::prefix('fornecedores/senha')->group(function () {
+    // 1. Formulário para digitar o e-mail
+    Route::get('/esqueci', [FornecedorPasswordResetController::class, 'mostrarFormulario'])->name('fornecedores.senha.form');
+    // 2. Envio do código por e-mail
+    Route::post('/enviar-codigo', [FornecedorPasswordResetController::class, 'enviarCodigo'])->name('fornecedores.senha.enviar');
+    // 3. Formulário para digitar o código de verificação
+    Route::get('/verificar', [FornecedorPasswordResetController::class, 'mostrarFormularioVerificacao'])->name('fornecedores.senha.verificar.form');
+    // 4. Verificação do código
+    Route::post('/verificar', [FornecedorPasswordResetController::class, 'verificarCodigo'])->name('fornecedores.senha.verificar');
+    // 5. Formulário para redefinir a senha
+    Route::get('/redefinir', [FornecedorPasswordResetController::class, 'mostrarFormularioRedefinir'])->name('fornecedores.senha.redefinir.form');
+    // 6. Processamento da nova senha
+    Route::post('/redefinir', [FornecedorPasswordResetController::class, 'redefinirSenha'])->name('fornecedores.senha.redefinir');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Rotas Públicas
+|--------------------------------------------------------------------------
+*/
+Route::get('/', [UsuarioController::class, 'dashboard'])->name('home');
+
+//Route::get('/', [UsuarioController::class, 'dashboard'])->name('home');
+
+// Login e Cadastro - Usuário
+Route::get('/login', [UsuarioController::class, 'showLoginForm'])->name('login.form');
+Route::post('/login', [UsuarioController::class, 'login'])->name('login.process');
+Route::get('/usuarios/cadastrar', [UsuarioController::class, 'create'])->name('usuarios.create');
+Route::post('/usuarios', [UsuarioController::class, 'store'])->name('usuarios.store');
+
+// Login - Admin
+Route::get('/admin/login', [AdminController::class, 'showLoginForm'])->name('admin.login');
+Route::post('/admin/login', [AdminController::class, 'login']);
+
+// Login - Fornecedores
+Route::get('/fornecedores/login', [FornecedorController::class, 'showLoginForm'])->name('fornecedores.login');
+Route::post('/fornecedores/login', [FornecedorController::class, 'login'])->name('fornecedores.login.submit');
+
+Route::get('/fornecedores/create', [FornecedorController::class, 'create'])->name('fornecedores.create');
+Route::post('/fornecedores', [FornecedorController::class, 'store'])->name('fornecedores.store');
+
+// Recuperação de Senha - Usuário
+Route::get('/senha/esqueci', [PasswordResetController::class, 'mostrarFormulario'])->name('password.esqueciSenhaForm');
+Route::post('/senha/enviar-codigo', [PasswordResetController::class, 'enviarCodigo'])->name('password.enviarCodigo');
+Route::get('/senha/verificar-codigo', [PasswordResetController::class, 'mostrarFormularioVerificacao'])->name('password.verificarCodigoForm');
+Route::post('/senha/verificar-codigo', [PasswordResetController::class, 'verificarCodigo'])->name('password.verificarCodigo');
+Route::get('/senha/redefinir', [PasswordResetController::class, 'mostrarFormularioRedefinir'])->name('password.redefinirSenhaForm');
+Route::post('/senha/redefinir', [PasswordResetController::class, 'redefinirSenha'])->name('password.redefinirSenha');
+
+/*
+|--------------------------------------------------------------------------
+| Rotas Protegidas - Usuário (middleware: usuario)
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware([UsuarioMiddleware::class])->group(function () {
+
+Route::get('/dashboard', [UsuarioController::class, 'dashboard'])->name('dashboard');
+Route::post('/logout', [UsuarioController::class, 'logout'])->name('logout'); 
+Route::get('/painel', [UsuarioController::class, 'painel'])->name('usuario.painel');
+
+Route::get('/IA', [UsuarioController::class, 'pesquisaProdutos'])->name('usuario.ia');
+
+Route::get('/usuarios/perfil', [UsuarioController::class, 'edit'])->name('usuario.perfil');
+Route::put('/usuarios/perfil', [UsuarioController::class, 'update'])->name('usuario.update');
+Route::get('/usuarios/enderecos/create', [EnderecoUsuarioController::class, 'create'])->name('usuarios.enderecos.create');
+Route::post('/usuarios/enderecos', [EnderecoUsuarioController::class, 'store'])->name('usuarios.enderecos.store');
+Route::get('/usuarios/enderecos', [EnderecoUsuarioController::class, 'index'])->name('usuarios.enderecos.index');
+Route::get('/usuarios/enderecos/{endereco}/edit', [EnderecoUsuarioController::class, 'edit'])->name('usuarios.enderecos.edit');
+Route::put('/usuarios/enderecos/{endereco}', [EnderecoUsuarioController::class, 'update'])->name('usuarios.enderecos.update');
+Route::delete('/usuarios/enderecos/{endereco}', [EnderecoUsuarioController::class, 'destroy'])->name('usuarios.enderecos.destroy');
+Route::post('/usuarios/enderecos/{endereco}/principal', [EnderecoUsuarioController::class, 'definirPrincipal'])->name('usuarios.enderecos.principal');
+Route::get('/usuarios/email', [UsuarioController::class, 'showEmailForm'])->name('usuarios.email.form');
+Route::post('/usuarios/email/update', [UsuarioController::class, 'updateEmailRequest'])->name('usuarios.email.update');
+Route::get('/usuarios/email/confirmar/{token}', [UsuarioController::class, 'confirmarNovoEmail'])->name('usuarios.email.confirmar');
+Route::get('/verificar', [SenhaUsuarioController::class, 'verificarForm'])->name('usuarios.senha.verificar.form');
+Route::post('/verificar', [SenhaUsuarioController::class, 'verificar'])->name('usuarios.senha.verificar');
+Route::get('/trocar', [SenhaUsuarioController::class, 'trocarForm'])->name('usuarios.senha.trocar.form');
+Route::post('/trocar', [SenhaUsuarioController::class, 'trocar'])->name('usuarios.senha.trocar');
+Route::post('/usuarios/senha/verificar-codigo', [SenhaUsuarioController::class, 'verificarCodigo'])->name('usuarios.senha.verificarCodigo');
+Route::get('/usuarios/senha/verificar-codigo', [SenhaUsuarioController::class, 'mostrarFormularioVerificarCodigo'])->name('usuarios.senha.verificarCodigo.form');
+Route::get('/privacidade', function () { return view('usuarios.partials.privacidade'); })->name('usuarios.privacidade');
+Route::post('/excluir-conta', [PrivacidadeController::class, 'excluirConta'])->name('usuarios.excluir-conta');
+Route::get('/produtos/{id}/detalhes', [ProdutoController::class, 'detalhes'])->name('produtos.detalhes');
+Route::post('/carrinho/adicionar/{id}', [CarrinhoController::class, 'adicionarProduto'])->name('carrinho.adicionar');
+Route::get('/carrinho', [CarrinhoController::class, 'verCarrinho'])->name('carrinho.ver');
+Route::delete('/carrinho/remover/{produtoId}/{tamanho}', [CarrinhoController::class, 'removerProduto'])->name('carrinho.remover');
+Route::get('/carrinho/finalizar', [CarrinhoController::class, 'finalizarCompra'])->name('carrinho.finalizar');
+Route::post('/carrinho/finalizar', [CarrinhoController::class, 'processarFinalizacao'])->name('carrinho.processar');
+Route::get('/meus-pedidos', [CarrinhoController::class, 'meusPedidos'])->name('usuarios.pedidos');
+Route::get('/pedidos/{pedido}', [CarrinhoController::class, 'detalhePedido'])->name('pedidos.detalhe');
+Route::post('/pedidos/{pedido}/cancelar', [CarrinhoController::class, 'cancelarPedido'])->name('pedidos.cancelar');
+Route::post('/pedidos/{pedido}/recomprar', [CarrinhoController::class, 'recomprarPedido'])->name('pedidos.recomprar');
+Route::post('/carrinho/aplicar-cupom', [\App\Http\Controllers\CarrinhoController::class, 'aplicarCupom'])->name('carrinho.aplicarCupom');
+Route::get('/lista-desejos', [ListaDesejoController::class, 'index'])->name('lista-desejos.index');
+Route::post('/lista-desejos/{id_produtos}', [ListaDesejoController::class, 'store'])->name('lista-desejos.store');
+Route::delete('/lista-desejos/{id_produtos}', [ListaDesejoController::class, 'destroy'])->name('lista-desejos.destroy');
+Route::get('/avaliacoes/create/{id_produto}', [AvaliacaoController::class, 'create'])->name('avaliacoes.create');
+Route::post('/avaliacoes/store/{id_produto}', [AvaliacaoController::class, 'store'])->name('avaliacoes.store');
+// Rota para visualizar empresa + produtos
+Route::get('/empresa/{id}', [FornecedorController::class, 'mostrarEmpresa'])->name('empresa.mostrar');
+
+
+////////////////////////Rotas de views do FOOTER/////////////////////////////
+
+Route::view('/quem-somos', 'usuarios.quem_somos');
+Route::view('/politica-privacidade', 'usuarios.privacidade');
+Route::view('/politica-cookies', 'usuarios.cookies');
+Route::view('/termos-de-uso', 'usuarios.termos-de-uso');
+
+
+
+});
+
+// FORMULÁRIO
+Route::get('/completar-cadastro', [UsuarioController::class, 'completarCadastroForm'])
+    ->name('completarCadastroForm');
+
+// SALVAR
+Route::post('/completar-cadastro', [UsuarioController::class, 'salvarCadastro'])
+    ->name('usuarios.salvarCadastro');
+
+
+
+Route::get('/auth/google', [SocialiteController::class, 'redirectToGoogle']);
+Route::get('/auth/google/callback', [SocialiteController::class, 'handleGoogleCallback']);
+
+
+Route::get('/produtos/buscar', [ProdutoController::class, 'buscar'])->name('produtos.buscar');
+
+Route::get('/marcas/{slug}', [ProdutoController::class, 'marca'])->name('marcas.mostrar');
+
+
+Route::get('/produtos', [ProdutoController::class, 'listar']);
+Route::post('/ia/buscar', [IAController::class, 'buscar'])->name('ia.buscar');
+
+Route::get('/quiz', function () {
+    return view('quiz'); // Laravel procura em resources/views/quiz.blade.php
+});
+
+
+/*
+|--------------------------------------------------------------------------
+| Rotas Protegidas - Administrador (middleware: admin)
+|--------------------------------------------------------------------------
+*/
+Route::middleware([AdministradorMiddleware::class])->group(function () {
+    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    Route::post('/admin/logout', [AdminController::class, 'logout'])->name('admin.logout');
+    Route::get('/dashboard/dados-graficos', [AdminController::class, 'dadosGraficos'])->name('dashboard.dadosGraficos');
+    Route::get('/fornecedores/pendentes', [FornecedorController::class, 'listarPendentes'])->name('fornecedores.pendentes');
+    Route::post('/fornecedores/{id}/aprovar', [FornecedorController::class, 'aprovar'])->name('fornecedores.aprovar');
+    Route::post('/fornecedores/{id}/rejeitar', [FornecedorController::class, 'rejeitar'])->name('fornecedores.rejeitar');
+    Route::get('/dashboard/dados-produtos', [AdminController::class, 'dadosProdutos'])->name('dashboard.dadosProdutos');
+    Route::get('/dashboard/vendas-semana', [AdminController::class, 'vendasSemana'])->name('dashboard.vendasSemana');
+    Route::get('/admin/faturamento-semana', [AdminController::class, 'faturamentoSemana'])->name('admin.faturamentoSemana');
+    Route::get('/dashboard/produtos-mais-vendidos', [AdminController::class, 'produtosMaisVendidos'])->name('dashboard.produtosMaisVendidos');
+    Route::get('clientes', [AdminController::class,'listarClientes'])->name('admin.clientes');
+    Route::get('clientes/{id}/historico', [AdminController::class,'historicoCompras'])->name('admin.cliente.historico');
+    Route::get('/admin/produtos', [AdminController::class, 'listarProdutos'])->name('admin.produtos.listar');
+    Route::get('/admin/pedidos', [AdminController::class, 'pedidos'])->name('admin.pedidos.index');
+    Route::post('/admin/pedidos/{id}', [AdminController::class, 'atualizarPedido'])->name('admin.pedidos.update');
+    Route::patch('/admin/produtos/{id}/toggle', [AdminController::class, 'toggleProduto'])->name('admin.produtos.toggle');
+    Route::get('fornecedores', [AdminController::class, 'listarFornecedores'])->name('admin.fornecedores');
+    Route::get('fornecedores/{id}/produtos', [AdminController::class, 'historicoProdutos'])->name('admin.fornecedor.produtos');
+    Route::get('relatorios/usuarios', [RelatorioController::class, 'comprasPorUsuario'])->name('admin.relatorios.usuarios');
+    Route::get('relatorios/fornecedores', [RelatorioController::class, 'vendasPorFornecedor'])->name('admin.relatorios.fornecedores');
+    Route::get('relatorios/produtos', [RelatorioController::class, 'produtosMaisVendidos'])->name('admin.relatorios.produtos');
+
+    // Cupons - CRUD completo
+    Route::get('cupons', [\App\Http\Controllers\CupomController::class, 'index'])->name('admin.cupons.index');
+    Route::get('cupons/create', [\App\Http\Controllers\CupomController::class, 'create'])->name('admin.cupons.create');
+    Route::post('cupons', [\App\Http\Controllers\CupomController::class, 'store'])->name('admin.cupons.store');
+    Route::get('cupons/{id}/edit', [\App\Http\Controllers\CupomController::class, 'edit'])->name('admin.cupons.edit');
+    Route::put('cupons/{id}', [\App\Http\Controllers\CupomController::class, 'update'])->name('admin.cupons.update');
+    Route::delete('cupons/{id}', [\App\Http\Controllers\CupomController::class, 'destroy'])->name('admin.cupons.destroy');
+
+});
+
+/*
+|--------------------------------------------------------------------------
+| (Opcional) Rotas Protegidas - Fornecedor (middleware: fornecedor)
+|--------------------------------------------------------------------------
+*/
+Route::middleware([FornecedorMiddleware::class])->prefix('fornecedores')->name('fornecedores.')->group(function () {
+    Route::get('/dashboard', [FornecedorController::class, 'dashboard'])->name('dashboard');
+    Route::get('/perfil', [FornecedorController::class, 'perfil'])->name('perfil');
+    Route::post('/logout', [FornecedorController::class, 'logout'])->name('logout');
+
+    Route::get('/dashboard/vendas-semana', [FornecedorController::class, 'vendasSemana'])->name('dashboard.vendasSemana');
+    Route::get('/dashboard/faturamento-semana', [FornecedorController::class, 'faturamentoSemana'])->name('dashboard.faturamentoSemana');
+    Route::get('/dashboard/produtos-mais-vendidos', [FornecedorController::class, 'produtosMaisVendidos'])->name('dashboard.produtosMaisVendidos');
+    Route::get('/dashboard/estoque-baixo', [FornecedorController::class, 'estoqueBaixo'])->name('dashboard.estoqueBaixo');
+
+    Route::get('/produtos', [ProdutoFornecedorController::class, 'index'])->name('produtos.index');
+    Route::get('/produtos/listar', [ProdutoFornecedorController::class, 'listar'])->name('produtos.listar');
+
+    Route::get('/produtos/create', [ProdutoFornecedorController::class, 'create'])->name('produtos.create');
+    Route::post('/produtos/store', [ProdutoFornecedorController::class, 'store'])->name('produtos.store');
+
+    Route::get('/produtos/{id}/editar', [ProdutoFornecedorController::class, 'edit'])->name('produtos.edit');
+
+    Route::put('/produtos/{id}', [ProdutoFornecedorController::class, 'update'])->name('produtos.update');
+
+    Route::delete('/produtos/{id}', [ProdutoFornecedorController::class, 'destroy'])->name('produtos.destroy');
+
+    Route::patch('/produtos/{id}/toggle', [ProdutoFornecedorController::class, 'toggleProduto'])
+    ->name('produtos.toggle');
+
+    Route::post(
+  '/produtos/auto-import',
+  [ProdutoFornecedorController::class, 'autoImport']
+)->name('produtos.auto.import');
+
+    Route::get('/produtos/{id}/estoque', [ProdutoEstoqueController::class, 'edit'])->name('produtos.estoque.edit');
+    Route::put('/produtos/{id}/estoque', [ProdutoEstoqueController::class, 'update'])->name('produtos.estoque.update');
+
+
+// Dentro do mesmo grupo que você já tem
+Route::get('/produtos/{id}/rotulos', [ProdutoImagemRotuloController::class, 'create'])
+    ->name('produtos.rotulos.create');
+
+Route::post('/produtos/{id}/rotulos', [ProdutoImagemRotuloController::class, 'store'])
+    ->name('produtos.rotulos.store');
+
+
+
+});

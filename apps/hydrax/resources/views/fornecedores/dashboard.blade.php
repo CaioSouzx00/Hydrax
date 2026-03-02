@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" href="/imagens/hydrax/lcf.png" type="image/png" />
+  <title>Dashboard - Fornecedor</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to bottom right, #211828, #0b282a, #17110d);
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Overlay */
+    #overlay {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: 40;
+    }
+
+    #overlay.active {
+      opacity: 0.5;
+      pointer-events: auto;
+    }
+
+    /* Cards */
+    .card-glass {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(213, 137, 27, 0.3);
+      border-radius: 0.5rem;
+    }
+
+    /* Form fields */
+    .field-label {
+      color: #d5891b;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 1px;
+    }
+
+    .field-value {
+      color: #ffffff;
+      font-size: 1rem;
+      margin-top: 0.25rem;
+    }
+
+    /* Status badges */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .status-ativo {
+      background-color: rgba(34, 197, 94, 0.2);
+      color: #22c55e;
+      border: 1px solid #22c55e;
+    }
+
+    .status-inativo {
+      background-color: rgba(239, 68, 68, 0.2);
+      color: #ef4444;
+      border: 1px solid #ef4444;
+    }
+
+    /* Perfil */
+    #perfil-section {
+      display: none;
+    }
+
+    #perfil-section.show {
+      display: block;
+    }
+  </style>
+</head>
+
+<body class="text-white flex min-h-screen">
+
+  <!-- Overlay -->
+  <div id="overlay"></div>
+
+  <!-- Sidebar -->
+  <aside class="w-64 h-screen fixed z-50 bg-black/40 backdrop-blur-md shadow-2xl border-r border-[#d5891b]/30 flex flex-col justify-between">
+    <div class="h-40 border-b border-[#d5891b]/40 flex items-center justify-center">
+      <img src="/imagens/hydrax/HYDRAX - LOGO1.png" alt="Hydrax Logo" class="h-32 hover:opacity-90 transition" />
+    </div>
+    <div class="flex-1 p-4 border-b border-[#d5891b]/40 overflow-auto">
+      <nav class="flex flex-col gap-4 text-sm">
+        <a id="btn-perfil" href="#" class="block px-4 py-2 rounded-md bg-[#14ba88] hover:bg-[#2d4e50] transition shadow-md text-center">
+          <span>Visualizar seu Perfil</span>
+        </a>
+        <a class="block px-4 py-2 rounded-md bg-[#14ba88] hover:bg-[#2d4e50] transition shadow-md text-center" href="{{ route('fornecedores.produtos.index') }}">
+          Gerencia de Produtos
+        </a>
+      </nav>
+    </div>
+    <div class="h-16"></div>
+  </aside>
+
+  <!-- Main content -->
+  <div class="ml-64 flex flex-col flex-1 min-h-screen">
+    <!-- Header -->
+    <header class="bg-black/40 backdrop-blur-md border-b border-[#d5891b] fixed top-0 left-64 right-0 z-50 h-16 flex items-center justify-between px-6">
+      <h2 class="text-xl font-semibold">Dashboard<span class="text-[#d5891b]"> | Fornecedor</span></h2>
+
+      <!-- User dropdown -->
+      <div id="user-dropdown" class="relative group flex items-center space-x-3 cursor-pointer">
+        <div class="w-10 h-10 bg-[#d5891b] rounded-full flex items-center justify-center hover:bg-[#b3731a] transition-colors">
+          <img src="{{ $fornecedor->foto ? asset('storage/' . $fornecedor->foto) : asset('images/default-avatar.png') }}" alt="Foto da Empresa" class="w-10 h-10 bg-[#d5891b] border-2 border-[#d5891b] rounded-full flex items-center justify-center hover:bg-[#b3731a] transition-colors">
+
+          <svg xmlns="http" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21h18M9 8h6M9 12h6M9 16h6M4 21V5a1 1 0 011-1h3v4h8V4h3a1 1 0 011 1v16" />
+          </svg>
+
+        </div>
+
+        @php $fornecedor = Auth::guard('fornecedores')->user(); @endphp
+
+        <button type="button" class="flex items-center space-x-2 focus:outline-none text-white font-semibold hover:text-[#d5891b] transition-colors">
+          <span>{{ \Illuminate\Support\Str::limit($fornecedor->nome_empresa, 15, '...') }} ▾</span> </button>
+        <!-- Logout menu -->
+        <div id="logout-menu" class="absolute right-0 hidden mt-14 bg-[#211828]/90 border border-[#d5891b] rounded shadow-lg py-2 min-w-[140px] z-50">
+          <form method="POST" action="{{ route('fornecedores.logout') }}">
+            @csrf
+            <button type="submit" class="flex items-center gap-2 w-full text-left px-4 py-2 text-sm hover:bg-[#d5891b]/30 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7" />
+              </svg>
+              <span>Sair</span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main -->
+    <main class="pt-20 pb-10 px-8 bg-transparent flex-1 overflow-auto">
+      <!-- Success message -->
+      @if(session('success'))
+      <div id="success-message" class="bg-green-600 text-white p-2 rounded mb-4 w-full max-w-md transition-opacity duration-500">
+        {{ session('success') }}
+      </div>
+      @endif
+
+      <div id="dashboard-content" class="space-y-6">
+        <h1 class="text-3xl font-bold mb-4">Bem-vindo, {{ $fornecedor->nome_empresa }}!</h1>
+        <p class="text-gray-300">Aqui está um resumo rápido das suas informações no sistema:</p>
+
+        <!-- Resumo rápido -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="card-glass p-4 text-center">
+            <h3 class="text-lg font-semibold text-[#d5891b] mb-2">Status da Conta</h3>
+            <span class="status-badge {{ $fornecedor->status === 'ATIVO' ? 'status-ativo' : 'status-inativo' }}">
+              {{ $fornecedor->status }}
+            </span>
+          </div>
+
+          <div class="card-glass p-4 text-center">
+            <h3 class="text-lg font-semibold text-[#d5891b] mb-2">Última Atualização</h3>
+            <p class="field-value">{{ $fornecedor->updated_at?->format('d/m/Y H:i:s') ?? 'Nunca atualizado' }}</p>
+          </div>
+
+          <div class="card-glass p-4 text-center">
+            <h3 class="text-lg font-semibold text-[#d5891b] mb-2">Ações Rápidas</h3>
+            <div class="flex flex-col gap-2">
+              <a href="{{ route('fornecedores.produtos.index') }}" class="px-2 py-1 bg-[#14ba88] rounded hover:bg-[#2d4e50] transition">Meus Produtos</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-glass p-6">
+          <div class="flex flex-col lg:flex-row gap-6">
+            <div class="lg:w-1/4 flex flex-col gap-3">
+              <h3 class="text-lg font-semibold text-[#d5891b]">Gráficos</h3>
+
+              <button id="btnVendasSemanaFornecedor" data-route="{{ route('fornecedores.dashboard.vendasSemana') }}" class="px-4 py-2 bg-[#14ba88] rounded hover:bg-[#2d4e50] transition text-sm">
+                Vendas na Semana
+              </button>
+              <button id="btnFaturamentoSemanaFornecedor" data-route="{{ route('fornecedores.dashboard.faturamentoSemana') }}" class="px-4 py-2 bg-[#14ba88] rounded hover:bg-[#2d4e50] transition text-sm">
+                Faturamento na Semana
+              </button>
+              <button id="btnProdutosMaisVendidosFornecedor" data-route="{{ route('fornecedores.dashboard.produtosMaisVendidos') }}" class="px-4 py-2 bg-[#14ba88] rounded hover:bg-[#2d4e50] transition text-sm">
+                Top Produtos
+              </button>
+              <button id="btnEstoqueBaixoFornecedor" data-route="{{ route('fornecedores.dashboard.estoqueBaixo') }}" class="px-4 py-2 bg-[#14ba88] rounded hover:bg-[#2d4e50] transition text-sm">
+                Estoque Baixo
+              </button>
+            </div>
+
+            <div class="lg:w-3/4 bg-black/20 rounded-xl border border-white/10 shadow-inner p-4">
+              <canvas id="fornecedorChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Informação complementar -->
+        <div class="card-glass p-6">
+          <h2 class="text-xl font-bold text-[#d5891b] mb-2">Dicas e Atalhos</h2>
+          <ul class="list-disc list-inside text-gray-300">
+            <li>Clique em "Gerenciar Produtos" para atualizar ou adicionar novos produtos.</li>
+            <li>Verifique seu perfil regularmente para manter seus dados atualizados.</li>
+            <li>Use a seção de segurança para atualizar sua senha sempre que necessário.</li>
+          </ul>
+        </div>
+      </div>
+
+
+      <!-- Perfil Section -->
+      <div id="perfil-section" class="max-w-4xl mx-auto">
+        <!-- Perfil Card -->
+        <div class="card-glass p-6 mb-6">
+          <div class="flex items-center justify-between mb-4">
+            <h1 class="text-2xl font-bold text-white flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-2 text-[#d5891b]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 15c2.485 0 4.779.755 6.879 2.041M15 10a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              Meu Perfil
+            </h1>
+            <button id="btn-fechar-perfil" class="text-gray-400 hover:text-white transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <div class="flex items-center space-x-6">
+            <img src="{{ $fornecedor->foto ? asset('storage/' . $fornecedor->foto) : asset('images/default-avatar.png') }}" alt="Foto da Empresa" class="w-24 h-24 rounded-full border-4 border-[#d5891b] shadow-lg">
+            <div class="flex-1">
+              <h2 class="text-xl font-bold text-white mb-2">{{ $fornecedor->nome_empresa }}</h2>
+              <p class="text-gray-300 mb-2">CNPJ: {{ $fornecedor->cnpj }}</p>
+              <span class="status-badge {{ $fornecedor->status === 'ATIVO' ? 'status-ativo' : 'status-inativo' }}">
+                {{ $fornecedor->status }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Grid de informações -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Empresa info -->
+          <div class="card-glass p-6">
+            <h3 class="text-lg font-semibold text-[#d5891b] mb-4 flex items-center">Informações da Empresa</h3>
+            <div class="space-y-4">
+              <div><label class="field-label">Nome da Empresa</label>
+                <p class="field-value">{{ $fornecedor->nome_empresa }}</p>
+              </div>
+              <div><label class="field-label">CNPJ</label>
+                <p class="field-value">{{ $fornecedor->cnpj }}</p>
+              </div>
+              <div><label class="field-label">Status da Conta</label>
+                <span class="status-badge {{ $fornecedor->status === 'ATIVO' ? 'status-ativo' : 'status-inativo' }}">{{ $fornecedor->status }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Contato -->
+          <div class="card-glass p-6">
+            <h3 class="text-lg font-semibold text-[#d5891b] mb-4 flex items-center">Informações de Contato</h3>
+            <div class="space-y-4">
+              <div><label class="field-label">E-mail</label>
+                <p class="field-value">{{ $fornecedor->email }}</p>
+              </div>
+              <div><label class="field-label">Telefone</label>
+                <p class="field-value">{{ $fornecedor->telefone }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sistema info -->
+          <div class="card-glass p-6">
+            <h3 class="text-lg font-semibold text-[#d5891b] mb-4 flex items-center">Informações do Sistema</h3>
+            <div class="space-y-4">
+              <div><label class="field-label">Data de Cadastro</label>
+                <p class="field-value">{{ $fornecedor->created_at?->format('d/m/Y H:i:s') ?? 'Não informado' }}</p>
+              </div>
+              <div><label class="field-label">Última Atualização</label>
+                <p class="field-value">{{ $fornecedor->updated_at?->format('d/m/Y H:i:s') ?? 'Nunca atualizado' }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Foto da empresa -->
+          <div class="card-glass p-6 text-center">
+            <h3 class="text-lg font-semibold text-[#d5891b] mb-4">Foto da Empresa</h3>
+            <img src="{{ $fornecedor->foto ? asset('storage/' . $fornecedor->foto) : asset('images/default-avatar.png') }}" alt="Foto da Empresa" class="w-32 h-32 mx-auto rounded-lg border-2 border-[#d5891b] shadow-lg">
+            <p class="field-value mt-2 text-sm">{{ $fornecedor->foto ? 'Foto da Empresa' : 'Nenhuma foto cadastrada' }}</p>
+          </div>
+
+          <!-- Segurança -->
+          <div class="card-glass p-6 mt-6 lg:col-span-2">
+            <h3 class="text-lg font-semibold text-[#d5891b] mb-4 flex items-center">Segurança da Conta</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="field-label">Senha</label>
+                <p class="field-value">••••••••••••</p>
+                <p class="text-xs text-gray-400 mt-1">Última alteração: {{ $fornecedor->updated_at?->format('d/m/Y') ?? 'Não informado' }}</p>
+              </div>
+              <div class="flex items-end">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    const overlay = document.getElementById('overlay');
+    const userDropdown = document.getElementById('user-dropdown');
+    const logoutMenu = document.getElementById('logout-menu');
+    const btnPerfil = document.getElementById('btn-perfil');
+    const btnFecharPerfil = document.getElementById('btn-fechar-perfil');
+    const perfilSection = document.getElementById('perfil-section');
+    const dashboardContent = document.getElementById('dashboard-content');
+
+    let userTimeout;
+
+    // Overlay functions
+    const showOverlay = () => overlay.classList.add('active');
+    const hideOverlay = () => overlay.classList.remove('active');
+
+    // Dropdown hover
+    userDropdown.addEventListener('mouseenter', () => {
+      clearTimeout(userTimeout);
+      logoutMenu.classList.remove('hidden');
+      showOverlay();
+    });
+    userDropdown.addEventListener('mouseleave', () => {
+      userTimeout = setTimeout(() => {
+        logoutMenu.classList.add('hidden');
+        hideOverlay();
+      }, 150);
+    });
+
+    // Fechar dropdown clicando fora
+    overlay.addEventListener('click', () => {
+      logoutMenu.classList.add('hidden');
+      hideOverlay();
+    });
+
+    // Mostrar perfil
+    btnPerfil.addEventListener('click', () => {
+      dashboardContent.style.display = 'none';
+      perfilSection.classList.add('show');
+      logoutMenu.classList.add('hidden');
+      hideOverlay();
+    });
+
+    // Fechar perfil
+    btnFecharPerfil.addEventListener('click', () => {
+      perfilSection.classList.remove('show');
+      dashboardContent.style.display = 'block';
+    });
+
+    // Mensagem de sucesso
+    document.addEventListener("DOMContentLoaded", () => {
+      const successMessage = document.getElementById("success-message");
+      if (successMessage) {
+        setTimeout(() => {
+          successMessage.classList.add("opacity-0");
+          setTimeout(() => successMessage.remove(), 500);
+        }, 3000);
+      }
+    });
+  </script>
+
+  <script>
+    const fornecedorCtx = document.getElementById('fornecedorChart')?.getContext('2d');
+    let fornecedorChart;
+
+    function montarGraficoFornecedor(url, type = 'bar', label = 'Totais') {
+      if (!fornecedorCtx) return;
+
+      fetch(url)
+        .then(res => res.json())
+        .then(data => {
+          if (fornecedorChart) fornecedorChart.destroy();
+
+          fornecedorChart = new Chart(fornecedorCtx, {
+            type,
+            data: {
+              labels: data.labels,
+              datasets: [{
+                label,
+                data: data.totais,
+                backgroundColor: 'rgba(20,186,136,0.2)',
+                borderColor: 'rgba(20,186,136,1)',
+                borderWidth: 2,
+                tension: 0.4,
+                fill: true,
+              }]
+            },
+            options: {
+              responsive: true,
+              scales: {
+                y: { beginAtZero: true, ticks: { color: '#ddd' }, grid: { color: '#444' } },
+                x: { ticks: { color: '#ddd' }, grid: { color: '#444' } }
+              },
+              plugins: { legend: { labels: { color: '#ddd' } } }
+            }
+          });
+        })
+        .catch(err => console.error('Erro ao carregar gráfico:', err));
+    }
+
+    document.getElementById('btnVendasSemanaFornecedor')?.addEventListener('click', (e) => {
+      montarGraficoFornecedor(e.currentTarget.dataset.route, 'bar', 'Produtos vendidos');
+    });
+
+    document.getElementById('btnFaturamentoSemanaFornecedor')?.addEventListener('click', (e) => {
+      montarGraficoFornecedor(e.currentTarget.dataset.route, 'bar', 'Faturamento (R$)');
+    });
+
+    document.getElementById('btnProdutosMaisVendidosFornecedor')?.addEventListener('click', (e) => {
+      montarGraficoFornecedor(e.currentTarget.dataset.route, 'bar', 'Quantidade');
+    });
+
+    document.getElementById('btnEstoqueBaixoFornecedor')?.addEventListener('click', (e) => {
+      montarGraficoFornecedor(e.currentTarget.dataset.route, 'bar', 'Estoque');
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const btn = document.getElementById('btnVendasSemanaFornecedor');
+      if (btn) montarGraficoFornecedor(btn.dataset.route, 'bar', 'Produtos vendidos');
+    });
+  </script>
+
+</body>
+
+</html>
