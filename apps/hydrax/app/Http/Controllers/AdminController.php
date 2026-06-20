@@ -10,13 +10,19 @@ use App\Models\Administrador;
 use App\Models\ProdutoFornecedor;
 use App\Models\Usuario;
 use App\Models\Pedido;
-use App\Mail\PedidoAtualizadoMail;
-use Illuminate\Support\Facades\Mail;
+use App\Services\Novu\NovuService;
 use OpenApi\Attributes as OA;
 
 #[OA\Tag(name: "Admin", description: "Operações administrativas do sistema")]
 class AdminController extends Controller
 {
+    protected NovuService $novuService;
+
+    public function __construct(NovuService $novuService)
+    {
+        $this->novuService = $novuService;
+    }
+
     // Mostrar formulário de cadastro do administrador
     public function create()
     {
@@ -369,7 +375,13 @@ public function atualizarPedido(Request $request, $pedidoId)
     $pedido->save();
 
     if (!empty($pedido->usuario?->email)) {
-        Mail::to($pedido->usuario->email)->send(new PedidoAtualizadoMail($pedido));
+        $this->novuService->sendPedidoAtualizado(
+            subscriberId: (string)$pedido->usuario->id_usuarios,
+            email: $pedido->usuario->email,
+            userName: $pedido->usuario->nome_completo ?? $pedido->usuario->nome ?? 'Cliente',
+            pedidoId: $pedido->id,
+            status: $pedido->status
+        );
     }
 
     return redirect()->back()->with('success', 'Pedido atualizado com sucesso!');

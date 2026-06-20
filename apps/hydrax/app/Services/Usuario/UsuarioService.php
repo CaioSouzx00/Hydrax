@@ -5,8 +5,7 @@ namespace App\Services\Usuario;
 use App\Models\Usuario;
 use App\Models\PendingEmailChange;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\EmailChangeConfirmation;
+use App\Services\Novu\NovuService;
 use Illuminate\Support\Str;
 
 /**
@@ -17,6 +16,13 @@ use Illuminate\Support\Str;
  */
 class UsuarioService
 {
+    protected NovuService $novuService;
+
+    public function __construct(NovuService $novuService)
+    {
+        $this->novuService = $novuService;
+    }
+
     /**
      * Cria um novo usuário no sistema.
      *
@@ -67,8 +73,15 @@ class UsuarioService
             'token' => $token,
         ]);
 
-        // Enviar email para o e-mail atual (não para o novo)
-        Mail::to($usuario->email)->send(new EmailChangeConfirmation($usuario, $token));
+        // Enviar email para o e-mail atual (não para o novo) usando Novu
+        $link = url("/usuarios/email/confirmar/{$token}");
+        $this->novuService->sendEmailChangeConfirmation(
+            subscriberId: (string)$usuario->id_usuarios,
+            email: $usuario->email,
+            userName: $usuario->nome_completo ?? $usuario->nome,
+            token: $token,
+            confirmationLink: $link
+        );
     }
 
     /**

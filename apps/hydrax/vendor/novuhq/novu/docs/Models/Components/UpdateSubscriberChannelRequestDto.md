@@ -1,0 +1,10 @@
+# UpdateSubscriberChannelRequestDto
+
+
+## Fields
+
+| Field                                                                                  | Type                                                                                   | Required                                                                               | Description                                                                            |
+| -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `providerId`                                                                           | [Components\ChatOrPushProviderEnum](../../Models/Components/ChatOrPushProviderEnum.md) | :heavy_check_mark:                                                                     | The provider identifier for the credentials                                            |
+| `integrationIdentifier`                                                                | *?string*                                                                              | :heavy_minus_sign:                                                                     | The integration identifier                                                             |
+| `credentials`                                                                          | [Components\ChannelCredentials](../../Models/Components/ChannelCredentials.md)         | :heavy_check_mark:                                                                     | Credentials payload for the specified provider                                         |

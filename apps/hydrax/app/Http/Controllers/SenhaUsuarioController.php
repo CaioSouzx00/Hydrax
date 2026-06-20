@@ -6,12 +6,18 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\CodigoVerificacaoMail;
+use App\Services\Novu\NovuService;
 
 
 class SenhaUsuarioController extends Controller
 {
+    protected NovuService $novuService;
+
+    public function __construct(NovuService $novuService)
+    {
+        $this->novuService = $novuService;
+    }
+
     public function verificarForm()
     {
         return view('usuarios.partials.verificar_senha');
@@ -80,7 +86,11 @@ public function mostrarFormularioVerificarCodigo()
     if ($usuario) {
         $codigo = rand(100000, 999999);
         Cache::put('codigo_verificacao_' . $usuario->id, $codigo, now()->addMinutes(10));
-        Mail::to($usuario->email)->send(new CodigoVerificacaoMail($codigo));
+        $this->novuService->sendCodigoVerificacao(
+            subscriberId: (string)$usuario->id_usuarios,
+            email: $usuario->email,
+            codigo: (string)$codigo
+        );
     }
 
     return view('usuarios.partials.verificar-codigo');

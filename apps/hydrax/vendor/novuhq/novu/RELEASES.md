@@ -1,0 +1,171 @@
+
+
+## 2025-02-04 12:19:39
+### Changes
+Based on:
+- OpenAPI Doc  
+- Speakeasy CLI 1.483.0 (2.502.0) https://github.com/speakeasy-api/speakeasy
+### Generated
+- [php v0.0.9] .
+### Releases
+- [Composer v0.0.9] https://packagist.org/packages/novuhq/novu#v0.0.9 - .
+
+## 2025-02-06 00:12:36
+### Changes
+Based on:
+- OpenAPI Doc  
+- Speakeasy CLI 1.484.1 (2.503.2) https://github.com/speakeasy-api/speakeasy
+### Generated
+- [php v0.0.10] .
+### Releases
+- [Composer v0.0.10] https://packagist.org/packages/novuhq/novu#v0.0.10 - .
+
+## 2025-03-20 00:13:12
+### Changes
+Based on:
+- OpenAPI Doc  
+- Speakeasy CLI 1.521.0 (2.558.2) https://github.com/speakeasy-api/speakeasy
+### Generated
+- [php v0.1.0] .
+### Releases
+- [Composer v0.1.0] https://packagist.org/packages/novuhq/novu#v0.1.0 - .
+
+## 2025-05-08 00:14:29
+### Changes
+Based on:
+- OpenAPI Doc  
+- Speakeasy CLI 1.542.3 (2.597.9) https://github.com/speakeasy-api/speakeasy
+### Generated
+- [php v0.2.0] .
+### Releases
+- [Composer v0.2.0] https://packagist.org/packages/novuhq/novu#v0.2.0 - .
+
+## 2025-05-13 12:32:17
+### Changes
+Based on:
+- OpenAPI Doc  
+- Speakeasy CLI 1.544.0 (2.599.0) https://github.com/speakeasy-api/speakeasy
+### Generated
+- [php v1.0.0] .
+### Releases
+- [Composer v1.0.0] https://packagist.org/packages/novuhq/novu#v1.0.0 - .
+
+## 2025-05-22 00:14:36
+### Changes
+Based on:
+- OpenAPI Doc  
+- Speakeasy CLI 1.548.4 (2.605.6) https://github.com/speakeasy-api/speakeasy
+### Generated
+- [php v1.1.0] .
+### Releases
+- [Composer v1.1.0] https://packagist.org/packages/novuhq/novu#v1.1.0 - .
+
+## 2025-06-17 16:18:11
+### Changes
+Based on:
+- OpenAPI Doc  
+- Speakeasy CLI 1.563.4 (2.630.6) https://github.com/speakeasy-api/speakeasy
+### Generated
+- [php v1.2.0] .
+### Releases
+- [Composer v1.2.0] https://packagist.org/packages/novuhq/novu#v1.2.0 - .
+
+## 2025-07-01 16:37:34
+### Changes
+Based on:
+- OpenAPI Doc  
+- Speakeasy CLI 1.573.0 (2.644.1) https://github.com/speakeasy-api/speakeasy
+### Generated
+- [php v1.3.0] .
+### Releases
+- [Composer v1.3.0] https://packagist.org/packages/novuhq/novu#v1.3.0 - .
+
+## 2025-11-19 09:49:58
+### Changes
+Based on:
+- OpenAPI Doc  
+- Speakeasy CLI 1.658.2 (2.755.9) https://github.com/speakeasy-api/speakeasy
+### Generated
+- [php v3.11.0] .
+### Releases
+- [Composer v3.11.0] https://packagist.org/packages/novuhq/novu#v3.11.0 - .
+
+## 2025-12-22 17:34:34
+### Changes
+Based on:
+- OpenAPI Doc  
+- Speakeasy CLI 1.680.3 (2.788.5) https://github.com/speakeasy-api/speakeasy
+### Generated
+- [php v3.11.1] .
+### Releases
+- [Composer v3.11.1] https://packagist.org/packages/novuhq/novu#v3.11.1 - .
+
+## 2026-01-08 17:24:07
+### Changes
+Based on:
+- OpenAPI Doc  
+- Speakeasy CLI 1.683.0 (2.792.0) https://github.com/speakeasy-api/speakeasy
+### Generated
+- [php v3.11.2] .
+### Releases
+- [Composer v3.11.2] https://packagist.org/packages/novuhq/novu#v3.11.2 - .
+
+## 2026-01-08 20:59:42
+### Changes
+Based on:
+- OpenAPI Doc  
+- Speakeasy CLI 1.683.0 (2.792.0) https://github.com/speakeasy-api/speakeasy
+### Generated
+- [php v3.12.0] .
+### Releases
+- [Composer v3.12.0] https://packagist.org/packages/novuhq/novu#v3.12.0 - .
+
+## 2026-01-28 18:19:47
+### Changes
+Based on:
+- OpenAPI Doc  
+- Speakeasy CLI 1.700.2 (2.801.2) https://github.com/speakeasy-api/speakeasy
+### Generated
+- [php v3.13.0] .
+### Releases
+- [Composer v3.13.0] https://packagist.org/packages/novuhq/novu#v3.13.0 - .
+
+## 2026-02-24 10:00:39
+### Changes
+Based on:
+- OpenAPI Doc  
+- Speakeasy CLI 1.725.0 (2.836.5) https://github.com/speakeasy-api/speakeasy
+### Generated
+- [php v3.14.0] .
+### Releases
+- [Composer v3.14.0] https://packagist.org/packages/novuhq/novu#v3.14.0 - .
+
+## 2026-04-13 15:12:05
+### Changes
+Based on:
+- OpenAPI Doc  
+- Speakeasy CLI 1.761.3 (2.879.11) https://github.com/speakeasy-api/speakeasy
+### Generated
+- [php v3.15.0] .
+### Releases
+- [Composer v3.15.0] https://packagist.org/packages/novuhq/novu#v3.15.0 - .
+
+## 2026-05-13 16:01:49
+### Changes
+Based on:
+- OpenAPI Doc  
+- Speakeasy CLI 1.763.0 (2.884.0) https://github.com/speakeasy-api/speakeasy
+### Generated
+- [php v3.16.0] .
+### Releases
+- [Composer v3.16.0] https://packagist.org/packages/novuhq/novu#v3.16.0 - .
+
+## 2026-06-01 16:08:40
+### Changes
+Based on:
+- OpenAPI Doc  
+- Speakeasy CLI 1.769.1 (2.892.1) https://github.com/speakeasy-api/speakeasy
+### Generated
+- [php v3.17.0] .
+### Releases
+- [Composer v3.17.0] https://packagist.org/packages/novuhq/novu#v3.17.0 - .

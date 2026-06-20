@@ -1,0 +1,10 @@
+# TopicPayloadDto
+
+
+## Fields
+
+| Field                                                                                        | Type                                                                                         | Required                                                                                     | Description                                                                                  |
+| -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `topicKey`                                                                                   | *string*                                                                                     | :heavy_check_mark:                                                                           | N/A                                                                                          |
+| `type`                                                                                       | [Components\TriggerRecipientsTypeEnum](../../Models/Components/TriggerRecipientsTypeEnum.md) | :heavy_check_mark:                                                                           | N/A                                                                                          |
+| `exclude`                                                                                    | array<*string*>                                                                              | :heavy_minus_sign:                                                                           | Optional array of subscriber IDs to exclude from the topic trigger                           |

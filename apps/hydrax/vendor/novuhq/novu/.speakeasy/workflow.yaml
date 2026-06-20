@@ -1,0 +1,24 @@
+workflowVersion: 1.0.0
+speakeasyVersion: latest
+sources:
+    novu-OAS:
+        inputs:
+            - location: https://api.novu.co/openapi.sdk.yaml
+        overlays:
+            - location: .speakeasy/speakeasy-modifications-overlay.yaml
+        registry:
+            location: registry.speakeasyapi.dev/novu/novu/novu-oas
+targets:
+    novu:
+        target: php
+        source: novu-OAS
+        publish:
+            packagist:
+                username: novuhq
+                token: $packagist_token
+        codeSamples:
+            registry:
+                location: registry.speakeasyapi.dev/novu/novu/novu-oas-php-code-samples
+            labelOverride:
+                fixedValue: PHP
+            blocking: false

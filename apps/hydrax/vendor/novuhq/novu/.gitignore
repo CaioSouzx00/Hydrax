@@ -1,0 +1,7 @@
+.env
+.env.local
+**/.speakeasy/temp/
+**/.speakeasy/logs/
+composer.lock
+vendor
+.DS_Store

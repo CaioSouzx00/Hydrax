@@ -1,0 +1,10 @@
+# DelayRegularMetadata
+
+
+## Fields
+
+| Field                                                                                       | Type                                                                                        | Required                                                                                    | Description                                                                                 |
+| ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `amount`                                                                                    | *?float*                                                                                    | :heavy_minus_sign:                                                                          | N/A                                                                                         |
+| `unit`                                                                                      | [?Components\DelayRegularMetadataUnit](../../Models/Components/DelayRegularMetadataUnit.md) | :heavy_minus_sign:                                                                          | N/A                                                                                         |
+| `type`                                                                                      | [Components\DelayRegularMetadataType](../../Models/Components/DelayRegularMetadataType.md)  | :heavy_check_mark:                                                                          | N/A                                                                                         |

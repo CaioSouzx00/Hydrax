@@ -3,13 +3,12 @@
 namespace App\Jobs;
 
 use App\Models\Carrinho;
-use App\Mail\CarrinhoAbandonadoMail;
+use App\Services\Novu\NovuService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Mail;
 
 class EnviarCarrinhoAbandonadoJob implements ShouldQueue
 {
@@ -34,7 +33,21 @@ class EnviarCarrinhoAbandonadoJob implements ShouldQueue
 
         $usuario = $carrinho->usuario;
 
-        // Dispara o e-mail
-        Mail::to($usuario->email)->send(new CarrinhoAbandonadoMail($carrinho));
+        // Dispara o e-mail usando Novu
+        $novuService = app(NovuService::class);
+        $cartItems = $carrinho->itens->map(function ($item) {
+            return [
+                'produto_nome' => $item->produto->nome,
+                'quantidade' => $item->quantidade,
+                'preco' => $item->produto->preco,
+            ];
+        })->toArray();
+
+        $novuService->sendCarrinhoAbandonado(
+            subscriberId: (string)$usuario->id_usuarios,
+            email: $usuario->email,
+            userName: $usuario->nome_completo ?? $usuario->nome,
+            cartItems: $cartItems
+        );
     }
 }

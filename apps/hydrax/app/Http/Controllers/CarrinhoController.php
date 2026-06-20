@@ -5,17 +5,16 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Carrinho\AdicionarProdutoRequest;
 use App\Http\Requests\Carrinho\ProcessarFinalizacaoRequest;
 use App\Services\Carrinho\CarrinhoService;
+use App\Services\Novu\NovuService;
 use App\Models\Carrinho;
 use App\Models\ProdutoFornecedor;
 use App\Models\EnderecoUsuario;
 use App\Models\Cupom;
 use App\Models\Pedido;
 use App\Models\ProdutoEstoque;
-use App\Mail\PedidoAtualizadoMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Mail;
 
 /**
  * Controller responsável pelas operações relacionadas ao carrinho de compras.
@@ -35,13 +34,22 @@ class CarrinhoController extends Controller
     protected CarrinhoService $carrinhoService;
 
     /**
+     * Service de Novu injetado via construtor.
+     *
+     * @var NovuService
+     */
+    protected NovuService $novuService;
+
+    /**
      * Construtor com injeção de dependência do Service.
      *
      * @param CarrinhoService $carrinhoService
+     * @param NovuService $novuService
      */
-    public function __construct(CarrinhoService $carrinhoService)
+    public function __construct(CarrinhoService $carrinhoService, NovuService $novuService)
     {
         $this->carrinhoService = $carrinhoService;
+        $this->novuService = $novuService;
     }
 
     /**
@@ -294,7 +302,13 @@ class CarrinhoController extends Controller
         });
 
         if (!empty($pedido->usuario?->email)) {
-            Mail::to($pedido->usuario->email)->send(new PedidoAtualizadoMail($pedido));
+            $this->novuService->sendPedidoAtualizado(
+                subscriberId: (string)$pedido->usuario->id_usuarios,
+                email: $pedido->usuario->email,
+                userName: $pedido->usuario->nome_completo ?? $pedido->usuario->nome ?? 'Cliente',
+                pedidoId: $pedido->id,
+                status: $pedido->status
+            );
         }
 
         return redirect()->route('pedidos.detalhe', $pedido->id)->with('success', 'Pedido cancelado com sucesso.');

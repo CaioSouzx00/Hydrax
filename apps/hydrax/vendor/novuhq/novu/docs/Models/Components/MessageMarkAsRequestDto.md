@@ -1,0 +1,9 @@
+# MessageMarkAsRequestDto
+
+
+## Fields
+
+| Field                                                                                                | Type                                                                                                 | Required                                                                                             | Description                                                                                          |
+| ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `messageId`                                                                                          | [string\|array](../../Models/Components/MessageId.md)                                                | :heavy_check_mark:                                                                                   | N/A                                                                                                  |
+| `markAs`                                                                                             | [Components\MessageMarkAsRequestDtoMarkAs](../../Models/Components/MessageMarkAsRequestDtoMarkAs.md) | :heavy_check_mark:                                                                                   | N/A                                                                                                  |

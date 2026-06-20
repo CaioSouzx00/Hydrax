@@ -1,0 +1,60 @@
+configVersion: 2.0.0
+generation:
+  sdkClassName: Novu
+  maintainOpenAPIOrder: true
+  usageSnippets:
+    optionalPropertyRendering: withExample
+    sdkInitStyle: constructor
+  useClassNamesForArrayFields: true
+  fixes:
+    nameResolutionDec2023: true
+    nameResolutionFeb2025: false
+    parameterOrderingFeb2024: true
+    requestResponseComponentNamesFeb2024: true
+    securityFeb2025: false
+    sharedErrorComponentsApr2025: false
+    sharedNestedComponentsJan2026: false
+    nameOverrideFeb2026: false
+  auth:
+    oAuth2ClientCredentialsEnabled: true
+    oAuth2PasswordEnabled: true
+    hoistGlobalSecurity: true
+  schemas:
+    allOfMergeStrategy: shallowMerge
+  requestBodyFieldName: ""
+  versioningStrategy: automatic
+  persistentEdits: {}
+  tests:
+    generateTests: true
+    generateNewTests: false
+    skipResponseBodyAssertions: false
+php:
+  version: 3.17.0
+  additionalDependencies:
+    autoload: {}
+    autoload-dev: {}
+    require: {}
+    require-dev: {}
+  baseErrorName: NovuError
+  clientServerStatusCodesAsErrors: true
+  defaultErrorName: APIException
+  flattenGlobalSecurity: true
+  imports:
+    option: openapi
+    paths:
+      callbacks: Models/Callbacks
+      errors: Models/Errors
+      operations: Models/Operations
+      shared: Models/Components
+      webhooks: Models/Webhooks
+  inferUnionDiscriminators: false
+  inputModelSuffix: input
+  laravelServiceProvider:
+    enabled: false
+    svcName: openapi
+  maxMethodParams: 4
+  methodArguments: infer-optional-args
+  multipartArrayFormat: legacy
+  namespace: novu
+  outputModelSuffix: output
+  packageName: novuhq/novu

@@ -12,11 +12,9 @@ use App\Models\Pedido;
 use App\Models\PedidoItem;
 use App\Models\VendaLancamento;
 use App\Jobs\EnviarCarrinhoAbandonadoJob;
+use App\Services\Novu\NovuService;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
-use App\Mail\ChavePixMail;
-use App\Mail\PedidoAtualizadoMail;
 
 /**
  * Service responsável pela lógica de negócio relacionada ao carrinho de compras.
@@ -26,6 +24,13 @@ use App\Mail\PedidoAtualizadoMail;
  */
 class CarrinhoService
 {
+    protected NovuService $novuService;
+
+    public function __construct(NovuService $novuService)
+    {
+        $this->novuService = $novuService;
+    }
+
     /**
      * Adiciona um produto ao carrinho do usuário.
      *
@@ -203,11 +208,24 @@ class CarrinhoService
             ];
         });
 
-        Mail::to($emailUsuario)->send(new ChavePixMail($resultado['chavePix'], $resultado['total']));
+        // Enviar email com chave PIX usando Novu
+        $this->novuService->sendChavePix(
+            subscriberId: (string)$resultado['pedido']->usuario_id,
+            email: $emailUsuario,
+            userName: $resultado['pedido']->usuario?->nome_completo ?? $resultado['pedido']->usuario?->nome ?? 'Cliente',
+            chavePix: $resultado['chavePix'],
+            total: $resultado['total']
+        );
 
         $pedidoEmail = $resultado['pedido']->loadMissing(['usuario', 'itens.produto']);
         if (!empty($pedidoEmail->usuario?->email)) {
-            Mail::to($pedidoEmail->usuario->email)->send(new PedidoAtualizadoMail($pedidoEmail));
+            $this->novuService->sendPedidoAtualizado(
+                subscriberId: (string)$pedidoEmail->usuario->id_usuarios,
+                email: $pedidoEmail->usuario->email,
+                userName: $pedidoEmail->usuario->nome_completo ?? $pedidoEmail->usuario->nome ?? 'Cliente',
+                pedidoId: $pedidoEmail->id,
+                status: $pedidoEmail->status
+            );
         }
 
         return [

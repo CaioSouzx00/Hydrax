@@ -5,13 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Fornecedor\StoreFornecedorRequest;
 use App\Models\FornecedorPendente;
 use App\Models\Fornecedor;
+use App\Services\Novu\NovuService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
-use App\Mail\FornecedorAprovadoMail;
-use App\Mail\FornecedorRejeitadoMail;
 use App\Models\ProdutoFornecedor;
 use App\Models\Avaliacao;
 use Illuminate\Support\Facades\DB;
@@ -20,6 +18,13 @@ use OpenApi\Attributes as OA;
 #[OA\Tag(name: "Fornecedores", description: "Operações relacionadas aos fornecedores (parceiros)")]
 class FornecedorController extends Controller
 {
+    protected NovuService $novuService;
+
+    public function __construct(NovuService $novuService)
+    {
+        $this->novuService = $novuService;
+    }
+
     /**
      * Exibe o formulário de login.
      *
@@ -140,7 +145,11 @@ class FornecedorController extends Controller
             'foto' => $pendente->foto,
         ]);
 
-        Mail::to($pendente->email)->send(new FornecedorAprovadoMail($pendente));
+        $this->novuService->sendFornecedorAprovado(
+            subscriberId: 'fornecedor_' . $pendente->id,
+            email: $pendente->email,
+            fornecedorName: $pendente->nome_empresa
+        );
 
         $pendente->delete();
 
@@ -151,7 +160,11 @@ class FornecedorController extends Controller
     {
         $pendente = FornecedorPendente::findOrFail($id);
 
-        Mail::to($pendente->email)->send(new FornecedorRejeitadoMail($pendente));
+        $this->novuService->sendFornecedorRejeitado(
+            subscriberId: 'fornecedor_' . $pendente->id,
+            email: $pendente->email,
+            fornecedorName: $pendente->nome_empresa
+        );
 
         if ($pendente->foto) {
             Storage::disk('public')->delete($pendente->foto);
