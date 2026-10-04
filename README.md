@@ -59,30 +59,85 @@ Hydrax operates as a monolithic application utilizing the MVC (Model-View-Contro
 
 ```mermaid
 graph TD
-    Client[Web Browser] --> Nginx[Nginx Web Server]
-    Nginx --> App[PHP-FPM / Laravel 12]
+    classDef frontend fill:#38B2AC,stroke:#fff,stroke-width:2px,color:#fff;
+    classDef backend fill:#F9322C,stroke:#fff,stroke-width:2px,color:#fff;
+    classDef db fill:#4479A1,stroke:#fff,stroke-width:2px,color:#fff;
+    classDef external fill:#2496ED,stroke:#fff,stroke-width:2px,color:#fff;
+
+    subgraph External Users
+        Client("🌐 Web Browser"):::frontend
+    end
+
+    subgraph Docker Environment
+        Nginx("⚙️ Nginx Web Server"):::backend
+        App("🐘 PHP-FPM / Laravel 12"):::backend
+        
+        MySQL[("🐬 MySQL 8.0")]:::db
+        Redis[("⚡ Redis 7 (Cache)")]:::db
+    end
     
-    App --> MySQL[(MySQL 8.0)]
-    App --> Redis[(Redis)]
+    subgraph External Integrations
+        Novu("✉️ Novu API"):::external
+        Google("🔑 Google OAuth API"):::external
+    end
+
+    Client -->|HTTP / HTTPS| Nginx
+    Nginx -->|FastCGI| App
     
-    App --> Novu[Novu API]
-    Novu -.-> Email[Transactional Emails]
+    App -->|Read / Write| MySQL
+    App -.->|Cache (Optional)| Redis
     
-    App --> Google[Google OAuth API]
+    App -->|Trigger Workflows| Novu
+    App -->|Authenticate| Google
 ```
 
 ### Database Architecture
 
 ```mermaid
 erDiagram
-    USUARIO ||--o{ ENDERECO_USUARIO : possui
-    USUARIO ||--o{ PEDIDO : realiza
-    USUARIO ||--o{ AVALIACAO : escreve
-    FORNECEDOR ||--o{ PRODUTO_FORNECEDOR : vende
-    PRODUTO_FORNECEDOR ||--o{ PRODUTO_ESTOQUE : tem
-    PRODUTO_FORNECEDOR ||--o{ PEDIDO_ITEM : contido_em
-    PEDIDO ||--|{ PEDIDO_ITEM : contem
-    PEDIDO ||--o{ VENDA_LANCAMENTO : gera
+    USUARIO {
+        int id PK
+        string nome
+        string email
+        string senha
+    }
+    FORNECEDOR {
+        int id PK
+        string nome_fantasia
+        string cnpj
+        string email
+    }
+    PRODUTO_FORNECEDOR {
+        int id PK
+        int fornecedor_id FK
+        string nome
+        decimal preco
+    }
+    PEDIDO {
+        int id PK
+        int usuario_id FK
+        string status
+        decimal total
+        string chave_pix
+    }
+    PEDIDO_ITEM {
+        int id PK
+        int pedido_id FK
+        int produto_id FK
+        int quantidade
+    }
+    ENDERECO_USUARIO {
+        int id PK
+        int usuario_id FK
+        string cep
+        string logradouro
+    }
+
+    USUARIO ||--o{ ENDERECO_USUARIO : "possui"
+    USUARIO ||--o{ PEDIDO : "realiza"
+    FORNECEDOR ||--o{ PRODUTO_FORNECEDOR : "fornece"
+    PRODUTO_FORNECEDOR ||--o{ PEDIDO_ITEM : "composto_em"
+    PEDIDO ||--|{ PEDIDO_ITEM : "contem"
 ```
 
 ## Requirements
