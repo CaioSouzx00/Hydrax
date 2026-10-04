@@ -85,7 +85,7 @@ graph TD
     Nginx -->|FastCGI| App
     
     App -->|Read / Write| MySQL
-    App -.->|Cache (Optional)| Redis
+    App -.->|Cache| Redis
     
     App -->|Trigger Workflows| Novu
     App -->|Authenticate| Google
